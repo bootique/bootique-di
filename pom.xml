@@ -2,15 +2,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.bootique.di</groupId>
-	<artifactId>bootique-di</artifactId>
+	<artifactId>bootique-di-parent</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<packaging>jar</packaging>
-	<name>bootique-di: Lightweight DI Container for Bootique</name>
+	<packaging>pom</packaging>
+	<name>bootique-di-parent: Parent POM of bootique-di modules</name>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
+
+	<modules>
+		<module>bootique-di</module>
+	</modules>
 
 	<dependencyManagement>
 		<dependencies>
@@ -26,21 +30,4 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
-	<dependencies>
-
-		<!-- Compile dependencies -->
-		<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
-			<scope>compile</scope>
-		</dependency>
-
-		<!-- Test dependencies -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
 </project>

@@ -1,16 +1,14 @@
 
 package io.bootique.di.spi;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Key;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * A helper object that tracks the injection stack to prevent circular dependencies.
- * 
- * @since 3.1
  */
 class InjectionStack {
 

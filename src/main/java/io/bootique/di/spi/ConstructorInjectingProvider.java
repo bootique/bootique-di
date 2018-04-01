@@ -1,4 +1,3 @@
-
 package io.bootique.di.spi;
 
 import io.bootique.di.DIRuntimeException;
@@ -10,9 +9,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 
-/**
- * @since 3.1
- */
 class ConstructorInjectingProvider<T> implements Provider<T> {
 
     private Constructor<? extends T> constructor;

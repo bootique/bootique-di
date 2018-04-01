@@ -29,8 +29,6 @@ import java.util.Collection;
  * <p>
  * Multiple providers can be created by inheriting from this interface and using it with {@link ModuleLoader}
  *</p>
- *
- * @since 4.0
  */
 public interface ModuleProvider {
 

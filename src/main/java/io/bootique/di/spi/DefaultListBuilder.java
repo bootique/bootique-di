@@ -11,9 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-/**
- * @since 3.1
- */
 class DefaultListBuilder<T> extends DICollectionBuilder<List<T>, T> implements ListBuilder<T> {
 
     protected static AtomicLong incrementer = new AtomicLong();

@@ -6,8 +6,6 @@ import javax.inject.Provider;
 
 /**
  * A wrapper around a provider that itself generates providers.
- * 
- * @since 3.1
  */
 class CustomProvidersProvider<T> implements Provider<T> {
 

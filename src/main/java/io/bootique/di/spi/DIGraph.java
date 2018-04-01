@@ -12,7 +12,6 @@ import java.util.*;
  *
  * @param <V>
  *            A type of a vertex.
- * @since 4.0
  */
 class DIGraph<V> {
 

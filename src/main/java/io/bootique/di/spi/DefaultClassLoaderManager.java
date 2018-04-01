@@ -3,11 +3,6 @@ package io.bootique.di.spi;
 
 import io.bootique.di.ClassLoaderManager;
 
-/**
- * A {@link ClassLoaderManager} that
- * 
- * @since 4.0
- */
 public class DefaultClassLoaderManager implements ClassLoaderManager {
 
     @Override

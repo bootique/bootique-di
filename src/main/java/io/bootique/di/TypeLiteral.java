@@ -8,9 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @since 4.0
- */
 class TypeLiteral<T> {
 
     final Class<? super T> type;

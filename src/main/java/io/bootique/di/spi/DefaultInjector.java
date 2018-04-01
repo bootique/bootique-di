@@ -14,8 +14,6 @@ import java.util.Map.Entry;
 
 /**
  * A default Cayenne implementations of a DI injector.
- * 
- * @since 3.1
  */
 public class DefaultInjector implements Injector {
 

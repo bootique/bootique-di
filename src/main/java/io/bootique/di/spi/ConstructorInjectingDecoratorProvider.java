@@ -6,9 +6,6 @@ import io.bootique.di.DIRuntimeException;
 import javax.inject.Provider;
 import java.lang.reflect.Type;
 
-/**
- * @since 4.0
- */
 public class ConstructorInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
 
     private Class<? extends T> implementation;

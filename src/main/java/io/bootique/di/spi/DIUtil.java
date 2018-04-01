@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A helper class used by Cayenne DI implementation.
+ * A helper class used by Bootique DI implementation.
  */
 class DIUtil {
 

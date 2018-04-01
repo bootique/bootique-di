@@ -3,8 +3,7 @@ package io.bootique.di;
 import javax.inject.Provider;
 
 /**
- * A facade to the Cayenne DI container. To create an injector use {@link DIBootstrap}
- * static methods.
+ * A facade to the Bootique DI container. To create an injector use {@link DIBootstrap} static methods.
  */
 public interface Injector {
 
@@ -28,8 +27,7 @@ public interface Injector {
 
     /**
      * Performs field injection on a given object, ignoring constructor injection. Since
-     * Cayenne DI injector returns fully injected objects, this method is rarely used
-     * directly.
+     * Injector returns fully injected objects, this method is rarely used directly.
      * <p>
      * Note that using this method inside a custom DI {@link Provider} will most likely
      * result in double injection, as custom provider is wrapped in a field-injecting

@@ -1,7 +1,7 @@
 package io.bootique.di;
 
 /**
- * Represents a unit of configuration of the Cayenne DI container.
+ * Represents a unit of configuration of the Bootique DI container.
  */
 public interface Module {
 

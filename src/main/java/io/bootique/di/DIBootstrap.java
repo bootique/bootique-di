@@ -5,7 +5,7 @@ import io.bootique.di.spi.DefaultInjector;
 import java.util.Collection;
 
 /**
- * A class that bootstraps the Cayenne DI container.
+ * A class that bootstraps the Bootique DI container.
  */
 public class DIBootstrap {
 

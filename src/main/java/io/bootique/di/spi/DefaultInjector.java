@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * A default Cayenne implementations of a DI injector.
+ * A default implementations of a DI injector.
  */
 public class DefaultInjector implements Injector {
 

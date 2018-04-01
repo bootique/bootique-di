@@ -1,5 +1,9 @@
 # bootique-di
 
+Bootique own DI implementation.
+
+_EXPERIMENTAL... A port of `cayenne-di`._
+
 ## TODO:
 
 Things to do to turn Cayenne DI into an adequate replacement of Guice in
@@ -14,7 +18,6 @@ but still make it set-compatible... maybe support both?
 * Error handling - make sure we report multiple errors
 * Optional Guice compatibility module - support for Guice annotations,
 perhaps multi-binder API.
-
 
 ## Changes from `cayenne-di`
 

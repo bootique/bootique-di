@@ -8,6 +8,7 @@ Bootique:
 * `List` vs `Set` bindings (we'd like to preserve a notion of order,
 but still make it set-compatible... maybe support both?
 * Allow binding generic types. `TypeLiteral` must be public.
+* Use annotations as injection markers instead of Strings (@Qualifier?)
 * Support for provider methods in the modules.
 * Replace individual constructor param injection with full constructor injection.
 * Use `javax.inject` instead of own annotations (support for @Named, @Qualifier,

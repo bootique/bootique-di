@@ -20,16 +20,13 @@ package io.bootique.di.spi;
 
 import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Key;
-import io.bootique.di.Provider;
 
+import javax.inject.Provider;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @since 3.1
- */
 class ListProvider<T> implements Provider<List<T>> {
 
     private Map<Key<? extends T>, Provider<? extends T>> providers;

@@ -18,10 +18,10 @@
  ****************************************************************/
 package io.bootique.di.spi;
 
-import java.util.List;
-
-import io.bootique.di.Provider;
 import io.bootique.di.Scope;
+
+import javax.inject.Provider;
+import java.util.List;
 
 /**
  * A binding encapsulates DI provider scoping settings and allows to change them as many

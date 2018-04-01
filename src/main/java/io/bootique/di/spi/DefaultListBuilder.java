@@ -20,8 +20,8 @@ package io.bootique.di.spi;
 
 import io.bootique.di.Key;
 import io.bootique.di.ListBuilder;
-import io.bootique.di.Provider;
 
+import javax.inject.Provider;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;

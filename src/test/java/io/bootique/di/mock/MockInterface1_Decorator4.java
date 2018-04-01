@@ -19,7 +19,8 @@
 package io.bootique.di.mock;
 
 import io.bootique.di.Inject;
-import io.bootique.di.Provider;
+
+import javax.inject.Provider;
 
 public class MockInterface1_Decorator4 implements MockInterface1 {
 

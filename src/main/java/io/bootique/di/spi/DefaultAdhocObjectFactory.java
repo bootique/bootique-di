@@ -23,7 +23,8 @@ import io.bootique.di.ClassLoaderManager;
 import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Inject;
 import io.bootique.di.Injector;
-import io.bootique.di.Provider;
+
+import javax.inject.Provider;
 
 /**
  * A default implementation of {@link AdhocObjectFactory} that creates objects

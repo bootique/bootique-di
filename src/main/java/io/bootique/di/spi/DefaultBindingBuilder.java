@@ -18,15 +18,13 @@
  ****************************************************************/
 package io.bootique.di.spi;
 
-import io.bootique.di.DIRuntimeException;
 import io.bootique.di.BindingBuilder;
+import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Key;
-import io.bootique.di.Provider;
 import io.bootique.di.Scope;
 
-/**
- * @since 3.1
- */
+import javax.inject.Provider;
+
 class DefaultBindingBuilder<T> implements BindingBuilder<T> {
 
     protected DefaultInjector injector;

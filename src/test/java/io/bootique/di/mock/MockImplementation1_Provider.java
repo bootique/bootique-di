@@ -19,7 +19,8 @@
 package io.bootique.di.mock;
 
 import io.bootique.di.DIRuntimeException;
-import io.bootique.di.Provider;
+
+import javax.inject.Provider;
 
 public class MockImplementation1_Provider implements Provider<MockInterface1> {
 

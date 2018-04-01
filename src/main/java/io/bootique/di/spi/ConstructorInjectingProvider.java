@@ -18,14 +18,14 @@
  ****************************************************************/
 package io.bootique.di.spi;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Type;
-
 import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Inject;
 import io.bootique.di.Key;
-import io.bootique.di.Provider;
+
+import javax.inject.Provider;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Type;
 
 /**
  * @since 3.1

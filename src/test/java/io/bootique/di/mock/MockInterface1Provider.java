@@ -18,7 +18,8 @@
  ****************************************************************/
 package io.bootique.di.mock;
 
-import io.bootique.di.Provider;
+
+import javax.inject.Provider;
 
 public class MockInterface1Provider implements Provider<MockInterface1> {
 

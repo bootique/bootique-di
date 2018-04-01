@@ -19,8 +19,8 @@
 package io.bootique.di.spi;
 
 import io.bootique.di.DIRuntimeException;
-import io.bootique.di.Provider;
 
+import javax.inject.Provider;
 import java.lang.reflect.Type;
 
 /**

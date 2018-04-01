@@ -22,9 +22,9 @@ import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Injector;
 import io.bootique.di.Key;
 import io.bootique.di.Module;
-import io.bootique.di.Provider;
 import io.bootique.di.Scope;
 
+import javax.inject.Provider;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -165,8 +165,8 @@ public class DefaultInjector implements Injector {
 
     @Override
     public void injectMembers(Object object) {
-        Provider<Object> provider0 = new InstanceProvider<Object>(object);
-        Provider<Object> provider1 = new FieldInjectingProvider<Object>(provider0, this);
+        Provider<Object> provider0 = new InstanceProvider<>(object);
+        Provider<Object> provider1 = new FieldInjectingProvider<>(provider0, this);
         provider1.get();
     }
 

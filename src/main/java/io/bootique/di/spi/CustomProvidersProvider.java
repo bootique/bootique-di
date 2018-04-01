@@ -19,7 +19,7 @@
 package io.bootique.di.spi;
 
 import io.bootique.di.DIRuntimeException;
-import io.bootique.di.Provider;
+import javax.inject.Provider;
 
 /**
  * A wrapper around a provider that itself generates providers.

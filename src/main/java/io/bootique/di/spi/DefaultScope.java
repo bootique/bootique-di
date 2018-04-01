@@ -18,6 +18,10 @@
  ****************************************************************/
 package io.bootique.di.spi;
 
+import io.bootique.di.BeforeScopeEnd;
+import io.bootique.di.Scope;
+
+import javax.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -27,10 +31,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
-
-import io.bootique.di.BeforeScopeEnd;
-import io.bootique.di.Provider;
-import io.bootique.di.Scope;
 
 /**
  * An implementation of a DI scopes with support scope events.

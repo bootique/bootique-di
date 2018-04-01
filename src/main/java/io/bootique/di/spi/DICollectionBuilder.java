@@ -20,16 +20,15 @@ package io.bootique.di.spi;
 
 import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Key;
-import io.bootique.di.Provider;
 import io.bootique.di.Scope;
 
+import javax.inject.Provider;
 
 /**
  * A superclass of DI List and Map builders.
  *
  * @param <K> DI key type.
  * @param <E> Collection element type.
- * @since 4.0
  */
 public abstract class DICollectionBuilder<K, E> {
 

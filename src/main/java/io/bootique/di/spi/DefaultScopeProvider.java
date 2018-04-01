@@ -19,12 +19,11 @@
 package io.bootique.di.spi;
 
 import io.bootique.di.DIRuntimeException;
-import io.bootique.di.Provider;
+
+import javax.inject.Provider;
 
 /**
  * A provider that provides scoping for other providers.
- * 
- * @since 3.1
  */
 public class DefaultScopeProvider<T> implements Provider<T> {
 

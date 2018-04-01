@@ -1,9 +1,8 @@
-
 package io.bootique.di;
 
-import java.util.Collection;
-
 import io.bootique.di.spi.DefaultInjector;
+
+import java.util.Collection;
 
 /**
  * A class that bootstraps the Cayenne DI container.

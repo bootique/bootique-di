@@ -12,13 +12,13 @@ public class MockImplementation4 implements MockInterface4 {
                 "This constructor should not be picked for DI purposes");
     }
 
-    public MockImplementation4(@Inject MockInterface1 service) {
+    @Inject
+    public MockImplementation4(MockInterface1 service) {
         this.service = service;
     }
 
     public MockImplementation4(int i, int k) {
-        throw new UnsupportedOperationException(
-                "This constructor should not be picked for DI purposes");
+        throw new UnsupportedOperationException("This constructor should not be picked for DI purposes");
     }
 
     public String getName() {

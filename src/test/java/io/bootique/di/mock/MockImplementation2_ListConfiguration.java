@@ -4,13 +4,15 @@ package io.bootique.di.mock;
 
 import io.bootique.di.Inject;
 
+import javax.inject.Named;
 import java.util.List;
 
 public class MockImplementation2_ListConfiguration implements MockInterface2 {
 
     private List<Object> configuration;
 
-    public MockImplementation2_ListConfiguration(@Inject("xyz") List<Object> configuration) {
+    @Inject
+    public MockImplementation2_ListConfiguration(@Named("xyz") List<Object> configuration) {
         this.configuration = configuration;
     }
 

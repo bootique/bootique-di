@@ -3,6 +3,7 @@ package io.bootique.di.mock;
 
 import io.bootique.di.Inject;
 
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,8 +13,8 @@ public class MockImplementation1_MapConfiguration implements MockInterface1 {
 
     private Map<String, Object> configuration;
 
-    public MockImplementation1_MapConfiguration(
-            @Inject("xyz") Map<String, Object> configuration) {
+    @Inject
+    public MockImplementation1_MapConfiguration(@Named("xyz") Map<String, Object> configuration) {
         this.configuration = configuration;
     }
 

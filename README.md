@@ -17,3 +17,11 @@ but still make it set-compatible... maybe support both?
 * Error handling - make sure we report multiple errors
 * Optional Guice compatibility module - support for Guice annotations,
 perhaps multi-binder API.
+
+
+## Changes from `cayenne-di`
+
+* Replaced `Provider` with `javax.inject` implementation.
+* Replaced `@Inject` with `javax.inject` implementation.
+* Semantics of constructor injection has changed. Now `@Inject` is placed
+on the constructor, and @Named - on individual parameters if needed.

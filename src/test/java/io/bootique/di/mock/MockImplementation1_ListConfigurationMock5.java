@@ -10,7 +10,8 @@ public class MockImplementation1_ListConfigurationMock5 implements MockInterface
 
     private List<MockInterface5> configuration;
 
-    public MockImplementation1_ListConfigurationMock5(@Inject List<MockInterface5> configuration) {
+    @Inject
+    public MockImplementation1_ListConfigurationMock5(List<MockInterface5> configuration) {
         this.configuration = configuration;
     }
 

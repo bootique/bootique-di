@@ -7,7 +7,8 @@ public class MockInterface1_Decorator2 implements MockInterface1 {
 
     private MockInterface1 delegate;
 
-    public MockInterface1_Decorator2(@Inject MockInterface1 delegate) {
+    @Inject
+    public MockInterface1_Decorator2(MockInterface1 delegate) {
         this.delegate = delegate;
     }
 

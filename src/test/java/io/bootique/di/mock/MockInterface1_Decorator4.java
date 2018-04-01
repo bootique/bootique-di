@@ -9,7 +9,8 @@ public class MockInterface1_Decorator4 implements MockInterface1 {
 
     private Provider<MockInterface1> delegate;
 
-    public MockInterface1_Decorator4(@Inject Provider<MockInterface1> delegate) {
+    @Inject
+    public MockInterface1_Decorator4(Provider<MockInterface1> delegate) {
         this.delegate = delegate;
     }
 

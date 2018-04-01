@@ -1,15 +1,16 @@
-
 package io.bootique.di.mock;
 
-import java.util.List;
-
 import io.bootique.di.Inject;
+
+import javax.inject.Named;
+import java.util.List;
 
 public class MockImplementation1_ListConfiguration implements MockInterface1 {
 
     private List<Object> configuration;
 
-    public MockImplementation1_ListConfiguration(@Inject("xyz") List<Object> configuration) {
+    @Inject
+    public MockImplementation1_ListConfiguration(@Named("xyz") List<Object> configuration) {
         this.configuration = configuration;
     }
 
@@ -23,5 +24,4 @@ public class MockImplementation1_ListConfiguration implements MockInterface1 {
 
         return buffer.toString();
     }
-
 }

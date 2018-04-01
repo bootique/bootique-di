@@ -4,6 +4,7 @@ import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Inject;
 import io.bootique.di.Key;
 
+import javax.inject.Named;
 import javax.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -15,8 +16,7 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
     private DefaultInjector injector;
     private String[] bindingNames;
 
-    ConstructorInjectingProvider(Class<? extends T> implementation,
-                                 DefaultInjector injector) {
+    ConstructorInjectingProvider(Class<? extends T> implementation, DefaultInjector injector) {
 
         initConstructor(implementation);
 
@@ -37,9 +37,9 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
         Constructor<?> lastMatch = null;
         int lastSize = -1;
 
-        // pick the first constructor with all injection-annotated parameters, or the
-        // default constructor; constructor with the longest parameter list is preferred
-        // if multiple matches are found
+        // pick the first constructor annotated with @Inject, or the default constructor; constructor with the longest
+        // parameter list is preferred if multiple matches are found.
+
         for (Constructor<?> constructor : constructors) {
 
             int size = constructor.getParameterTypes().length;
@@ -53,24 +53,7 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
                 continue;
             }
 
-            boolean injectable = true;
-            for (Annotation[] annotations : constructor.getParameterAnnotations()) {
-
-                boolean parameterInjectable = false;
-                for (Annotation annotation : annotations) {
-                    if (annotation.annotationType().equals(Inject.class)) {
-                        parameterInjectable = true;
-                        break;
-                    }
-                }
-
-                if (!parameterInjectable) {
-                    injectable = false;
-                    break;
-                }
-            }
-
-            if (injectable) {
+            if (constructor.getAnnotation(Inject.class) != null) {
                 lastSize = size;
                 lastMatch = constructor;
             }
@@ -93,8 +76,8 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
             Annotation[] parameterAnnotations = annotations[i];
             for (int j = 0; j < parameterAnnotations.length; j++) {
                 Annotation annotation = parameterAnnotations[j];
-                if (annotation.annotationType().equals(Inject.class)) {
-                    Inject inject = (Inject) annotation;
+                if (annotation.annotationType().equals(Named.class)) {
+                    Named inject = (Named) annotation;
                     bindingNames[i] = inject.value();
                     break;
                 }

@@ -7,7 +7,8 @@ public class MockImplementation2_Constructor implements MockInterface2 {
 
     private MockInterface1 service;
 
-    public MockImplementation2_Constructor(@Inject MockInterface1 service) {
+    @Inject
+    public MockImplementation2_Constructor(MockInterface1 service) {
         this.service = service;
     }
 

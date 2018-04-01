@@ -9,8 +9,8 @@ public class MockImplementation2_ConstructorProvider implements MockInterface2 {
 
     private Provider<MockInterface1> provider;
 
-    public MockImplementation2_ConstructorProvider(
-            @Inject Provider<MockInterface1> provider) {
+    @Inject
+    public MockImplementation2_ConstructorProvider(Provider<MockInterface1> provider) {
         this.provider = provider;
     }
 

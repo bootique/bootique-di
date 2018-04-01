@@ -1,4 +1,3 @@
-
 package io.bootique.di;
 
 /**
@@ -58,7 +57,7 @@ public interface Binder {
     /**
      */
     <T> DecoratorBuilder<T> decorate(Class<T> interfaceType);
-    
+
     /**
      */
     <T> DecoratorBuilder<T> decorate(Key<T> key);

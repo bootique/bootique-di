@@ -1,4 +1,3 @@
-
 package io.bootique.di.spi;
 
 import io.bootique.di.Key;

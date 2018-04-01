@@ -16,7 +16,7 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
     private String[] bindingNames;
 
     ConstructorInjectingProvider(Class<? extends T> implementation,
-            DefaultInjector injector) {
+                                 DefaultInjector injector) {
 
         initConstructor(implementation);
 
@@ -31,7 +31,7 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
     }
 
     @SuppressWarnings("unchecked")
-	private void initConstructor(Class<? extends T> implementation) {
+    private void initConstructor(Class<? extends T> implementation) {
 
         Constructor<?>[] constructors = implementation.getDeclaredConstructors();
         Constructor<?> lastMatch = null;
@@ -116,15 +116,14 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
 
         try {
             return constructor.newInstance(args);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new DIRuntimeException(
                     "Error instantiating class '%s'",
                     e,
                     constructor.getDeclaringClass().getName());
         }
     }
-    
+
     protected Object value(Class<?> parameter, Type genericType, String bindingName, InjectionStack stack) {
 
         if (Provider.class.equals(parameter)) {

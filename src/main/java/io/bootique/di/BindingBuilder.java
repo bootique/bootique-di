@@ -4,7 +4,7 @@ import javax.inject.Provider;
 
 /**
  * A binding builder that helps with fluent binding creation.
- * 
+ *
  * @param <T> An interface type of the service being bound.
  */
 public interface BindingBuilder<T> {

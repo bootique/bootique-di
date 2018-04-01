@@ -1,4 +1,3 @@
-
 package io.bootique.di;
 
 import java.lang.annotation.Documented;

@@ -1,4 +1,3 @@
-
 package io.bootique.di.spi;
 
 import io.bootique.di.BeforeScopeEnd;
@@ -17,18 +16,15 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * An implementation of a DI scopes with support scope events.
- * 
- * @since 3.1
  */
 public class DefaultScope implements Scope {
 
+    private static final String SPECIAL_EVENT = AfterScopeEnd.class.getName();
     protected Collection<Class<? extends Annotation>> eventTypes;
     protected ConcurrentMap<String, Collection<ScopeEventBinding>> listeners;
 
-    private static final String SPECIAL_EVENT = AfterScopeEnd.class.getName();
-
     @SafeVarargs
-	public DefaultScope(Class<? extends Annotation>... customEventTypes) {
+    public DefaultScope(Class<? extends Annotation>... customEventTypes) {
         this.listeners = new ConcurrentHashMap<>();
         this.eventTypes = new HashSet<Class<? extends Annotation>>();
 

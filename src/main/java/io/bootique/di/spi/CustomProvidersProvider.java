@@ -1,7 +1,7 @@
-
 package io.bootique.di.spi;
 
 import io.bootique.di.DIRuntimeException;
+
 import javax.inject.Provider;
 
 /**

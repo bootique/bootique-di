@@ -1,4 +1,3 @@
-
 package io.bootique.di.spi;
 
 import io.bootique.di.DIRuntimeException;
@@ -33,7 +32,7 @@ public class ConstructorInjectingDecoratorProvider<T> implements DecoratorProvid
                                 + "parameterized to be usable for injection", parameter.getName());
                     }
 
-                    if(objectClass.isAssignableFrom(implementation)) {
+                    if (objectClass.isAssignableFrom(implementation)) {
                         return undecorated;
                     }
                 }

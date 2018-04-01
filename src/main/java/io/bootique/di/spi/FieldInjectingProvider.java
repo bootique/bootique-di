@@ -55,10 +55,7 @@ class FieldInjectingProvider<T> implements Provider<T> {
             throw new DIRuntimeException(message, e);
         }
     }
-    
-    /**
-     * @since 4.0
-     */
+
     protected Object value(Field field, String bindingName) {
 
         Class<?> fieldType = field.getType();

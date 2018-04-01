@@ -1,15 +1,12 @@
-
 package io.bootique.di.spi;
+
+import io.bootique.di.DIRuntimeException;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 
-import io.bootique.di.DIRuntimeException;
-
 /**
  * A class that wraps an annotated method call of an object, passing it DI scope events.
- * 
- * @since 3.1
  */
 public class ScopeEventBinding {
 
@@ -42,8 +39,7 @@ public class ScopeEventBinding {
 
         try {
             eventHandlerMethod.invoke(object, invocationArguments(eventArgs));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new DIRuntimeException(
                     "Error invoking event method %s",
                     e,

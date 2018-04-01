@@ -1,4 +1,3 @@
-
 package io.bootique.di.spi;
 
 import io.bootique.di.DIRuntimeException;
@@ -47,8 +46,7 @@ class InjectionStack {
         LinkedList<Key<?>> localStack = stack.get();
         if (localStack != null) {
             localStack.removeLast();
-        }
-        else {
+        } else {
             throw new IndexOutOfBoundsException("0");
         }
     }
@@ -58,8 +56,7 @@ class InjectionStack {
         List<Key<?>> localStack = stack.get();
         if (localStack != null) {
             return String.valueOf(localStack);
-        }
-        else {
+        } else {
             return "[]";
         }
     }

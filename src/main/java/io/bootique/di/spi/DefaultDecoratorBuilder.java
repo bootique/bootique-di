@@ -1,13 +1,9 @@
-
 package io.bootique.di.spi;
 
 import io.bootique.di.DIRuntimeException;
 import io.bootique.di.DecoratorBuilder;
 import io.bootique.di.Key;
 
-/**
- * @since 4.0
- */
 class DefaultDecoratorBuilder<T> implements DecoratorBuilder<T> {
 
     private Key<T> bindingKey;

@@ -1,4 +1,3 @@
-
 package io.bootique.di.spi;
 
 import io.bootique.di.DIRuntimeException;
@@ -48,7 +47,7 @@ public class DefaultInjector implements Injector {
             for (Module module : modules) {
                 module.configure(binder);
             }
-            
+
             applyDecorators();
         }
     }
@@ -58,7 +57,7 @@ public class DefaultInjector implements Injector {
     }
 
     @SuppressWarnings("unchecked")
-	<T> Binding<T> getBinding(Key<T> key) throws DIRuntimeException {
+    <T> Binding<T> getBinding(Key<T> key) throws DIRuntimeException {
 
         if (key == null) {
             throw new NullPointerException("Null key");
@@ -72,11 +71,11 @@ public class DefaultInjector implements Injector {
         // TODO: andrus 11/15/2009 - report overriding existing binding??
         bindings.put(bindingKey, new Binding<T>(provider, defaultScope));
     }
-    
+
     <T> void putDecorationAfter(Key<T> bindingKey, DecoratorProvider<T> decoratorProvider) {
 
         @SuppressWarnings("unchecked")
-		Decoration<T> decoration = (Decoration<T>) decorations.get(bindingKey);
+        Decoration<T> decoration = (Decoration<T>) decorations.get(bindingKey);
         if (decoration == null) {
             decoration = new Decoration<T>();
             decorations.put(bindingKey, decoration);
@@ -84,11 +83,11 @@ public class DefaultInjector implements Injector {
 
         decoration.after(decoratorProvider);
     }
-    
+
     <T> void putDecorationBefore(Key<T> bindingKey, DecoratorProvider<T> decoratorProvider) {
 
         @SuppressWarnings("unchecked")
-		Decoration<T> decoration = (Decoration<T>) decorations.get(bindingKey);
+        Decoration<T> decoration = (Decoration<T>) decorations.get(bindingKey);
         if (decoration == null) {
             decoration = new Decoration<T>();
             decorations.put(bindingKey, decoration);
@@ -133,7 +132,7 @@ public class DefaultInjector implements Injector {
         }
 
         @SuppressWarnings("unchecked")
-		Binding<T> binding = (Binding<T>) bindings.get(key);
+        Binding<T> binding = (Binding<T>) bindings.get(key);
 
         if (binding == null) {
             throw new DIRuntimeException(
@@ -163,9 +162,9 @@ public class DefaultInjector implements Injector {
     Scope getNoScope() {
         return noScope;
     }
-    
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-	void applyDecorators() {
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    void applyDecorators() {
         for (Entry<Key<?>, Decoration<?>> e : decorations.entrySet()) {
 
             Binding b = bindings.get(e.getKey());
@@ -174,7 +173,7 @@ public class DefaultInjector implements Injector {
                 continue;
             }
 
-			b.decorate(e.getValue());
+            b.decorate(e.getValue());
         }
     }
 }

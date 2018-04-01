@@ -2,13 +2,10 @@
 
 package io.bootique.di.mock;
 
-import java.util.List;
-
 import io.bootique.di.Inject;
 
-/**
- * @since 4.0
- */
+import java.util.List;
+
 public class MockImplementation2_ListConfiguration implements MockInterface2 {
 
     private List<Object> configuration;

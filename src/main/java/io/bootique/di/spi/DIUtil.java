@@ -1,17 +1,14 @@
-
 package io.bootique.di.spi;
+
+import io.bootique.di.Key;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
-import io.bootique.di.Key;
-
 /**
  * A helper class used by Cayenne DI implementation.
- * 
- * @since 3.1
  */
 class DIUtil {
 

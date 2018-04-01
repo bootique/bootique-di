@@ -1,14 +1,9 @@
-
-
 package io.bootique.di.mock;
-
-import java.util.Map;
 
 import io.bootique.di.Inject;
 
-/**
- * @since 4.0
- */
+import java.util.Map;
+
 public class MockImplementation1_MapWithWildcards implements MockInterface1 {
 
     @Inject

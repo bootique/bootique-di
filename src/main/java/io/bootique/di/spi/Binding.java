@@ -1,4 +1,3 @@
-
 package io.bootique.di.spi;
 
 import io.bootique.di.Scope;
@@ -9,8 +8,6 @@ import java.util.List;
 /**
  * A binding encapsulates DI provider scoping settings and allows to change them as many
  * times as needed.
- * 
- * @since 3.1
  */
 class Binding<T> {
 
@@ -22,7 +19,7 @@ class Binding<T> {
     Binding(Provider<T> provider, Scope initialScope) {
         this.original = provider;
         this.decorated = provider;
-        
+
         changeScope(initialScope);
     }
 
@@ -33,11 +30,11 @@ class Binding<T> {
 
         // TODO: what happens to the old scoped value? Seems like this leaks
         // scope event listeners and may cause unexpected events...
-        
+
         this.scoped = scope.scope(original);
         this.scope = scope;
     }
-    
+
     void decorate(Decoration<T> decoration) {
 
         List<DecoratorProvider<T>> decorators = decoration.decorators();

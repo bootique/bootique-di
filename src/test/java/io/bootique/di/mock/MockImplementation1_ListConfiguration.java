@@ -1,7 +1,6 @@
 package io.bootique.di.mock;
 
-import io.bootique.di.Inject;
-
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
 

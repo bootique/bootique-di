@@ -1,7 +1,7 @@
 
 package io.bootique.di.mock;
 
-import io.bootique.di.Inject;
+import javax.inject.Inject;
 
 public class MockImplementation2_I3Dependency implements MockInterface2 {
 

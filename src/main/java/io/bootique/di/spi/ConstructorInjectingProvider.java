@@ -1,9 +1,9 @@
 package io.bootique.di.spi;
 
 import io.bootique.di.DIRuntimeException;
-import io.bootique.di.Inject;
 import io.bootique.di.Key;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 import java.lang.annotation.Annotation;

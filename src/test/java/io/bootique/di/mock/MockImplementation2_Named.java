@@ -1,11 +1,12 @@
-
 package io.bootique.di.mock;
 
-import io.bootique.di.Inject;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 public class MockImplementation2_Named implements MockInterface2 {
 
-    @Inject("one")
+    @Inject
+    @Named("one")
     private MockInterface1 service;
 
     public String getAlteredName() {

@@ -1,8 +1,6 @@
-
 package io.bootique.di.mock;
 
-import io.bootique.di.Inject;
-
+import javax.inject.Inject;
 import javax.inject.Named;
 
 public class MockImplementation4Alt implements MockInterface4 {

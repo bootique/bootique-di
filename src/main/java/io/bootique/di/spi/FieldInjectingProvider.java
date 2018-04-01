@@ -1,9 +1,10 @@
 package io.bootique.di.spi;
 
 import io.bootique.di.DIRuntimeException;
-import io.bootique.di.Inject;
 import io.bootique.di.Key;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 import java.lang.reflect.Field;
 
@@ -35,7 +36,9 @@ class FieldInjectingProvider<T> implements Provider<T> {
 
             Inject inject = field.getAnnotation(Inject.class);
             if (inject != null) {
-                injectMember(object, field, inject.value());
+                Named named = field.getAnnotation(Named.class);
+                String bindingName = named != null ? named.value() : null;
+                injectMember(object, field, bindingName);
             }
         }
 

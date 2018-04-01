@@ -10,7 +10,7 @@ public interface Injector {
 
     /**
      * Returns a service instance bound in the container for a specific type. Throws
-     *{@link DIRuntimeException} if the type is not bound, or an instance can not be
+     * {@link DIRuntimeException} if the type is not bound, or an instance can not be
      * created.
      */
     <T> T getInstance(Class<T> type) throws DIRuntimeException;

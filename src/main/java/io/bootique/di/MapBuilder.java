@@ -1,11 +1,10 @@
-
 package io.bootique.di;
 
 import java.util.Map;
 
 /**
  * A binding builder for map configurations. Creates a parameterized map of type &lt;String, T&gt;.
- * 
+ *
  * @param <T> A type of the map values.
  */
 public interface MapBuilder<T> {

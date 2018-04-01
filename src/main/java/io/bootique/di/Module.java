@@ -1,4 +1,3 @@
-
 package io.bootique.di;
 
 /**

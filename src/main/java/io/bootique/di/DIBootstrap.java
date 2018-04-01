@@ -12,8 +12,7 @@ public class DIBootstrap {
     /**
      * Creates and returns an injector instance working with the set of provided modules.
      */
-    public static Injector createInjector(Module... modules)
-            throws DIRuntimeException {
+    public static Injector createInjector(Module... modules) throws DIRuntimeException {
         return new DefaultInjector(modules);
     }
 

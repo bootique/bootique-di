@@ -1,4 +1,3 @@
-
 package io.bootique.di;
 
 import java.util.List;
@@ -12,6 +11,20 @@ public class Key<T> {
 
     protected TypeLiteral<T> typeLiteral;
     protected String bindingName;
+
+    protected Key(TypeLiteral<T> type, String bindingName) {
+        if (type == null) {
+            throw new NullPointerException("Null key type");
+        }
+
+        this.typeLiteral = type;
+
+        // empty non-null binding names are often passed from annotation defaults and are
+        // treated as null
+        this.bindingName = bindingName != null && bindingName.length() > 0
+                ? bindingName
+                : null;
+    }
 
     /**
      * Creates a key for a nameless binding of a given type.
@@ -45,23 +58,9 @@ public class Key<T> {
         return new Key<>(TypeLiteral.mapOf(keyType, valueType), bindingName);
     }
 
-    protected Key(TypeLiteral<T> type, String bindingName) {
-        if (type == null) {
-            throw new NullPointerException("Null key type");
-        }
-
-        this.typeLiteral = type;
-
-        // empty non-null binding names are often passed from annotation defaults and are
-        // treated as null
-        this.bindingName = bindingName != null && bindingName.length() > 0
-                ? bindingName
-                : null;
-    }
-
     @SuppressWarnings("unchecked")
     public Class<T> getType() {
-        return (Class<T>)typeLiteral.getType();
+        return (Class<T>) typeLiteral.getType();
     }
 
     /**

@@ -1,5 +1,3 @@
-
-
 package io.bootique.di;
 
 import java.lang.reflect.ParameterizedType;
@@ -14,6 +12,23 @@ class TypeLiteral<T> {
     final String typeName;
     final String[] argumentsType;
 
+    TypeLiteral(Class<? super T> type, Type... argumentsType) {
+        this.type = type;
+        this.typeName = type.getName();
+        this.argumentsType = new String[argumentsType.length];
+        for (int i = 0; i < argumentsType.length; i++) {
+            if (argumentsType[i] instanceof ParameterizedType) {
+                argumentsType[i] = ((ParameterizedType) argumentsType[i]).getRawType();
+            }
+
+            if (argumentsType[i] instanceof Class) {
+                this.argumentsType[i] = ((Class) argumentsType[i]).getName();
+            } else {
+                this.argumentsType[i] = argumentsType[i].toString();
+            }
+        }
+    }
+
     static <T> TypeLiteral<T> of(Class<T> type) {
         return new TypeLiteral<>(type);
     }
@@ -26,37 +41,22 @@ class TypeLiteral<T> {
         return new TypeLiteral<>(Map.class, keyType, valueType);
     }
 
-    TypeLiteral(Class<? super T> type, Type... argumentsType) {
-        this.type = type;
-        this.typeName = type.getName();
-        this.argumentsType = new String[argumentsType.length];//argumentsType;
-        for(int i=0; i<argumentsType.length; i++) {
-            if(argumentsType[i] instanceof ParameterizedType) {
-                argumentsType[i] = ((ParameterizedType)argumentsType[i]).getRawType();
-            }
-
-            if(argumentsType[i] instanceof Class) {
-                this.argumentsType[i] = ((Class)argumentsType[i]).getName();
-            } else {
-                this.argumentsType[i] = argumentsType[i].toString();
-            }
-        }
-    }
-
     Class<? super T> getType() {
         return type;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) { return true; }
+        if (this == o) {
+            return true;
+        }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         TypeLiteral<?> that = (TypeLiteral<?>) o;
 
-        if (!typeName.equals(that.typeName)){
+        if (!typeName.equals(that.typeName)) {
             return false;
         }
         return Arrays.equals(argumentsType, that.argumentsType);
@@ -72,7 +72,7 @@ class TypeLiteral<T> {
     @Override
     public String toString() {
         String result = typeName;
-        if(argumentsType.length > 0) {
+        if (argumentsType.length > 0) {
             result += Arrays.toString(argumentsType);
         }
         return result;

@@ -1,12 +1,10 @@
-
-
 package io.bootique.di;
 
 import java.util.Collection;
 
 /**
  * A binding builder for list configurations.
- * 
+ *
  * @param <T> A type of list values.
  */
 public interface ListBuilder<T> {

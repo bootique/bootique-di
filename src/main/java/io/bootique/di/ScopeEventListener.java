@@ -1,4 +1,3 @@
-
 package io.bootique.di;
 
 /**
@@ -9,9 +8,9 @@ package io.bootique.di;
  * with java version 5.
  */
 public interface ScopeEventListener {
-	
-	/**
-	 * Similar to {@link BeforeScopeEnd}
-	 */
-	void beforeScopeEnd();
+
+    /**
+     * Similar to {@link BeforeScopeEnd}
+     */
+    void beforeScopeEnd();
 }

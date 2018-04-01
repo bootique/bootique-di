@@ -1,4 +1,3 @@
-
 package io.bootique.di;
 
 import java.lang.annotation.Retention;
@@ -9,7 +8,7 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(RUNTIME)
-@Target( {
+@Target({
         FIELD, PARAMETER
 })
 public @interface Inject {

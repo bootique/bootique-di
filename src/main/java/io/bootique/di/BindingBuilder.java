@@ -13,11 +13,9 @@ public interface BindingBuilder<T> {
 
     BindingBuilder<T> toInstance(T instance) throws DIRuntimeException;
 
-    BindingBuilder<T> toProvider(Class<? extends Provider<? extends T>> providerType)
-            throws DIRuntimeException;
+    BindingBuilder<T> toProvider(Class<? extends Provider<? extends T>> providerType) throws DIRuntimeException;
 
-    BindingBuilder<T> toProviderInstance(Provider<? extends T> provider)
-            throws DIRuntimeException;
+    BindingBuilder<T> toProviderInstance(Provider<? extends T> provider) throws DIRuntimeException;
 
     /**
      * Sets the scope of a bound instance. This method is used to change the default scope

@@ -20,6 +20,12 @@
             <groupId>io.bootique.di</groupId>
             <artifactId>bootique-di</artifactId>
             <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup</groupId>
+            <artifactId>javapoet</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <!-- Test dependencies -->

@@ -47,7 +47,7 @@ public class ProvidesCompiler extends AbstractProcessor {
 
         System.out.println("*** processing... " + annotations);
 
-        Map<Name, GeneratedProviderClass> providers = new HashMap<>();
+        Map<Name, ModuleExtensionsGenerator> extGenerators = new HashMap<>();
 
         for (TypeElement te : annotations) {
 
@@ -61,18 +61,19 @@ public class ProvidesCompiler extends AbstractProcessor {
 
                 TypeElement parentType = (TypeElement) parentElement;
 
-                providers.computeIfAbsent(parentType.getQualifiedName(), n -> new GeneratedProviderClass(parentType))
+                extGenerators
+                        .computeIfAbsent(parentType.getQualifiedName(), n -> new ModuleExtensionsGenerator(parentType))
                         .addProviderMethod(e);
             }
         }
 
 
-        providers.values().forEach(this::storeProvider);
+        extGenerators.values().forEach(this::storeProvider);
 
         return true;
     }
 
-    private void storeProvider(GeneratedProviderClass provider) {
+    private void storeProvider(ModuleExtensionsGenerator provider) {
         try {
             provider.file(filer);
         } catch (IOException e) {

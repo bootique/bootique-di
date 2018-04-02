@@ -33,6 +33,11 @@
                 <artifactId>junit</artifactId>
                 <version>4.12</version>
             </dependency>
+            <dependency>
+                <groupId>com.squareup</groupId>
+                <artifactId>javapoet</artifactId>
+                <version>1.10.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

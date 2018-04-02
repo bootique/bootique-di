@@ -7,7 +7,7 @@ import io.bootique.di.Provides;
 public class Module1 implements Module {
 
     @Provides
-    public static Service1 provideService1() {
+    public static Service1 provideService1_Static() {
         return new Service1Impl1();
     }
 

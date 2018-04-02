@@ -46,10 +46,11 @@ public class DefaultInjector implements Injector {
 
             for (Module module : modules) {
                 module.configure(binder);
+                ProvidesHandler.bindingsFromProviderMethods(module).forEach(p -> p.bind(this));
             }
-
-            applyDecorators();
         }
+
+        applyDecorators();
     }
 
     InjectionStack getInjectionStack() {
@@ -68,8 +69,12 @@ public class DefaultInjector implements Injector {
     }
 
     <T> void putBinding(Key<T> bindingKey, Provider<T> provider) {
+        putBinding(bindingKey, new Binding<T>(provider, defaultScope));
+    }
+
+    <T> void putBinding(Key<T> bindingKey, Binding<T> binding) {
         // TODO: andrus 11/15/2009 - report overriding existing binding??
-        bindings.put(bindingKey, new Binding<T>(provider, defaultScope));
+        bindings.put(bindingKey, binding);
     }
 
     <T> void putDecorationAfter(Key<T> bindingKey, DecoratorProvider<T> decoratorProvider) {
@@ -162,6 +167,7 @@ public class DefaultInjector implements Injector {
     Scope getNoScope() {
         return noScope;
     }
+
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     void applyDecorators() {

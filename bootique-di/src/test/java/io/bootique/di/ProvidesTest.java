@@ -53,19 +53,15 @@ public class ProvidesTest {
         String doIt();
     }
 
-    public static class TestModule_StandaloneService implements Module {
+    public static class TestModule_StandaloneService extends BaseModule {
 
         @Provides
         public static Service1 provideService1() {
             return () -> "provideService1";
         }
-
-        @Override
-        public void configure(Binder binder) {
-        }
     }
 
-    public static class TestModule_ServiceChain implements Module {
+    public static class TestModule_ServiceChain extends BaseModule {
 
         @Provides
         public static Service1 provideService1() {
@@ -76,37 +72,25 @@ public class ProvidesTest {
         public static Service2 provideService2(Service1 s1) {
             return () -> "provideService2_" + s1.doIt();
         }
-
-        @Override
-        public void configure(Binder binder) {
-        }
     }
 
-    public static class TestModule_InvalidProvider implements Module {
+    public static class TestModule_InvalidProvider extends BaseModule {
 
         @Provides
         public void invalidProvides() {
         }
-
-        @Override
-        public void configure(Binder binder) {
-        }
     }
 
-    public static class TestModule_NamedService implements Module {
+    public static class TestModule_NamedService extends BaseModule {
 
         @Named("s1")
         @Provides
         public static Service1 provideService1() {
             return () -> "provideService1";
         }
-
-        @Override
-        public void configure(Binder binder) {
-        }
     }
 
-    public static class TestModule_NamedParameter implements Module {
+    public static class TestModule_NamedParameter extends BaseModule {
 
         @Named("s1")
         @Provides
@@ -117,10 +101,6 @@ public class ProvidesTest {
         @Provides
         public static Service2 provideService2(@Named("s1") Service1 s1) {
             return () -> "provideService2_" + s1.doIt();
-        }
-
-        @Override
-        public void configure(Binder binder) {
         }
     }
 }

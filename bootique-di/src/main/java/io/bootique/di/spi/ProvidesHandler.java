@@ -15,7 +15,8 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- * Resolves {@link io.bootique.di.Provides} annotated methods in a module to a set of bindings.
+ * Resolves provider methods to a set of bindings. Provider methods are a part of a module class, each annotated
+ * with a specified annotation. Usually this annotations is {@link io.bootique.di.Provides @Provides}.
  */
 class ProvidesHandler {
 

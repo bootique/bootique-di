@@ -4,6 +4,7 @@ import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Injector;
 import io.bootique.di.Key;
 import io.bootique.di.Module;
+import io.bootique.di.Provides;
 import io.bootique.di.Scope;
 
 import javax.inject.Provider;
@@ -44,9 +45,13 @@ public class DefaultInjector implements Injector {
         // bind modules
         if (modules != null && modules.length > 0) {
 
+            // annotation may be chosen dynamically...
+            // E.g. for Guice compatibility per https://github.com/bootique/bootique-di/issues/6
+            ProvidesHandler providesHandler = new ProvidesHandler(this, Provides.class);
+
             for (Module module : modules) {
                 module.configure(binder);
-                ProvidesHandler.bindingsFromProviderMethods(module).forEach(p -> p.bind(this));
+                providesHandler.bindingsFromAnnotatedMethods(module).forEach(p -> p.bind(this));
             }
         }
 

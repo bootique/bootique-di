@@ -9,8 +9,16 @@ import static org.junit.Assert.assertEquals;
 public class ProvidesTest {
 
     @Test
-    public void testProvides_Standalone() {
-        Injector injector = DIBootstrap.createInjector(new TestModule_StandaloneService());
+    public void testProvides_Standalone_Static() {
+        Injector injector = DIBootstrap.createInjector(new TestModule_StandaloneService_Static());
+
+        Service1 s1 = injector.getInstance(Service1.class);
+        assertEquals("provideService1", s1.doIt());
+    }
+
+    @Test
+    public void testProvides_Standalone_Instance() {
+        Injector injector = DIBootstrap.createInjector(new TestModule_StandaloneService_Instance());
 
         Service1 s1 = injector.getInstance(Service1.class);
         assertEquals("provideService1", s1.doIt());
@@ -53,10 +61,18 @@ public class ProvidesTest {
         String doIt();
     }
 
-    public static class TestModule_StandaloneService extends BaseModule {
+    public static class TestModule_StandaloneService_Static extends BaseModule {
 
         @Provides
         public static Service1 provideService1() {
+            return () -> "provideService1";
+        }
+    }
+
+    public static class TestModule_StandaloneService_Instance extends BaseModule {
+
+        @Provides
+        public Service1 provideService1() {
             return () -> "provideService1";
         }
     }

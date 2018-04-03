@@ -114,6 +114,7 @@ class ProvidesHandler {
                     arguments[i] = argumentProviders[i].get();
                 }
 
+                // supporting both 'static' and instance methods..
                 // TODO: accessibility - non-public inner and top-level classes... Does 'setAccessible' work across Java 9 modules?
                 return (T) method.invoke(module, arguments);
             } catch (Exception e) {
@@ -148,6 +149,4 @@ class ProvidesHandler {
 
         return providers;
     }
-
-
 }

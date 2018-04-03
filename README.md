@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/bootique/bootique-di.svg)](https://travis-ci.org/bootique/bootique-di)
+
 # bootique-di
 
 Bootique lightweight DI implementation.

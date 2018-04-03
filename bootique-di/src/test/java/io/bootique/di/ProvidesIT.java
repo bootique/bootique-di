@@ -6,7 +6,7 @@ import javax.inject.Named;
 
 import static org.junit.Assert.assertEquals;
 
-public class ProvidesTest {
+public class ProvidesIT {
 
     @Test
     public void testProvides_Standalone_Static() {

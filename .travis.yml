@@ -1,0 +1,53 @@
+language: java
+
+#
+# Stage conditions
+#
+# current possible types: push, pull_request, api, cron
+# https://docs.travis-ci.com/user/conditional-builds-stages-jobs/#Left-hand-side
+#
+# 1. branch != master OR type IN (pull_request)
+# 2. branch = master AND type IN (push)
+#
+# ----------------------------------------------
+# |         | push | pull_request | api | cron |
+# ----------------------------------------------
+# |  master |  2   |       1      |     |      |
+# | !master |  1   |       1      |  1  |  1   |
+# ----------------------------------------------
+#
+
+jobs:
+  include:
+    - stage: build
+      if: branch != master OR type IN (pull_request)
+      jdk: oraclejdk9
+      script:
+        - mvn clean verify
+    - stage: build
+      if: branch != master OR type IN (pull_request)
+      jdk: oraclejdk8
+      script:
+        - mvn clean verify
+    - stage: build
+      if: branch = master AND type IN (push)
+      jdk: oraclejdk9
+      script:
+        - mvn clean verify
+    - stage: build
+      if: branch = master AND type IN (push) AND repo = bootique/bootique
+      jdk: oraclejdk8
+      script:
+        - mvn clean source:jar javadoc:javadoc deploy --settings travis_settings.xml
+    - stage: build
+      if: branch = master AND type IN (push) AND repo != bootique/bootique
+      jdk: oraclejdk8
+      script:
+        - mvn clean verify
+
+# travis encrypt -r bootique/bootique-di "CI_DEPLOY_USERNAME='name'"
+# travis encrypt -r bootique/bootique-di "CI_DEPLOY_PASSWORD='password'"
+env:
+  global:
+    - secure: "UA6HZWM9FC818CXVU4e938Cdaxjkm6PpI0qAQcA74ZKxdkxChJVSxDJY4pJ+xQQtQXqFPQUzHnTYXXhRkxUlDWnKZB9IBsgn5U6zjDX+t0TmBFVTl2w1T9R5HN9VhipSbYEZsck5XqNU5sEjbdR7OPx+EMAZ5iDpPPu+bTQgVXnCanvehq2s3TbNomuLvJQl98hPQoWMCioCbVAT/NQ5LxGqEvXUr5SfQU1JlIvYprooI1sqZlxLEBwGtXWWsQl0HN5P4LsGT5atbm4cBtEpov5RaQvHaup7PBhMzTxW8d3VPMsJDfp4kI0wyIFa9SKSEc4cWLt3pZPDw4mazVuxbxUvb4rP7eWAwL7YT0g9tWUs+c6c9nPyGO0/TdGgbdI5YULd21+BcV2VVmyOcxulKXawqGAnSnNqlWHliLHJrYfo9lutOtzCEbq5r5oujvis2g41mlXJi+k0irP2PSJcxFlrI7dZLgCXUnbfTBYm1h8P5aTtm8VihUAPSQNz/PJ4RKVji1EhnOh7ZbK5mKmNcxuNa224RpQVXtBhdcS6SxgHFPzvVLlNtvUARBia6PyAlib8478Hi+Ftz+kjJ32HxmZb4G2/saHisghDeYbHm2O3YuAYGBdWVL8R+W/kOWp55mpgyKOOEneg+SsURqi8BqyQACQ2ydzg08r89l8LTYE="
+    - secure: "imIh0msqMA0y/+etvo7YhczdAmd6mC+9ry1krc4rT5kH7dkNDJA8ti4b1bkJQH2ztQ2+9AU+F9Lg+MFWiozJBMaxkp/BgdKT9nsLPlVX3N3ZbWPr9K60ZTvqsiFSA5to9RBO04U96zF1IuKfhsXhZALv/1oSTWLzOcrCiIfI8XJeFcxx8uMQZrLXGI0zSZvpDdMdWjiIWIoX8vpZ8R1JgUIx0BHPEKCuj5EL55DUvOQfs52U39Un8n8YaquNhzn1QgqHybjto4+7TPboOtRI60MMTNh8Xgy+evr4X/95fkHtGZszwT1/vdybvASkI99N5gL6Dx8M5cOSkMibs5RvARy8KtLyksB50o62skRPPkUXU35qdBp6dLHUO9BBpacZcJ3pPll5jNz30m/IB02rMEEHzETrgxMeYH+BysoJwzmoytOYjTsRHnDaaQpq/mtvf2E8eyyc0qsUykyzRMpo6cQaKE+/KofS7lJFbf1o83p9HZOnyD7dC1RuMQFMMvcZstjH/FWSaf4tvalEMLIsmZYjvppa7JXwMtvFXLHXkk25g3RIB0jZaJbdLYeyjNKexAYmeWmSPa+G8msRSuW1uGmBOmu5NYP7YLK6AddbZHIeKr/e45PrkgMATVBaKYq3pe+thTlss6ZKzjLMvPeNhlSqBdOpVmWoE95e9QIPX1g="

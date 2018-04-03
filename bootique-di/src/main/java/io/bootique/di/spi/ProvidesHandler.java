@@ -45,7 +45,6 @@ class ProvidesHandler {
                     bindings = new ArrayList<>();
                 }
 
-                // TODO: handle custom qualifier annotations per https://github.com/bootique/bootique-di/issues/4
                 bindings.add(createBindingPair(module, m));
             }
         }
@@ -71,13 +70,13 @@ class ProvidesHandler {
     }
 
     private String extractNameQualifier(Method method) {
-        // TODO: generic @Qualifier annotation extractor
+        // TODO: generic @Qualifier annotation extractor per https://github.com/bootique/bootique-di/issues/4
         Named named = method.getAnnotation(Named.class);
         return named != null ? named.value() : null;
     }
 
     private String extractNameQualifier(Annotation[] annotations) {
-        // TODO: generic @Qualifier annotation extractor
+        // TODO: generic @Qualifier annotation extractor per https://github.com/bootique/bootique-di/issues/4
 
         for (Annotation a : annotations) {
             if (a instanceof Named) {

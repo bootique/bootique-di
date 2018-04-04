@@ -1,5 +1,7 @@
 package io.bootique.di.spi;
 
+import java.lang.annotation.Annotation;
+
 import io.bootique.di.BindingBuilder;
 import io.bootique.di.Key;
 import io.bootique.di.Scope;
@@ -112,5 +114,11 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
     @Override
     public void inSingletonScope() {
         in(injector.getSingletonScope());
+    }
+
+    @Override
+    public BindingBuilder<T> annotatedWith(Class<? extends Annotation> annotationType) {
+        // TODO: implement
+        return this;
     }
 }

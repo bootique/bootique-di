@@ -2,11 +2,13 @@ package io.bootique.di.spi;
 
 import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Key;
+import io.bootique.di.TypeLiteral;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 
 class FieldInjectingProvider<T> implements Provider<T> {
 
@@ -65,18 +67,17 @@ class FieldInjectingProvider<T> implements Provider<T> {
         InjectionStack stack = injector.getInjectionStack();
 
         if (Provider.class.equals(fieldType)) {
+            Type parameterType = DIUtil.getGenericParameterType(field.getGenericType());
 
-            Class<?> objectClass = DIUtil.parameterClass(field.getGenericType());
-
-            if (objectClass == null) {
+            if (parameterType == null) {
                 throw new DIRuntimeException("Provider field %s.%s of type %s must be "
                         + "parameterized to be usable for injection", field.getDeclaringClass().getName(),
                         field.getName(), fieldType.getName());
             }
 
-            return injector.getProvider(Key.get(objectClass, bindingName));
+            return injector.getProvider(Key.get(TypeLiteral.of(parameterType), bindingName));
         } else {
-            Key<?> key = DIUtil.getKeyForTypeAndGenericType(fieldType, field.getGenericType(), bindingName);
+            Key<?> key = Key.get(TypeLiteral.of(field.getGenericType()), bindingName);
             stack.push(key);
             try {
                 return injector.getInstance(key);

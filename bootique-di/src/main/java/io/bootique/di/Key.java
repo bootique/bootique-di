@@ -30,7 +30,7 @@ public class Key<T> {
      * Creates a key for a nameless binding of a given type.
      */
     public static <T> Key<T> get(Class<T> type) {
-        return new Key<>(TypeLiteral.of(type), null);
+        return get(TypeLiteral.of(type));
     }
 
     /**
@@ -40,6 +40,14 @@ public class Key<T> {
      */
     public static <T> Key<T> get(Class<T> type, String bindingName) {
         return new Key<>(TypeLiteral.of(type), bindingName);
+    }
+
+    public static <T> Key<T> get(TypeLiteral<T> typeLiteral) {
+        return get(typeLiteral, null);
+    }
+
+    public static <T> Key<T> get(TypeLiteral<T> typeLiteral, String bindingName) {
+        return new Key<>(typeLiteral, bindingName);
     }
 
     public static <T> Key<List<T>> getListOf(Class<T> type) {

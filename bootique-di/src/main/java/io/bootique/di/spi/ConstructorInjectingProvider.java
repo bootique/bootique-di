@@ -2,6 +2,7 @@ package io.bootique.di.spi;
 
 import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Key;
+import io.bootique.di.TypeLiteral;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -110,18 +111,14 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
     protected Object value(Class<?> parameter, Type genericType, String bindingName, InjectionStack stack) {
 
         if (Provider.class.equals(parameter)) {
-
-            Class<?> objectClass = DIUtil.parameterClass(genericType);
-
-            if (objectClass == null) {
+            Type parameterType = DIUtil.getGenericParameterType(genericType);
+            if (parameterType == null) {
                 throw new DIRuntimeException("Constructor provider parameter %s must be "
                         + "parameterized to be usable for injection", parameter.getName());
             }
-
-            return injector.getProvider(Key.get(objectClass, bindingName));
+            return injector.getProvider(Key.get(TypeLiteral.of(parameterType), bindingName));
         } else {
-
-            Key<?> key = DIUtil.getKeyForTypeAndGenericType(parameter, genericType, bindingName);
+            Key<?> key = Key.get(TypeLiteral.of(genericType), bindingName);
             stack.push(key);
             try {
                 return injector.getInstance(key);

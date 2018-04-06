@@ -14,7 +14,7 @@ class InjectionStack {
     private ThreadLocal<LinkedList<Key<?>>> stack;
 
     InjectionStack() {
-        this.stack = new ThreadLocal<LinkedList<Key<?>>>();
+        this.stack = new ThreadLocal<>();
     }
 
     void reset() {
@@ -27,7 +27,7 @@ class InjectionStack {
     void push(Key<?> bindingKey) throws DIRuntimeException {
         LinkedList<Key<?>> localStack = stack.get();
         if (localStack == null) {
-            localStack = new LinkedList<Key<?>>();
+            localStack = new LinkedList<>();
             stack.set(localStack);
         }
 

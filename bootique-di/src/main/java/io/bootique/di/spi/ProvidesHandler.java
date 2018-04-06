@@ -4,6 +4,7 @@ import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Key;
 import io.bootique.di.Module;
 import io.bootique.di.Scope;
+import io.bootique.di.TypeLiteral;
 
 import javax.inject.Named;
 import javax.inject.Provider;
@@ -88,13 +89,7 @@ class ProvidesHandler {
     }
 
     private <T> Key<T> createKey(Type bindingType, String nameQualifier) {
-
-        if (bindingType instanceof Class) {
-            return Key.get((Class<T>) bindingType, nameQualifier);
-        }
-
-        // TODO: implement support for generic types per https://github.com/bootique/bootique-di/issues/3
-        throw new UnsupportedOperationException("Can't yet generate keys based on generic types: " + bindingType);
+        return Key.get(TypeLiteral.of(bindingType), nameQualifier);
     }
 
     private <T> Binding<T> createBinding(Module module, Method method) {

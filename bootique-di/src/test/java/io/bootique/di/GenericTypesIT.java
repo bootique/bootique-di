@@ -18,11 +18,8 @@ public class GenericTypesIT {
     public void testDirectAccess() {
         Injector injector = DIBootstrap.createInjector(new TestModule1());
 
-        List<? extends Integer> integers = injector.getInstance(Key.get(new TypeLiteral<List<? extends Integer>>(){}));
-        assertEquals(Arrays.asList(1,2,3), integers);
-
-        List<? super Integer> objects = injector.getInstance(Key.get(new TypeLiteral<List<? super Integer>>(){}));
-        assertEquals(Arrays.asList(3,4,5), objects);
+        assertEquals(Arrays.asList(1,2,3), injector.getInstance(Key.get(new TypeLiteral<List<? extends Integer>>(){})));
+        assertEquals(Arrays.asList(3,4,5), injector.getInstance(Key.get(new TypeLiteral<List<? super Integer>>(){})));
 
         Optional<String> optionalString = injector.getInstance(Key.get(new TypeLiteral<Optional<String>>(){}));
         assertEquals("test", optionalString.orElseThrow(NullPointerException::new));
@@ -74,6 +71,20 @@ public class GenericTypesIT {
         assertEquals(Integer.valueOf(42), service1.getOptionalInteger().orElseThrow(NullPointerException::new));
     }
 
+    @Test
+    public void testDirectAccessFromProvidesMethods() {
+        Injector injector = DIBootstrap.createInjector(new TestModule2());
+
+        assertEquals(Arrays.asList(1,2,3), injector.getInstance(Key.get(new TypeLiteral<List<? extends Integer>>(){})));
+        assertEquals(Arrays.asList(3,4,5), injector.getInstance(Key.get(new TypeLiteral<List<? super Integer>>(){})));
+
+        Optional<String> optionalString = injector.getInstance(Key.get(new TypeLiteral<Optional<String>>(){}));
+        assertEquals("test", optionalString.orElseThrow(NullPointerException::new));
+
+        Optional<Integer> optionalInteger = injector.getInstance(Key.get(new TypeLiteral<Optional<Integer>>(){}));
+        assertEquals(Integer.valueOf(42), optionalInteger.orElseThrow(NullPointerException::new));
+    }
+
     static class TestService1Module implements Module {
         @Override
         public void configure(Binder binder) {
@@ -89,7 +100,6 @@ public class GenericTypesIT {
     }
 
     static class TestModule1 implements Module {
-
         @Override
         public void configure(Binder binder) {
             binder.bind(Key.get(new TypeLiteral<List<? extends Integer>>(){})).toInstance(Arrays.asList(1,2,3));
@@ -98,6 +108,30 @@ public class GenericTypesIT {
             binder.bind(Key.get(new TypeLiteral<Optional<String>>(){})).toInstance(Optional.of("test"));
             binder.bind(Key.get(new TypeLiteral<Optional<Integer>>(){})).toInstance(Optional.of(42));
         }
+    }
+
+    public static class TestModule2 extends BaseModule {
+
+        @Provides
+        public List<? extends Integer> createIntegerList() {
+            return Arrays.asList(1,2,3);
+        }
+
+        @Provides
+        public List<? super Integer> createObjectsList() {
+            return Arrays.asList(3,4,5);
+        }
+
+        @Provides
+        public Optional<Integer> createIntegerOptional() {
+            return Optional.of(42);
+        }
+
+        @Provides
+        public Optional<String> createStringOptional() {
+            return Optional.of("test");
+        }
+
     }
 
     interface Service1 {

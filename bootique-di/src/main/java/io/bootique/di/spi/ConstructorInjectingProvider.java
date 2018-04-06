@@ -75,8 +75,7 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
         for (int i = 0; i < annotations.length; i++) {
 
             Annotation[] parameterAnnotations = annotations[i];
-            for (int j = 0; j < parameterAnnotations.length; j++) {
-                Annotation annotation = parameterAnnotations[j];
+            for (Annotation annotation : parameterAnnotations) {
                 if (annotation.annotationType().equals(Named.class)) {
                     Named inject = (Named) annotation;
                     bindingNames[i] = inject.value();

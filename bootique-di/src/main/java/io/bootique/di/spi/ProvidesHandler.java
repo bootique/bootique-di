@@ -24,7 +24,7 @@ class ProvidesHandler {
     private DefaultInjector injector;
     private Class<? extends Annotation> providesAnnotation;
 
-    public ProvidesHandler(DefaultInjector injector, Class<? extends Annotation> providesAnnotation) {
+    ProvidesHandler(DefaultInjector injector, Class<? extends Annotation> providesAnnotation) {
         this.injector = injector;
         this.providesAnnotation = providesAnnotation;
     }
@@ -111,7 +111,9 @@ class ProvidesHandler {
 
                 // supporting both 'static' and instance methods..
                 // TODO: accessibility - non-public inner and top-level classes... Does 'setAccessible' work across Java 9 modules?
-                return (T) method.invoke(module, arguments);
+                @SuppressWarnings("unchecked")
+                T result = (T) method.invoke(module, arguments);
+                return result;
             } catch (Exception e) {
                 throw new DIRuntimeException("Error invoking provider method '%s' on module '%s'",
                         e,

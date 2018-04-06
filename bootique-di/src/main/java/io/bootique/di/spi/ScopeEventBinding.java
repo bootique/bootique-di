@@ -18,7 +18,7 @@ public class ScopeEventBinding {
 
         // store weak references for objects to avoid retaining them when they go out of
         // scope
-        this.objectReference = new WeakReference<Object>(object);
+        this.objectReference = new WeakReference<>(object);
         this.eventHandlerMethod = eventHandlerMethod;
         this.argWidth = eventHandlerMethod.getParameterTypes().length;
 

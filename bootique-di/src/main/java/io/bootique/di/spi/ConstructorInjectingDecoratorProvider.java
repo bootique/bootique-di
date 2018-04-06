@@ -5,12 +5,12 @@ import io.bootique.di.DIRuntimeException;
 import javax.inject.Provider;
 import java.lang.reflect.Type;
 
-public class ConstructorInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
+class ConstructorInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
 
     private Class<? extends T> implementation;
     private DefaultInjector injector;
 
-    public ConstructorInjectingDecoratorProvider(Class<? extends T> implementation, DefaultInjector injector) {
+    ConstructorInjectingDecoratorProvider(Class<? extends T> implementation, DefaultInjector injector) {
         this.implementation = implementation;
         this.injector = injector;
     }

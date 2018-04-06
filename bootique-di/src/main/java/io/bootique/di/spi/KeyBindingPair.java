@@ -7,7 +7,7 @@ class KeyBindingPair<T> {
     private Key<T> key;
     private Binding<T> binding;
 
-    public KeyBindingPair(Key<T> key, Binding<T> binding) {
+    KeyBindingPair(Key<T> key, Binding<T> binding) {
         this.key = key;
         this.binding = binding;
     }

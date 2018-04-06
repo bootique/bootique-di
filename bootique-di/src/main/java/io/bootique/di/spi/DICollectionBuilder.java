@@ -31,14 +31,7 @@ public abstract class DICollectionBuilder<K, E> {
 
         // Create deferred provider to prevent caching the intermediate provider from the Injector.
         // The actual provider may get overridden after list builder is created.
-
-        return new Provider<SubT>() {
-
-            @Override
-            public SubT get() throws DIRuntimeException {
-                return findOrCreateBinding(interfaceType).getScoped().get();
-            }
-        };
+        return () -> findOrCreateBinding(interfaceType).getScoped().get();
     }
 
     protected <SubT extends E> Binding<SubT> findOrCreateBinding(Class<SubT> interfaceType) {
@@ -47,7 +40,6 @@ public abstract class DICollectionBuilder<K, E> {
         Binding<SubT> binding = injector.getBinding(key);
 
         if (binding == null) {
-
             Provider<SubT> provider0 = new ConstructorInjectingProvider<>(interfaceType, injector);
             Provider<SubT> provider1 = new FieldInjectingProvider<>(provider0, injector);
             injector.putBinding(key, provider1);

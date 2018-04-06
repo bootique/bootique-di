@@ -11,7 +11,7 @@ class MapProvider<T> implements Provider<Map<String, T>> {
 
 	private Map<String, Provider<? extends T>> providers;
 
-	public MapProvider() {
+	MapProvider() {
 		this.providers = new HashMap<>();
 	}
 

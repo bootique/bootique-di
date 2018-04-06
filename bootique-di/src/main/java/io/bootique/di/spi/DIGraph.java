@@ -2,7 +2,14 @@ package io.bootique.di.spi;
 
 import io.bootique.di.DIRuntimeException;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The implementation here is basically an adjacency list, but a {@link Map} is
@@ -17,13 +24,13 @@ class DIGraph<V> {
      */
     private Map<V, List<V>> neighbors = new LinkedHashMap<>();
 
-    public DIGraph() {
+    DIGraph() {
     }
 
     /**
      * Add a vertex to the graph. Nothing happens if vertex is already in graph.
      */
-    public void add(V vertex) {
+    void add(V vertex) {
         if (neighbors.containsKey(vertex)) {
             return;
         }
@@ -34,7 +41,7 @@ class DIGraph<V> {
     /**
      * Add vertexes to the graph.
      */
-    public void addAll(Collection<V> vertexes) {
+    void addAll(Collection<V> vertexes) {
         for (V vertex : vertexes) {
             this.add(vertex);
         }
@@ -44,7 +51,7 @@ class DIGraph<V> {
      * Add an edge to the graph; if either vertex does not exist, it's added.
      * This implementation allows the creation of multi-edges and self-loops.
      */
-    public void add(V from, V to) {
+    void add(V from, V to) {
         this.add(from);
         this.add(to);
         neighbors.get(from).add(to);
@@ -53,7 +60,7 @@ class DIGraph<V> {
     /**
      * True iff graph contains vertex.
      */
-    public boolean contains(V vertex) {
+    private boolean contains(V vertex) {
         return neighbors.containsKey(vertex);
     }
 
@@ -62,7 +69,7 @@ class DIGraph<V> {
      *
      * @throws IllegalArgumentException if either vertex doesn't exist.
      */
-    public void remove(V from, V to) {
+    void remove(V from, V to) {
         if (!(this.contains(from) && this.contains(to))) {
             throw new IllegalArgumentException("Nonexistent vertex");
         }
@@ -73,7 +80,7 @@ class DIGraph<V> {
     /**
      * Return (as a Map) the out-degree of each vertex.
      */
-    public Map<V, Integer> outDegree() {
+    Map<V, Integer> outDegree() {
         Map<V, Integer> result = new LinkedHashMap<>();
 
         for (Map.Entry<V, List<V>> entry : neighbors.entrySet()) {
@@ -86,7 +93,7 @@ class DIGraph<V> {
     /**
      * Return (as a Map) the in-degree of each vertex.
      */
-    public Map<V, Integer> inDegree() {
+    Map<V, Integer> inDegree() {
         Map<V, Integer> result = new LinkedHashMap<>();
 
         for (V v : neighbors.keySet()) {
@@ -105,7 +112,7 @@ class DIGraph<V> {
     /**
      * Return (as a List) the topological sort of the vertices. Throws an exception if cycles are detected.
      */
-    public List<V> topSort() {
+    List<V> topSort() {
         Map<V, Integer> degree = inDegree();
         Deque<V> zeroDegree = new ArrayDeque<>();
         LinkedList<V> result = new LinkedList<>();
@@ -139,17 +146,15 @@ class DIGraph<V> {
     /**
      * String representation of graph.
      */
+    @Override
     public String toString() {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
 
         for (Map.Entry<V, List<V>> entry : neighbors.entrySet()) {
-            s.append("\n    " + entry.getKey() + " -> " + entry.getValue());
+            s.append("\n    ").append(entry.getKey()).append(" -> ").append(entry.getValue());
         }
 
         return s.toString();
     }
 
-    public int size() {
-        return neighbors.size();
-    }
 }

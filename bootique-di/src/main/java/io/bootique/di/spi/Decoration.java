@@ -8,7 +8,7 @@ class Decoration<T> {
     private List<DecoratorProvider<T>> decorators;
 
     Decoration() {
-        this.decorators = new LinkedList<DecoratorProvider<T>>();
+        this.decorators = new LinkedList<>();
     }
 
     void before(DecoratorProvider<T> decoratorProvider) {

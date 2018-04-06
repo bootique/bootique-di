@@ -14,7 +14,7 @@ class ListProvider<T> implements Provider<List<T>> {
     private Map<Key<? extends T>, Provider<? extends T>> providers;
     private DIGraph<Key<? extends T>> graph;
 
-    public ListProvider() {
+    ListProvider() {
         this.providers = new HashMap<>();
         this.graph = new DIGraph<>();
     }

@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 class DefaultListBuilder<T> extends DICollectionBuilder<List<T>, T> implements ListBuilder<T> {
 
-    protected static AtomicLong incrementer = new AtomicLong();
+    protected static final AtomicLong incrementer = new AtomicLong();
 
     DefaultListBuilder(Key<List<T>> bindingKey, DefaultInjector injector) {
         super(bindingKey, injector);

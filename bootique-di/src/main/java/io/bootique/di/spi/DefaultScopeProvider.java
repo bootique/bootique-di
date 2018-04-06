@@ -24,24 +24,24 @@ public class DefaultScopeProvider<T> implements Provider<T> {
 
     @Override
     public T get() {
-
-        if (instance == null) {
+        T localInstance = instance;
+        if (localInstance == null) {
             synchronized (this) {
-                if (instance == null) {
-                    instance = delegate.get();
-
-                    if (instance == null) {
+                localInstance = instance;
+                if (localInstance == null) {
+                    localInstance = instance = delegate.get();
+                    if (localInstance == null) {
                         throw new DIRuntimeException(
                                 "Underlying provider (%s) returned NULL instance",
                                 delegate.getClass().getName());
                     }
 
-                    scope.addScopeEventListener(instance);
+                    scope.addScopeEventListener(localInstance);
                 }
             }
         }
 
-        return instance;
+        return localInstance;
     }
 
     @AfterScopeEnd

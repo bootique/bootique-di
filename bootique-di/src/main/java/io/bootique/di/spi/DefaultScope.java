@@ -7,8 +7,8 @@ import javax.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -26,7 +26,7 @@ public class DefaultScope implements Scope {
     @SafeVarargs
     public DefaultScope(Class<? extends Annotation>... customEventTypes) {
         this.listeners = new ConcurrentHashMap<>();
-        this.eventTypes = new HashSet<Class<? extends Annotation>>();
+        this.eventTypes = new HashSet<>();
 
         // initialize the event listener data structures in constructor to avoid
         // synchronization concerns on everything but per-event lists.
@@ -37,13 +37,11 @@ public class DefaultScope implements Scope {
 
         // custom event types
         if (customEventTypes != null) {
-            for (Class<? extends Annotation> type : customEventTypes) {
-                eventTypes.add(type);
-            }
+            Collections.addAll(eventTypes, customEventTypes);
         }
 
         for (Class<? extends Annotation> type : eventTypes) {
-            listeners.put(type.getName(), new ConcurrentLinkedQueue<ScopeEventBinding>());
+            listeners.put(type.getName(), new ConcurrentLinkedQueue<>());
         }
     }
 
@@ -74,8 +72,7 @@ public class DefaultScope implements Scope {
                 if (method.isAnnotationPresent(annotationType)) {
                     String typeName = annotationType.getName();
 
-                    Collection<ScopeEventBinding> eventListeners = listeners
-                            .get(typeName);
+                    Collection<ScopeEventBinding> eventListeners = listeners.get(typeName);
                     eventListeners.add(new ScopeEventBinding(object, method));
                 }
             }
@@ -97,13 +94,7 @@ public class DefaultScope implements Scope {
                 continue;
             }
 
-            Iterator<ScopeEventBinding> it = entry.getValue().iterator();
-            while (it.hasNext()) {
-                ScopeEventBinding binding = it.next();
-                if (binding.getObject() == object) {
-                    it.remove();
-                }
-            }
+            entry.getValue().removeIf(binding -> binding.getObject() == object);
         }
     }
 
@@ -112,26 +103,18 @@ public class DefaultScope implements Scope {
      * event dispatching. An exception thrown by any of the listeners stops further event
      * processing and is rethrown.
      */
-    public void postScopeEvent(
-            Class<? extends Annotation> type,
-            Object... eventParameters) {
+    public void postScopeEvent(Class<? extends Annotation> type, Object... eventParameters) {
 
         Collection<ScopeEventBinding> eventListeners = listeners.get(type.getName());
 
         if (eventListeners != null) {
-            Iterator<ScopeEventBinding> it = eventListeners.iterator();
-            while (it.hasNext()) {
-                ScopeEventBinding listener = it.next();
-                if (!listener.onScopeEvent(eventParameters)) {
-                    // remove listeners that were garbage collected
-                    it.remove();
-                }
-            }
+            // remove listeners that were garbage collected
+            eventListeners.removeIf(listener -> !listener.onScopeEvent(eventParameters));
         }
     }
 
     @Override
     public <T> Provider<T> scope(Provider<T> unscoped) {
-        return new DefaultScopeProvider<T>(this, unscoped);
+        return new DefaultScopeProvider<>(this, unscoped);
     }
 }

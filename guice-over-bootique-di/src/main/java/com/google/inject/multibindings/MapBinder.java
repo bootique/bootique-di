@@ -19,6 +19,7 @@ package com.google.inject.multibindings;
 import com.google.inject.Binder;
 import com.google.inject.TypeLiteral;
 import com.google.inject.binder.LinkedBindingBuilder;
+import io.bootique.di.spi.MapBinderAdapter;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
@@ -151,13 +152,10 @@ public class MapBinder<K, V> {
         return null; // TODO: implement
     }
 
-    private final RealMapBinder<K, V> delegate;
+    private final MapBinderAdapter<K, V> delegate;
 
-    private MapBinder(RealMapBinder<K, V> delegate) {
+    private MapBinder(MapBinderAdapter<K, V> delegate) {
         this.delegate = delegate;
-    }
-
-    private class RealMapBinder<Key, Val> {
     }
 
 }

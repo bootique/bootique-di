@@ -60,9 +60,8 @@ public class InjectorAdapter implements com.google.inject.Injector {
 
     @Override
     public <T> Binding<T> getExistingBinding(Key<T> key) {
-        io.bootique.di.spi.Binding<T> binding = bootiqueInjector.getBinding(DiUtils.toBootiqueKey(key));
-        if(binding == null) {
-            // TODO: or throw?
+        io.bootique.di.spi.Binding<T> bootiqueBinding = bootiqueInjector.getBinding(DiUtils.toBootiqueKey(key));
+        if(bootiqueBinding == null) {
             return null;
         }
 
@@ -74,7 +73,7 @@ public class InjectorAdapter implements com.google.inject.Injector {
 
             @Override
             public Provider<T> getProvider() {
-                return () -> binding.getScoped().get();
+                return () -> bootiqueBinding.getScoped().get();
             }
         };
     }

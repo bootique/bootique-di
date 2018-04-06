@@ -19,12 +19,12 @@ public class BinderAdapter implements Binder {
 
     @Override
     public <T> LinkedBindingBuilder<T> bind(Key<T> key) {
-        return new BindingBuilderAdapter<T>(bootiqueBinder.bind((Class)key.getTypeLiteral().getRawType()));
+        return new BindingBuilderAdapter<>(bootiqueBinder.bind(DiUtils.toBootiqueKey(key)));
     }
 
     @Override
     public <T> AnnotatedBindingBuilder<T> bind(TypeLiteral<T> typeLiteral) {
-        return new BindingBuilderAdapter<T>(bootiqueBinder.bind((Class)typeLiteral.getRawType()));
+        return new BindingBuilderAdapter<>(bootiqueBinder.bind(DiUtils.toBootiqueKey(typeLiteral)));
     }
 
     @Override

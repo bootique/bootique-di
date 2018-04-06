@@ -39,13 +39,13 @@ public class BindingBuilderAdapter<T> implements AnnotatedBindingBuilder<T> {
 
     @Override
     public ScopedBindingBuilder to(TypeLiteral<? extends T> implementation) {
-        bootiqueBindingBuilder.to((Class)implementation.getRawType()); // TODO
+        bootiqueBindingBuilder.to(DiUtils.toBootiqueKey(implementation));
         return this;
     }
 
     @Override
     public ScopedBindingBuilder to(Key<? extends T> targetKey) {
-        bootiqueBindingBuilder.to((Class)targetKey.getTypeLiteral().getRawType()); // TODO
+        bootiqueBindingBuilder.to(DiUtils.toBootiqueKey(targetKey));
         return this;
     }
 
@@ -71,17 +71,18 @@ public class BindingBuilderAdapter<T> implements AnnotatedBindingBuilder<T> {
         if(scopeAnnotation == Singleton.class) {
             bootiqueBindingBuilder.inSingletonScope();
         } else {
-            // TODO
+            // TODO: unimplemented
         }
     }
 
     @Override
     public void in(Scope scope) {
-        // TODO
+        // TODO: unimplemented
     }
 
     @Override
     public void asEagerSingleton() {
-        // TODO
+        // TODO: should we support this?
+        // it will launch creation of this binding automatically after configuration is done.
     }
 }

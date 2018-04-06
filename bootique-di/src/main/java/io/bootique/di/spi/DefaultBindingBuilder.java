@@ -18,39 +18,35 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
     }
 
     @Override
-    public BindingBuilder<T> to(Class<? extends T> implementation)
-            throws DIRuntimeException {
-
-        Provider<T> provider0 = new ConstructorInjectingProvider<T>(
-                implementation,
-                injector);
-        Provider<T> provider1 = new FieldInjectingProvider<T>(provider0, injector);
+    public BindingBuilder<T> to(Class<? extends T> implementation) throws DIRuntimeException {
+        Provider<T> provider0 = new ConstructorInjectingProvider<>(implementation, injector);
+        Provider<T> provider1 = new FieldInjectingProvider<>(provider0, injector);
 
         injector.putBinding(bindingKey, provider1);
         return this;
+    }
+
+    @Override
+    public BindingBuilder<T> to(Key<? extends T> key) throws DIRuntimeException {
+        return toProviderInstance(() -> injector.getProvider(key).get());
     }
 
     @Override
     public BindingBuilder<T> toInstance(T instance) throws DIRuntimeException {
-        Provider<T> provider0 = new InstanceProvider<T>(instance);
-        Provider<T> provider1 = new FieldInjectingProvider<T>(provider0, injector);
+        Provider<T> provider0 = new InstanceProvider<>(instance);
+        Provider<T> provider1 = new FieldInjectingProvider<>(provider0, injector);
+
         injector.putBinding(bindingKey, provider1);
         return this;
     }
 
     @Override
-    public BindingBuilder<T> toProvider(
-            Class<? extends Provider<? extends T>> providerType) {
+    public BindingBuilder<T> toProvider(Class<? extends Provider<? extends T>> providerType) {
+        Provider<Provider<? extends T>> provider0 = new ConstructorInjectingProvider<>(providerType, injector);
+        Provider<Provider<? extends T>> provider1 = new FieldInjectingProvider<>(provider0, injector);
 
-        Provider<Provider<? extends T>> provider0 = new ConstructorInjectingProvider<Provider<? extends T>>(
-                providerType,
-                injector);
-        Provider<Provider<? extends T>> provider1 = new FieldInjectingProvider<Provider<? extends T>>(
-                provider0,
-                injector);
-
-        Provider<T> provider2 = new CustomProvidersProvider<T>(provider1);
-        Provider<T> provider3 = new FieldInjectingProvider<T>(provider2, injector);
+        Provider<T> provider2 = new CustomProvidersProvider<>(provider1);
+        Provider<T> provider3 = new FieldInjectingProvider<>(provider2, injector);
 
         injector.putBinding(bindingKey, provider3);
         return this;
@@ -58,15 +54,11 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
 
     @Override
     public BindingBuilder<T> toProviderInstance(Provider<? extends T> provider) {
+        Provider<Provider<? extends T>> provider0 = new InstanceProvider<>(provider);
+        Provider<Provider<? extends T>> provider1 = new FieldInjectingProvider<>(provider0, injector);
 
-        Provider<Provider<? extends T>> provider0 = new InstanceProvider<Provider<? extends T>>(
-                provider);
-        Provider<Provider<? extends T>> provider1 = new FieldInjectingProvider<Provider<? extends T>>(
-                provider0,
-                injector);
-
-        Provider<T> provider2 = new CustomProvidersProvider<T>(provider1);
-        Provider<T> provider3 = new FieldInjectingProvider<T>(provider2, injector);
+        Provider<T> provider2 = new CustomProvidersProvider<>(provider1);
+        Provider<T> provider3 = new FieldInjectingProvider<>(provider2, injector);
 
         injector.putBinding(bindingKey, provider3);
         return this;

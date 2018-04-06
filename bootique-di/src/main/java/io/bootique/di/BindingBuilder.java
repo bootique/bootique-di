@@ -11,6 +11,8 @@ public interface BindingBuilder<T> {
 
     BindingBuilder<T> to(Class<? extends T> implementation) throws DIRuntimeException;
 
+    BindingBuilder<T> to(Key<? extends T> key) throws DIRuntimeException;
+
     BindingBuilder<T> toInstance(T instance) throws DIRuntimeException;
 
     BindingBuilder<T> toProvider(Class<? extends Provider<? extends T>> providerType) throws DIRuntimeException;

@@ -11,14 +11,12 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * <p>
+ *
  * This class represents any generic type T, as there is no support for this in Java.
- * </p>
  * <p>
  * Usage: <pre>
- *     TypeLiteral&gt;List&gt;Integer>> type = new TypeLiteral&gt;List&gt;Integer>>(){};
+ *     TypeLiteralg&lt;List&lt;Integer&gt;&gt; type = new TypeLiteral&lt;List&lt;Integer&gt;&gt;(){};
  * </pre>
- * </p>
  */
 public class TypeLiteral<T> {
 
@@ -33,14 +31,14 @@ public class TypeLiteral<T> {
     }
 
     /**
-     * Creates TypeLiteral that represents List&gt;T> type.
+     * Creates TypeLiteral that represents List&lt;T&gt; type.
      */
     public static <T> TypeLiteral<List<T>> listOf(Class<? extends T> type) {
         return new TypeLiteral<>(List.class, type);
     }
 
     /**
-     * Creates TypeLiteral that represents Map&gt;K, V> type.
+     * Creates TypeLiteral that represents Map&lt;K, V&lt; type.
      */
     public static <K, V> TypeLiteral<Map<K, V>> mapOf(Class<? extends K> keyType, Class<? extends V> valueType) {
         return new TypeLiteral<>(Map.class, keyType, valueType);

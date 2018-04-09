@@ -95,6 +95,20 @@ public class SetTypesIT {
     }
 
     @Test
+    public void testAddType() {
+        Injector injector = DIBootstrap.createInjector(
+                new SetProviderModule(),
+                b -> b.bindSet(Service.class).add(Service_Impl1.class).add(Service_Impl2.class)
+        );
+        Set<Service> services = injector.getInstance(Key.getSetOf(Service.class));
+
+        assertEquals(2, services.size());
+        for(Service service : services) {
+            assertThat(service, anyOf(instanceOf(Service_Impl1.class), instanceOf(Service_Impl2.class)));
+        }
+    }
+
+    @Test
     public void testAddAllBinding() {
         Injector injector = DIBootstrap.createInjector(b ->
                 b.bindSet(TypeLiteral.of(Integer.class)).add(1).addAll(Arrays.asList(2,3,4)).add(5));

@@ -11,6 +11,7 @@ import javax.inject.Provider;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 /**
  * A default implementations of a DI injector.
@@ -64,17 +65,12 @@ public class DefaultInjector implements Injector {
 
     @SuppressWarnings("unchecked")
     <T> Binding<T> getBinding(Key<T> key) throws DIRuntimeException {
-
-        if (key == null) {
-            throw new NullPointerException("Null key");
-        }
-
         // may return null - this is intentionally allowed in this non-public method
-        return (Binding<T>) bindings.get(key);
+        return (Binding<T>) bindings.get(Objects.requireNonNull(key, "Null key"));
     }
 
     <T> void putBinding(Key<T> bindingKey, Provider<T> provider) {
-        putBinding(bindingKey, new Binding<T>(provider, defaultScope));
+        putBinding(bindingKey, new Binding<>(provider, defaultScope));
     }
 
     <T> void putBinding(Key<T> bindingKey, Binding<T> binding) {
@@ -87,7 +83,7 @@ public class DefaultInjector implements Injector {
         @SuppressWarnings("unchecked")
         Decoration<T> decoration = (Decoration<T>) decorations.get(bindingKey);
         if (decoration == null) {
-            decoration = new Decoration<T>();
+            decoration = new Decoration<>();
             decorations.put(bindingKey, decoration);
         }
 
@@ -99,7 +95,7 @@ public class DefaultInjector implements Injector {
         @SuppressWarnings("unchecked")
         Decoration<T> decoration = (Decoration<T>) decorations.get(bindingKey);
         if (decoration == null) {
-            decoration = new Decoration<T>();
+            decoration = new Decoration<>();
             decorations.put(bindingKey, decoration);
         }
 
@@ -136,18 +132,9 @@ public class DefaultInjector implements Injector {
 
     @Override
     public <T> Provider<T> getProvider(Key<T> key) throws DIRuntimeException {
-
-        if (key == null) {
-            throw new NullPointerException("Null key");
-        }
-
-        @SuppressWarnings("unchecked")
-        Binding<T> binding = (Binding<T>) bindings.get(key);
-
+        Binding<T> binding = getBinding(key);
         if (binding == null) {
-            throw new DIRuntimeException(
-                    "DI container has no binding for key %s",
-                    key);
+            throw new DIRuntimeException("DI container has no binding for key %s", key);
         }
 
         return binding.getScoped();
@@ -172,7 +159,6 @@ public class DefaultInjector implements Injector {
     Scope getNoScope() {
         return noScope;
     }
-
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     void applyDecorators() {

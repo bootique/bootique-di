@@ -4,14 +4,15 @@ import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
- *
  * This class represents any generic type T, as there is no support for this in Java.
  * <p>
  * Usage: <pre>
@@ -35,6 +36,27 @@ public class TypeLiteral<T> {
      */
     public static <T> TypeLiteral<List<T>> listOf(Class<? extends T> type) {
         return new TypeLiteral<>(List.class, type);
+    }
+
+    /**
+     * Creates TypeLiteral that represents List&lt;T&gt; type.
+     */
+    public static <T> TypeLiteral<List<T>> listOf(TypeLiteral<? extends T> type) {
+        return new TypeLiteral<>(List.class, type.toString());
+    }
+
+    /**
+     * Creates TypeLiteral that represents Set&lt;T&lt; type.
+     */
+    public static <T> TypeLiteral<Set<T>> setOf(Class<? extends T> valueType) {
+        return new TypeLiteral<>(Set.class, valueType);
+    }
+
+    /**
+     * Creates TypeLiteral that represents Set&lt;T&lt; type.
+     */
+    public static <T> TypeLiteral<Set<T>> setOf(TypeLiteral<? extends T> valueType) {
+        return new TypeLiteral<>(Set.class, valueType.toString());
     }
 
     /**
@@ -63,7 +85,7 @@ public class TypeLiteral<T> {
     @SuppressWarnings("unchecked")
     protected TypeLiteral() {
         Type genericType = getGenericSuperclassType(getClass());
-        this.type = (Class<T>)getRawType(genericType);
+        this.type = (Class<T>) getRawType(genericType);
         this.typeName = type.getName();
         Type[] argumentTypes = getArgumentTypes(genericType);
         this.argumentTypes = new String[argumentTypes.length];
@@ -72,7 +94,7 @@ public class TypeLiteral<T> {
 
     @SuppressWarnings("unchecked")
     private TypeLiteral(Type type) {
-        this.type = (Class<T>)getRawType(Objects.requireNonNull(type, "No type"));
+        this.type = (Class<T>) getRawType(Objects.requireNonNull(type, "No type"));
         this.typeName = this.type.getName();
         Type[] argumentTypes = getArgumentTypes(type);
         this.argumentTypes = new String[argumentTypes.length];
@@ -102,7 +124,7 @@ public class TypeLiteral<T> {
     private static Type getGenericSuperclassType(Class<?> subclass) {
         Type superclass = subclass.getGenericSuperclass();
         if (!(superclass instanceof ParameterizedType)) {
-            throw new RuntimeException("Missing type parameter.");
+            throw new DIRuntimeException("Missing type parameter, use like this: new TypeLiteral<MyType>(){};");
         }
         ParameterizedType parameterized = (ParameterizedType) superclass;
         return parameterized.getActualTypeArguments()[0];
@@ -145,43 +167,45 @@ public class TypeLiteral<T> {
     }
 
     private static Type[] getArgumentTypes(Type type) {
-        if(type instanceof Class) {
+        if (type instanceof Class) {
             return new Type[0];
-        } if(type instanceof ParameterizedType) {
-            return ((ParameterizedType)type).getActualTypeArguments();
+        } else if (type instanceof ParameterizedType) {
+            return ((ParameterizedType) type).getActualTypeArguments();
         } else if (type instanceof GenericArrayType) {
             GenericArrayType genericArrayType = (GenericArrayType) type;
             Type componentType = genericArrayType.getGenericComponentType();
-            if(!(componentType instanceof ParameterizedType)) {
+            if (!(componentType instanceof ParameterizedType)) {
                 throw new IllegalArgumentException("Expected ParameterizedType, got " + componentType.toString());
             }
-            return  ((ParameterizedType) componentType).getActualTypeArguments();
-        } else if(type instanceof WildcardType) {
-            WildcardType wildcardType = (WildcardType)type;
+            return ((ParameterizedType) componentType).getActualTypeArguments();
+        } else if (type instanceof WildcardType) {
+            WildcardType wildcardType = (WildcardType) type;
             Type[] lowerBounds = wildcardType.getLowerBounds();
             Type[] upperBounds = wildcardType.getUpperBounds();
             Type lower = lowerBounds.length > 0 ? wildcardType.getLowerBounds()[0] : Object.class;
             Type upper = upperBounds.length > 0 ? wildcardType.getUpperBounds()[0] : Object.class;
             return new Type[]{lower, upper};
+        } else if (type instanceof TypeVariable) {
+            throw new DIRuntimeException("Variable type %s can't be fully resolved", type);
         } else {
             return new Type[]{type};
         }
     }
 
     private static Class getRawType(Type type) {
-        if(type instanceof Class) {
-            return (Class)type;
-        } if(type instanceof ParameterizedType) {
-            return (Class)((ParameterizedType) type).getRawType();
+        if (type instanceof Class) {
+            return (Class) type;
+        } else if (type instanceof ParameterizedType) {
+            return (Class) ((ParameterizedType) type).getRawType();
         } else if (type instanceof GenericArrayType) {
             GenericArrayType genericArrayType = (GenericArrayType) type;
             Type componentType = genericArrayType.getGenericComponentType();
-            if(!(componentType instanceof ParameterizedType)) {
+            if (!(componentType instanceof ParameterizedType)) {
                 throw new IllegalArgumentException("Expected ParameterizedType, got " + componentType.toString());
             }
-            Class rawType = (Class)((ParameterizedType) componentType).getRawType();
+            Class rawType = (Class) ((ParameterizedType) componentType).getRawType();
             return Array.newInstance(rawType, 0).getClass();
-        } else if(type instanceof WildcardType) {
+        } else if (type instanceof WildcardType) {
             return WILDCARD_MARKER;
         } else {
             return Object.class;
@@ -191,6 +215,6 @@ public class TypeLiteral<T> {
     /**
      * Marker interface for WildcardType
      */
-    private interface WildcardMarker{
+    private interface WildcardMarker {
     }
 }

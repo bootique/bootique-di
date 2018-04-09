@@ -2,6 +2,7 @@ package io.bootique.di;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,14 +20,33 @@ public class TypeLiteralTest {
     }
 
     @Test
-    public void testInstantiationEquivalence() {
+    public void testInstantiationEquivalence_List() {
         TypeLiteral<List<Integer>> typeLiteral1 = TypeLiteral.listOf(Integer.class);
         TypeLiteral<List<Integer>> typeLiteral2 = new TypeLiteral<List<Integer>>(){};
         TypeLiteral<?>             typeLiteral3 = TypeLiteral.of(List.class, Integer.class);
+        TypeLiteral<?>             typeLiteral4 = TypeLiteral.listOf(TypeLiteral.of(Integer.class));
 
         assertEquals(typeLiteral1, typeLiteral2);
         assertEquals(typeLiteral1, typeLiteral3);
+        assertEquals(typeLiteral1, typeLiteral4);
         assertEquals(typeLiteral2, typeLiteral3);
+        assertEquals(typeLiteral2, typeLiteral4);
+        assertEquals(typeLiteral3, typeLiteral4);
+    }
+
+    @Test
+    public void testInstantiationEquivalence_Set() {
+        TypeLiteral<Set<Integer>> typeLiteral1 = TypeLiteral.setOf(Integer.class);
+        TypeLiteral<Set<Integer>> typeLiteral2 = new TypeLiteral<Set<Integer>>(){};
+        TypeLiteral<?>            typeLiteral3 = TypeLiteral.of(Set.class, Integer.class);
+        TypeLiteral<?>            typeLiteral4 = TypeLiteral.setOf(TypeLiteral.of(Integer.class));
+
+        assertEquals(typeLiteral1, typeLiteral2);
+        assertEquals(typeLiteral1, typeLiteral3);
+        assertEquals(typeLiteral1, typeLiteral4);
+        assertEquals(typeLiteral2, typeLiteral3);
+        assertEquals(typeLiteral2, typeLiteral4);
+        assertEquals(typeLiteral3, typeLiteral4);
     }
 
     @Test
@@ -111,16 +131,26 @@ public class TypeLiteralTest {
     }
 
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = DIRuntimeException.class)
     public void testCreationFailure_NoGenericParam() {
         // No type parameters
-        TypeLiteral<?> typeLiteral = new TypeLiteral(){};
+        new TypeLiteral(){};
     }
 
     @Test(expected = NullPointerException.class)
     public void testCreationFailure_NoType() {
         // No type parameters
-        TypeLiteral<?> typeLiteral = TypeLiteral.of(null);
+        TypeLiteral.of(null);
+    }
+
+    @Test(expected = DIRuntimeException.class)
+    public void testVariableTypeResolveFailure() {
+        TypeLiteral<List<Integer>> typeLiteral = genericMethodForTest();
+    }
+
+    private static <T> TypeLiteral<List<T>> genericMethodForTest() {
+        // Can't resolve variable type, should throw
+        return new TypeLiteral<List<T>>(){};
     }
 
     private static void assertEquals(TypeLiteral<?> literal1, TypeLiteral<?> literal2) {

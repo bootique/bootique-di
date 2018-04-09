@@ -2,6 +2,7 @@ package io.bootique.di;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * An object that encapsulates a key used to store and lookup DI bindings. Key is made of
@@ -56,6 +57,14 @@ public class Key<T> {
 
     public static <T> Key<List<T>> getListOf(Class<T> type, String bindingName) {
         return new Key<>(TypeLiteral.listOf(type), bindingName);
+    }
+
+    public static <T> Key<Set<T>> getSetOf(Class<T> valueType) {
+        return getSetOf(valueType, null);
+    }
+
+    public static <T> Key<Set<T>> getSetOf(Class<T> valueType, String bindingName) {
+        return new Key<>(TypeLiteral.setOf(valueType), bindingName);
     }
 
     public static <K, V> Key<Map<K, V>> getMapOf(Class<K> keyType, Class<V> valueType) {

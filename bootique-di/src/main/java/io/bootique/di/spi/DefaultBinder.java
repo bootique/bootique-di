@@ -8,6 +8,7 @@ import io.bootique.di.DecoratorBuilder;
 import io.bootique.di.Key;
 import io.bootique.di.ListBuilder;
 import io.bootique.di.MapBuilder;
+import io.bootique.di.SetBuilder;
 import io.bootique.di.TypeLiteral;
 
 class DefaultBinder implements Binder {
@@ -36,6 +37,26 @@ class DefaultBinder implements Binder {
     @Override
     public <T> ListBuilder<T> bindList(Class<T> valueType, String bindingName) {
         return new DefaultListBuilder<>(Key.getListOf(valueType, bindingName), injector);
+    }
+
+    @Override
+    public <T> SetBuilder<T> bindSet(Class<T> valueType) {
+        return bindSet(valueType, null);
+    }
+
+    @Override
+    public <T> SetBuilder<T> bindSet(TypeLiteral<T> valueType, String bindingName) {
+        return new DefaultSetBuilder<>(Key.get(TypeLiteral.setOf(valueType), bindingName), injector);
+    }
+
+    @Override
+    public <T> SetBuilder<T> bindSet(TypeLiteral<T> valueType) {
+        return bindSet(valueType, null);
+    }
+
+    @Override
+    public <T> SetBuilder<T> bindSet(Class<T> valueType, String bindingName) {
+        return new DefaultSetBuilder<>(Key.getSetOf(valueType, bindingName), injector);
     }
 
     @Override

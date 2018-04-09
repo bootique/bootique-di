@@ -9,6 +9,10 @@ package io.bootique.di;
  */
 public interface Binder {
 
+    //----------------------
+    //   Simple bindings
+    //----------------------
+
     /**
      * Starts an unnamed binding of a specific interface. Binding should continue using
      * returned BindingBuilder.
@@ -22,6 +26,10 @@ public interface Binder {
      * BindingBuilder.
      */
     <T> BindingBuilder<T> bind(Key<T> key);
+
+    //----------------------
+    //  Map<K,V> bindings
+    //----------------------
 
     /**
      * Starts a binding of a java.util.Map&lt;K, V&gt; distinguished by its keys and values type.
@@ -53,6 +61,10 @@ public interface Binder {
      */
     <K, V> MapBuilder<K, V> bindMap(TypeLiteral<K> keyType, TypeLiteral<V> valueType, String bindingName);
 
+    //----------------------
+    //   List<T> bindings
+    //----------------------
+
     /**
      * Starts a binding of a java.util.List&lt;T&gt; distinguished by its values type and binding name.
      * List binding should continue using returned ListBuilder. This is somewhat equivalent of
@@ -68,6 +80,46 @@ public interface Binder {
      * however returned ListBuilder provides extra DI capabilities.
      */
     <T> ListBuilder<T> bindList(Class<T> valueType);
+
+    //----------------------
+    //   Set<T> bindings
+    //----------------------
+
+    /**
+     * Starts a binding of a java.util.Set&lt;T&gt; distinguished by its values type and binding name.
+     * Set binding should continue using returned SetBuilder. This is somewhat equivalent of
+     * using "bind(Set.class, bindingName)", however returned SetBuilder provides type safety and extra
+     * DI capabilities.
+     */
+    <T> SetBuilder<T> bindSet(Class<T> valueType, String bindingName);
+
+    /**
+     * Starts a binding of a java.util.Set&lt;T&gt; distinguished by its values type.
+     * Set binding should continue using returned SetBuilder.
+     * This is somewhat equivalent of using "bind(Set.class, bindingName)",
+     * however returned SetBuilder provides type safety and extra DI capabilities.
+     */
+    <T> SetBuilder<T> bindSet(Class<T> valueType);
+
+    /**
+     * Starts a binding of a java.util.Set&lt;T&gt; distinguished by its values type and binding name.
+     * Set binding should continue using returned SetBuilder. This is somewhat equivalent of
+     * using "bind(Set.class, bindingName)", however returned SetBuilder provides type safety and extra
+     * DI capabilities.
+     */
+    <T> SetBuilder<T> bindSet(TypeLiteral<T> valueType, String bindingName);
+
+    /**
+     * Starts a binding of a java.util.Set&lt;T&gt; distinguished by its values type.
+     * Set binding should continue using returned SetBuilder.
+     * This is somewhat equivalent of using "bind(Set.class, bindingName)",
+     * however returned SetBuilder provides type safety and extra DI capabilities.
+     */
+    <T> SetBuilder<T> bindSet(TypeLiteral<T> valueType);
+
+    //----------------------
+    //     Decorations
+    //----------------------
 
     /**
      */

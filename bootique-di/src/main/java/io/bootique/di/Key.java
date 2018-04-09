@@ -66,9 +66,16 @@ public class Key<T> {
         return new Key<>(TypeLiteral.mapOf(keyType, valueType), bindingName);
     }
 
-    @SuppressWarnings("unchecked")
-    public Class<T> getType() {
-        return (Class<T>) typeLiteral.getType();
+    public static <K, V> Key<Map<K, V>> getMapOf(TypeLiteral<K> keyType, TypeLiteral<V> valueType) {
+        return getMapOf(keyType, valueType, null);
+    }
+
+    public static <K, V> Key<Map<K, V>> getMapOf(TypeLiteral<K> keyType, TypeLiteral<V> valueType, String bindingName) {
+        return new Key<>(TypeLiteral.mapOf(keyType, valueType), bindingName);
+    }
+
+    public TypeLiteral<T> getType() {
+        return typeLiteral;
     }
 
     /**

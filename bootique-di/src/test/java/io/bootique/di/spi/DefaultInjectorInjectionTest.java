@@ -3,6 +3,7 @@ package io.bootique.di.spi;
 
 import io.bootique.di.Key;
 import io.bootique.di.Module;
+import io.bootique.di.TypeLiteral;
 import io.bootique.di.mock.MockImplementation1;
 import io.bootique.di.mock.MockImplementation1Alt;
 import io.bootique.di.mock.MockImplementation1Alt2;
@@ -154,7 +155,7 @@ public class DefaultInjectorInjectionTest {
             binder.bind(MockInterface1.class).to(MockImplementation1_MapConfiguration.class);
 
             // empty map must be still bound
-            binder.bindMap(Object.class, "xyz");
+            binder.bindMap(String.class, Object.class, "xyz");
         };
 
         DefaultInjector injector = new DefaultInjector(module);
@@ -168,7 +169,7 @@ public class DefaultInjectorInjectionTest {
     public void testMapInjection() {
         Module module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1_MapConfiguration.class);
-            binder.bindMap(Object.class,"xyz")
+            binder.bindMap(String.class, Object.class,"xyz")
                     .put("x", "xvalue").put("y", "yvalue").put("x", "xvalue1");
         };
 
@@ -183,16 +184,13 @@ public class DefaultInjectorInjectionTest {
     public void mapWithWildcardInjection() {
         Module module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1_MapWithWildcards.class);
-            binder.bindMap(Class.class).put("x", String.class).put("y", Integer.class).put("z", Object.class);
+            binder.bindMap(new TypeLiteral<String>(){}, new TypeLiteral<Class<?>>(){})
+                    .put("x", String.class).put("y", Integer.class).put("z", Object.class);
         };
         DefaultInjector injector = new DefaultInjector(module);
 
         // This is example of how to deal with wildcards:
-        // to handle it nicer we need to use some hacks with anonymous classes:
-        // Key.get(new TypeLiteral<String, Class<?>>(){});
-        Map mapUntyped = injector.getInstance(Key.getMapOf(String.class, Class.class));
-        @SuppressWarnings("unchecked")
-        Map<String, Class<?>> map = (Map<String, Class<?>>)mapUntyped;
+        Map<String, Class<?>> map = injector.getInstance(Key.getMapOf(new TypeLiteral<String>(){}, new TypeLiteral<Class<?>>(){}));
 
         assertNotNull(map);
         assertEquals(3, map.size());
@@ -208,9 +206,9 @@ public class DefaultInjectorInjectionTest {
         Module module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1_MapConfiguration.class);
             // bind 1
-            binder.bindMap(Object.class,"xyz").put("x", "xvalue").put("y", "yvalue");
+            binder.bindMap(String.class, Object.class,"xyz").put("x", "xvalue").put("y", "yvalue");
             // second binding attempt to the same map...
-            binder.bindMap(Object.class,"xyz").put("z", "zvalue").put("x", "xvalue1");
+            binder.bindMap(String.class, Object.class,"xyz").put("z", "zvalue").put("x", "xvalue1");
         };
 
         DefaultInjector injector = new DefaultInjector(module);
@@ -226,7 +224,7 @@ public class DefaultInjectorInjectionTest {
             binder.bind(MockInterface5.class).to(MockImplementation5.class);
             binder.bind(MockInterface1.class).to(MockImplementation1_MapConfiguration.class);
 
-            binder.bindMap(Object.class, "xyz").put("a", MockInterface5.class);
+            binder.bindMap(String.class, Object.class, "xyz").put("a", MockInterface5.class);
         };
 
         Module m2 = binder -> binder.bind(MockInterface5.class).toInstance(new MockInterface5() {
@@ -245,7 +243,7 @@ public class DefaultInjectorInjectionTest {
     public void testMapInjection_OverrideImplicitlyBoundType() {
         Module m1 = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1_MapConfiguration.class);
-            binder.bindMap(Object.class, "xyz").put("a", MockImplementation5.class);
+            binder.bindMap(String.class, Object.class, "xyz").put("a", MockImplementation5.class);
         };
 
         Module m2 = binder -> binder.bind(MockImplementation5.class).toInstance(new MockImplementation5() {

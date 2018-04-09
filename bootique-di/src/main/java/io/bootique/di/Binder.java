@@ -24,19 +24,34 @@ public interface Binder {
     <T> BindingBuilder<T> bind(Key<T> key);
 
     /**
-     * Starts a binding of a java.util.Map&lt;String, T&gt; distinguished by its values type.
+     * Starts a binding of a java.util.Map&lt;K, V&gt; distinguished by its keys and values type.
      * Map binding should continue using returned MapBuilder.
      * This is a type safe way of binding a map.
      */
-    <T> MapBuilder<T> bindMap(Class<T> valueType);
+    <K, V> MapBuilder<K, V> bindMap(Class<K> keyType, Class<V> valueType);
 
     /**
-     * Starts a binding of a java.util.Map&lt;String, T&gt; distinguished by its
-     * values type and binding name.
+     * Starts a binding of a java.util.Map&lt;K, V&gt; distinguished by its
+     * keys type, values type and binding name.
      * Map binding should continue using returned MapBuilder.
      * This is a type safe way of binding a map.
      */
-    <T> MapBuilder<T> bindMap(Class<T> valueType, String bindingName);
+    <K, V> MapBuilder<K, V> bindMap(Class<K> keyType, Class<V> valueType, String bindingName);
+
+    /**
+     * Starts a binding of a java.util.Map&lt;K, V&gt; distinguished by its keys and values type.
+     * Map binding should continue using returned MapBuilder.
+     * This is a type safe way of binding a map.
+     */
+    <K, V> MapBuilder<K, V> bindMap(TypeLiteral<K> keyType, TypeLiteral<V> valueType);
+
+    /**
+     * Starts a binding of a java.util.Map&lt;K, V&gt; distinguished by its
+     * keys type, values type and binding name.
+     * Map binding should continue using returned MapBuilder.
+     * This is a type safe way of binding a map.
+     */
+    <K, V> MapBuilder<K, V> bindMap(TypeLiteral<K> keyType, TypeLiteral<V> valueType, String bindingName);
 
     /**
      * Starts a binding of a java.util.List&lt;T&gt; distinguished by its values type and binding name.

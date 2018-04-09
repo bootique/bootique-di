@@ -7,26 +7,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-class MapProvider<T> implements Provider<Map<String, T>> {
+class MapProvider<K, V> implements Provider<Map<K, V>> {
 
-	private Map<String, Provider<? extends T>> providers;
+	private Map<K, Provider<? extends V>> providers;
 
 	MapProvider() {
 		this.providers = new HashMap<>();
 	}
 
 	@Override
-	public Map<String, T> get() throws DIRuntimeException {
-		Map<String, T> map = new HashMap<>();
+	public Map<K, V> get() throws DIRuntimeException {
+		Map<K, V> map = new HashMap<>();
 
-		for (Entry<String, Provider<? extends T>> entry : providers.entrySet()) {
+		for (Entry<K, Provider<? extends V>> entry : providers.entrySet()) {
 			map.put(entry.getKey(), entry.getValue().get());
 		}
 
 		return map;
 	}
 
-	void put(String key, Provider<? extends T> provider) {
+	void put(K key, Provider<? extends V> provider) {
 		providers.put(key, provider);
 	}
 }

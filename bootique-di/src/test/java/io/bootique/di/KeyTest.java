@@ -9,9 +9,21 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class KeyTest {
+
+    @Test
+    public void testBaseEquals() {
+        Key<String> key1 = Key.get(String.class);
+        Key<String> key2 = key1;
+        Object key3 = new Object();
+
+        assertEquals(key1, key2);
+        assertEquals(key2, key1);
+        assertNotEquals(key1, key3);
+    }
 
     @Test
     public void testEquals() {
@@ -24,23 +36,30 @@ public class KeyTest {
         Key<Integer> key6 = Key.get(Integer.class, "b");
         Key<String> key7 = Key.get(String.class, "a");
 
+        assertNull(key1.getBindingName());
         assertTrue(key1.equals(key2));
 
         assertFalse(key1.equals(key3));
 
         assertTrue(key3.equals(key31));
+        assertNull(key3.getBindingName());
         assertTrue(key31.equals(key3));
+        assertNull(key31.getBindingName());
 
         assertFalse(key3.equals(key4));
         assertFalse(key4.equals(key3));
+        assertEquals("a", key4.getBindingName());
 
         assertTrue(key4.equals(key5));
+        assertEquals("a", key5.getBindingName());
         assertTrue(key5.equals(key4));
 
         assertFalse(key5.equals(key6));
+        assertEquals("b", key6.getBindingName());
         assertFalse(key6.equals(key5));
 
         assertFalse(key4.equals(key7));
+        assertEquals("a", key7.getBindingName());
         assertFalse(key7.equals(key4));
     }
 

@@ -44,6 +44,13 @@ public class TypeLiteral<T> {
         return new TypeLiteral<>(Map.class, keyType, valueType);
     }
 
+    /**
+     * Creates TypeLiteral that represents Map&lt;K, V&lt; type.
+     */
+    public static <K, V> TypeLiteral<Map<K, V>> mapOf(TypeLiteral<? extends K> keyType, TypeLiteral<? extends V> valueType) {
+        return new TypeLiteral<>(Map.class, keyType.toString(), valueType.toString());
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> TypeLiteral<T> of(Type type) {
         return new TypeLiteral<>(type);
@@ -72,7 +79,7 @@ public class TypeLiteral<T> {
         initArgumentTypes(argumentTypes);
     }
 
-    private TypeLiteral(Class<? super T> type, String[] argumentTypes) {
+    private TypeLiteral(Class<? super T> type, String... argumentTypes) {
         this.type = type;
         this.typeName = type.getName();
         this.argumentTypes = argumentTypes;
@@ -85,17 +92,10 @@ public class TypeLiteral<T> {
         initArgumentTypes(argumentsType);
     }
 
-    private void initArgumentTypes(Type[] argumentsType) {
+    private void initArgumentTypes(Type... argumentsType) {
         for (int i = 0; i < argumentsType.length; i++) {
-            if (argumentsType[i] instanceof ParameterizedType) {
-                argumentsType[i] = ((ParameterizedType) argumentsType[i]).getRawType();
-            }
-
-            if (argumentsType[i] instanceof Class) {
-                this.argumentTypes[i] = ((Class) argumentsType[i]).getName();
-            } else {
-                this.argumentTypes[i] = argumentsType[i].getTypeName();
-            }
+            // recursively resolve argument types..
+            this.argumentTypes[i] = new TypeLiteral<>(argumentsType[i]).toString();
         }
     }
 
@@ -110,10 +110,6 @@ public class TypeLiteral<T> {
 
     Class<? super T> getType() {
         return type;
-    }
-
-    String[] getArgumentTypes() {
-        return argumentTypes;
     }
 
     @Override
@@ -162,11 +158,13 @@ public class TypeLiteral<T> {
             return  ((ParameterizedType) componentType).getActualTypeArguments();
         } else if(type instanceof WildcardType) {
             WildcardType wildcardType = (WildcardType)type;
-            Type lower = wildcardType.getLowerBounds()[0];
-            Type upper = wildcardType.getUpperBounds()[0];
+            Type[] lowerBounds = wildcardType.getLowerBounds();
+            Type[] upperBounds = wildcardType.getUpperBounds();
+            Type lower = lowerBounds.length > 0 ? wildcardType.getLowerBounds()[0] : Object.class;
+            Type upper = upperBounds.length > 0 ? wildcardType.getUpperBounds()[0] : Object.class;
             return new Type[]{lower, upper};
         } else {
-            return new Type[0];
+            return new Type[]{type};
         }
     }
 

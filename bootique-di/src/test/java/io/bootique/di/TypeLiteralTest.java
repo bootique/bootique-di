@@ -1,11 +1,22 @@
 package io.bootique.di;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 public class TypeLiteralTest {
+
+    @Test
+    public void testBaseEqualsInvariants() {
+        TypeLiteral<Integer> typeLiteral1 = TypeLiteral.of(Integer.TYPE);
+        TypeLiteral<Integer> typeLiteral2 = typeLiteral1;
+        Object object = new Object();
+
+        assertEquals(typeLiteral1, typeLiteral2);
+        Assert.assertNotEquals(typeLiteral1, object);
+    }
 
     @Test
     public void testInstantiationEquivalence() {
@@ -83,6 +94,23 @@ public class TypeLiteralTest {
         assertNotEquals(typeLiteral4, typeLiteral5);
     }
 
+    @Test
+    public void testNestedGenerics() {
+        TypeLiteral<Map<String, List<? extends Number>>>  typeLiteral1 = new TypeLiteral<Map<String, List<? extends Number>>>(){};
+        TypeLiteral<Map<String, List<? extends Number>>>  typeLiteral2 = TypeLiteral.mapOf(new TypeLiteral<String>(){}, new TypeLiteral<List<? extends Number>>(){});
+        TypeLiteral<Map<String, List<? extends Integer>>> typeLiteral3 = new TypeLiteral<Map<String, List<? extends Integer>>>(){};
+        TypeLiteral<Map<String, List<? extends Integer>>> typeLiteral4 = TypeLiteral.mapOf(new TypeLiteral<String>(){}, new TypeLiteral<List<? extends Integer>>(){});
+
+        assertEquals(typeLiteral1, typeLiteral2);
+        assertEquals(typeLiteral3, typeLiteral4);
+
+        assertNotEquals(typeLiteral1, typeLiteral3);
+        assertNotEquals(typeLiteral1, typeLiteral4);
+        assertNotEquals(typeLiteral2, typeLiteral3);
+        assertNotEquals(typeLiteral2, typeLiteral4);
+    }
+
+
     @Test(expected = RuntimeException.class)
     public void testCreationFailure_NoGenericParam() {
         // No type parameters
@@ -97,11 +125,13 @@ public class TypeLiteralTest {
 
     private static void assertEquals(TypeLiteral<?> literal1, TypeLiteral<?> literal2) {
         Assert.assertEquals(literal1.hashCode(), literal2.hashCode());
+        Assert.assertEquals(literal1.toString(), literal2.toString());
         Assert.assertEquals(literal1, literal2);
     }
 
     private static void assertNotEquals(TypeLiteral<?> literal1, TypeLiteral<?> literal2) {
         Assert.assertNotEquals(literal1.hashCode(), literal2.hashCode());
+        Assert.assertNotEquals(literal1.toString(), literal2.toString());
         Assert.assertNotEquals(literal1, literal2);
     }
 }

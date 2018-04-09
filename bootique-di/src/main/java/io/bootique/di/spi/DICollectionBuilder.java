@@ -34,6 +34,12 @@ public abstract class DICollectionBuilder<K, E> {
         return () -> findOrCreateBinding(interfaceType).getScoped().get();
     }
 
+    protected <SubT extends E> Provider<SubT> getByKeyProvider(final Key<SubT> key) throws DIRuntimeException {
+        // Create deferred provider to prevent caching the intermediate provider from the Injector.
+        // The actual provider may get overridden after list builder is created.
+        return () -> injector.getProvider(key).get();
+    }
+
     protected <SubT extends E> Binding<SubT> findOrCreateBinding(Class<SubT> interfaceType) {
 
         Key<SubT> key = Key.get(interfaceType);

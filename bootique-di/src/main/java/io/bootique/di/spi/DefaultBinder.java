@@ -1,11 +1,14 @@
 package io.bootique.di.spi;
 
+import java.util.Map;
+
 import io.bootique.di.Binder;
 import io.bootique.di.BindingBuilder;
 import io.bootique.di.DecoratorBuilder;
 import io.bootique.di.Key;
 import io.bootique.di.ListBuilder;
 import io.bootique.di.MapBuilder;
+import io.bootique.di.TypeLiteral;
 
 class DefaultBinder implements Binder {
 
@@ -36,13 +39,23 @@ class DefaultBinder implements Binder {
     }
 
     @Override
-    public <T> MapBuilder<T> bindMap(Class<T> valueType) {
-        return bindMap(valueType, null);
+    public <K, V> MapBuilder<K, V> bindMap(Class<K> keyType, Class<V> valueType) {
+        return bindMap(Key.getMapOf(keyType, valueType));
     }
 
     @Override
-    public <T> MapBuilder<T> bindMap(Class<T> valueType, String bindingName) {
-        return new DefaultMapBuilder<>(Key.getMapOf(String.class, valueType, bindingName), injector);
+    public <K, V> MapBuilder<K, V> bindMap(Class<K> keyType, Class<V> valueType, String bindingName) {
+        return bindMap(Key.getMapOf(keyType, valueType, bindingName));
+    }
+
+    @Override
+    public <K, V> MapBuilder<K, V> bindMap(TypeLiteral<K> keyType, TypeLiteral<V> valueType) {
+        return bindMap(Key.getMapOf(keyType, valueType));
+    }
+
+    @Override
+    public <K, V> MapBuilder<K, V> bindMap(TypeLiteral<K> keyType, TypeLiteral<V> valueType, String bindingName) {
+        return bindMap(Key.getMapOf(keyType, valueType, bindingName));
     }
 
     @Override
@@ -53,5 +66,9 @@ class DefaultBinder implements Binder {
     @Override
     public <T> DecoratorBuilder<T> decorate(Key<T> key) {
         return new DefaultDecoratorBuilder<>(key, injector);
+    }
+
+    private <K, V> MapBuilder<K, V> bindMap(Key<Map<K, V>> mapKey) {
+        return new DefaultMapBuilder<>(mapKey, injector);
     }
 }

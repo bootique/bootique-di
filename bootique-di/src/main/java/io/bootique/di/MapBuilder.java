@@ -3,17 +3,20 @@ package io.bootique.di;
 import java.util.Map;
 
 /**
- * A binding builder for map configurations. Creates a parameterized map of type &lt;String, T&gt;.
+ * A binding builder for map configurations. Creates a parameterized map of type &lt;K, V&gt;.
  *
- * @param <T> A type of the map values.
+ * @param <K> A type of the map keys.
+ * @param <V> A type of the map values.
  */
-public interface MapBuilder<T> {
+public interface MapBuilder<K, V> {
 
-    MapBuilder<T> put(String key, Class<? extends T> interfaceType) throws DIRuntimeException;
+    MapBuilder<K, V> put(K key, Class<? extends V> interfaceType) throws DIRuntimeException;
 
-    MapBuilder<T> put(String key, T value) throws DIRuntimeException;
+    MapBuilder<K, V> put(K key, V value) throws DIRuntimeException;
 
-    MapBuilder<T> putAll(Map<String, T> map) throws DIRuntimeException;
+    MapBuilder<K, V> put(K key, Key<? extends V> valueKey) throws DIRuntimeException;
+
+    MapBuilder<K, V> putAll(Map<K, V> map) throws DIRuntimeException;
 
     void in(Scope scope);
 }

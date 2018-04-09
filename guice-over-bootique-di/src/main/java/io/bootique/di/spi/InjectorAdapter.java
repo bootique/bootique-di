@@ -14,6 +14,8 @@ public class InjectorAdapter implements com.google.inject.Injector {
 
     private DefaultInjector bootiqueInjector;
 
+    private BinderAdapter adapter;
+
     public InjectorAdapter(Iterable<? extends Module> modules) {
 
         // Create empty injector
@@ -21,7 +23,7 @@ public class InjectorAdapter implements com.google.inject.Injector {
 
         // Guice -> Bootique adapters
         io.bootique.di.Binder bootiqueBinder = new DefaultBinder(bootiqueInjector);
-        BinderAdapter adapter = new BinderAdapter(bootiqueBinder);
+        adapter = new BinderAdapter(bootiqueBinder);
         ProvidesHandler providesHandler = new ProvidesHandler(bootiqueInjector, Provides.class);
 
         // Configure all modules manually

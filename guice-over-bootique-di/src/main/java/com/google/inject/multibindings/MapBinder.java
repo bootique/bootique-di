@@ -93,7 +93,7 @@ public class MapBinder<K, V> {
      */
     public static <K, V> MapBinder<K, V> newMapBinder(
             Binder binder, TypeLiteral<K> keyType, TypeLiteral<V> valueType) {
-        return new MapBinder<>(null); // TODO: implement
+        return new MapBinder<>(new MapBinderAdapter<>(binder, keyType, valueType, null));
     }
 
     /**
@@ -111,7 +111,7 @@ public class MapBinder<K, V> {
      */
     public static <K, V> MapBinder<K, V> newMapBinder(
             Binder binder, TypeLiteral<K> keyType, TypeLiteral<V> valueType, Annotation annotation) {
-        return new MapBinder<>(null); // TODO: implement
+        return new MapBinder<>(new MapBinderAdapter<>(binder, keyType, valueType, annotation.annotationType()));
     }
 
     /**
@@ -132,7 +132,7 @@ public class MapBinder<K, V> {
             TypeLiteral<K> keyType,
             TypeLiteral<V> valueType,
             Class<? extends Annotation> annotationType) {
-        return new MapBinder<>(null); // TODO: implement
+        return new MapBinder<>(new MapBinderAdapter<>(binder, keyType, valueType, annotationType));
     }
 
     /**
@@ -149,7 +149,7 @@ public class MapBinder<K, V> {
     }
 
     public LinkedBindingBuilder<V> addBinding(K key) {
-        return null; // TODO: implement
+        return delegate.addBinding(key);
     }
 
     private final MapBinderAdapter<K, V> delegate;

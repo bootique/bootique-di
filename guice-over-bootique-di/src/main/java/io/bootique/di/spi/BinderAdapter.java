@@ -32,4 +32,7 @@ public class BinderAdapter implements Binder {
         return new BindingBuilderAdapter<>(bootiqueBinder.bind(type));
     }
 
+    io.bootique.di.Binder getBootiqueBinder() {
+        return bootiqueBinder;
+    }
 }

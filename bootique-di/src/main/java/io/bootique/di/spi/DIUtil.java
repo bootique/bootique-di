@@ -1,7 +1,9 @@
 package io.bootique.di.spi;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import javax.inject.Qualifier;
 
 /**
  * A helper class used by Bootique DI implementation.
@@ -38,5 +40,13 @@ class DIUtil {
         } else {
             return Object.class;
         }
+    }
+
+    /**
+     * @param annotation instance
+     * @return true if annotation is marked as {@link javax.inject.Qualifier}
+     */
+    static boolean isQualifyingAnnotation(Annotation annotation) {
+        return null != annotation.annotationType().getAnnotation(Qualifier.class);
     }
 }

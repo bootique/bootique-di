@@ -3,6 +3,7 @@ package io.bootique.di.spi;
 import io.bootique.di.DIRuntimeException;
 
 import javax.inject.Provider;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 class FieldInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
@@ -23,7 +24,7 @@ class FieldInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
         return new FieldInjectingProvider<T>(delegate.get(undecorated), injector) {
 
             @Override
-            protected Object value(Field field, String bindingName) {
+            protected Object value(Field field, Annotation bindingAnnotation) {
                 Class<?> fieldType = field.getType();
 
                 // delegate (possibly) injected as Provider
@@ -40,12 +41,11 @@ class FieldInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
                     if(objectClass.isAssignableFrom(implementation)) {
                         return undecorated;
                     }
-                }
-                else if (fieldType.isAssignableFrom(implementation)) {
+                } else if (fieldType.isAssignableFrom(implementation)) {
                     return undecorated.get();
                 }
 
-                return super.value(field, bindingName);
+                return super.value(field, bindingAnnotation);
             }
         };
     }

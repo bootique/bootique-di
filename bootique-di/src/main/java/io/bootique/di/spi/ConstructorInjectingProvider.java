@@ -5,7 +5,6 @@ import io.bootique.di.Key;
 import io.bootique.di.TypeLiteral;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -15,7 +14,7 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
 
     private Constructor<? extends T> constructor;
     private DefaultInjector injector;
-    private String[] bindingNames;
+    private Annotation[] bindingAnnotations;
 
     ConstructorInjectingProvider(Class<? extends T> implementation, DefaultInjector injector) {
 
@@ -38,12 +37,10 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
         Constructor<?> lastMatch = null;
         int lastSize = -1;
 
-        // pick the first constructor annotated with @Inject, or the default constructor; constructor with the longest
-        // parameter list is preferred if multiple matches are found.
-
+        // pick the first constructor annotated with @Inject, or the default constructor;
+        // constructor with the longest parameter list is preferred if multiple matches are found.
         for (Constructor<?> constructor : constructors) {
-
-            int size = constructor.getParameterTypes().length;
+            int size = constructor.getParameterCount();
             if (size <= lastSize) {
                 continue;
             }
@@ -66,20 +63,18 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
                     implementation.getName());
         }
 
-        // the cast is lame, but Class.getDeclaredConstructors() is not using
-        // generics in Java 5 and using <?> in Java 6, creating compilation problems.
         this.constructor = (Constructor<? extends T>) lastMatch;
+        collectParametersQualifiers();
+    }
 
-        Annotation[][] annotations = lastMatch.getParameterAnnotations();
-        this.bindingNames = new String[annotations.length];
+    private void collectParametersQualifiers() {
+        this.bindingAnnotations = new Annotation[constructor.getParameterCount()];
+        Annotation[][] annotations = constructor.getParameterAnnotations();
         for (int i = 0; i < annotations.length; i++) {
-
             Annotation[] parameterAnnotations = annotations[i];
             for (Annotation annotation : parameterAnnotations) {
-                if (annotation.annotationType().equals(Named.class)) {
-                    Named inject = (Named) annotation;
-                    bindingNames[i] = inject.value();
-                    break;
+                if(DIUtil.isQualifyingAnnotation(annotation)) {
+                    bindingAnnotations[i] = annotation;
                 }
             }
         }
@@ -94,20 +89,18 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
         InjectionStack stack = injector.getInjectionStack();
 
         for (int i = 0; i < constructorParameters.length; i++) {
-            args[i] = value(constructorParameters[i], genericTypes[i], bindingNames[i], stack);
+            args[i] = value(constructorParameters[i], genericTypes[i], bindingAnnotations[i], stack);
         }
 
         try {
             return constructor.newInstance(args);
         } catch (Exception e) {
             throw new DIRuntimeException(
-                    "Error instantiating class '%s'",
-                    e,
-                    constructor.getDeclaringClass().getName());
+                    "Error instantiating class '%s'", e, constructor.getDeclaringClass().getName());
         }
     }
 
-    protected Object value(Class<?> parameter, Type genericType, String bindingName, InjectionStack stack) {
+    protected Object value(Class<?> parameter, Type genericType, Annotation bindingAnnotation, InjectionStack stack) {
 
         if (Provider.class.equals(parameter)) {
             Type parameterType = DIUtil.getGenericParameterType(genericType);
@@ -115,9 +108,9 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
                 throw new DIRuntimeException("Constructor provider parameter %s must be "
                         + "parameterized to be usable for injection", parameter.getName());
             }
-            return injector.getProvider(Key.get(TypeLiteral.of(parameterType), bindingName));
+            return injector.getProvider(Key.get(TypeLiteral.of(parameterType), bindingAnnotation));
         } else {
-            Key<?> key = Key.get(TypeLiteral.of(genericType), bindingName);
+            Key<?> key = Key.get(TypeLiteral.of(genericType), bindingAnnotation);
             stack.push(key);
             try {
                 return injector.getInstance(key);

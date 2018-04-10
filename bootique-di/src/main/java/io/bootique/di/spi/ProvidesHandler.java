@@ -64,32 +64,28 @@ class ProvidesHandler {
 
     private <T> KeyBindingPair<T> createBindingPair(Module module, Method method) {
 
-        Key<T> key = createKey(method.getGenericReturnType(), extractNameQualifier(method));
+        Key<T> key = createKey(method.getGenericReturnType(), extractQualifier(method.getDeclaredAnnotations()));
         Binding<T> binding = createBinding(module, method);
 
         return new KeyBindingPair<>(key, binding);
     }
 
-    private String extractNameQualifier(Method method) {
-        // TODO: generic @Qualifier annotation extractor per https://github.com/bootique/bootique-di/issues/4
-        Named named = method.getAnnotation(Named.class);
-        return named != null ? named.value() : null;
-    }
-
-    private String extractNameQualifier(Annotation[] annotations) {
-        // TODO: generic @Qualifier annotation extractor per https://github.com/bootique/bootique-di/issues/4
-
+    private Annotation extractQualifier(Annotation[] annotations) {
+        Annotation found = null;
         for (Annotation a : annotations) {
-            if (a instanceof Named) {
-                return ((Named) a).value();
+            if(DIUtil.isQualifyingAnnotation(a)) {
+                if(found != null) {
+                    throw new DIRuntimeException("Multiple qualifying annotations found");
+                }
+                found = a;
             }
         }
 
-        return null;
+        return found;
     }
 
-    private <T> Key<T> createKey(Type bindingType, String nameQualifier) {
-        return Key.get(TypeLiteral.of(bindingType), nameQualifier);
+    private <T> Key<T> createKey(Type bindingType, Annotation qualifier) {
+        return Key.get(TypeLiteral.of(bindingType), qualifier);
     }
 
     private <T> Binding<T> createBinding(Module module, Method method) {
@@ -137,8 +133,8 @@ class ProvidesHandler {
 
         for (int i = 0; i < len; i++) {
 
-            String nameQualifier = extractNameQualifier(paramAnnotations[i]);
-            Key<?> key = createKey(params[i], nameQualifier);
+            Annotation qualifier = extractQualifier(paramAnnotations[i]);
+            Key<?> key = createKey(params[i], qualifier);
 
             // resolve the actual provider lazily
             providers[i] = () -> injector.getProvider(key).get();

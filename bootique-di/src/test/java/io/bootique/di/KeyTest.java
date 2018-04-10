@@ -1,16 +1,17 @@
 
 package io.bootique.di;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.List;
+import java.util.Map;
 
-import io.bootique.di.Key;
+import javax.inject.Qualifier;
+
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class KeyTest {
 
@@ -27,24 +28,24 @@ public class KeyTest {
 
     @Test
     public void testEquals() {
-        Key<String> key1 = Key.get(String.class);
-        Key<String> key2 = Key.get(String.class);
+        Key<String>  key1 = Key.get(String.class);
+        Key<String>  key2 = Key.get(String.class);
         Key<Integer> key3 = Key.get(Integer.class);
-        Key<Integer> key31 = Key.get(Integer.class, "");
         Key<Integer> key4 = Key.get(Integer.class, "a");
         Key<Integer> key5 = Key.get(Integer.class, "a");
         Key<Integer> key6 = Key.get(Integer.class, "b");
-        Key<String> key7 = Key.get(String.class, "a");
+        Key<String>  key7 = Key.get(String.class, "a");
+        Key<Integer> key8 = Key.get(Integer.class, "");
 
         assertNull(key1.getBindingName());
         assertTrue(key1.equals(key2));
 
         assertFalse(key1.equals(key3));
 
-        assertTrue(key3.equals(key31));
+        assertTrue(key3.equals(key8));
         assertNull(key3.getBindingName());
-        assertTrue(key31.equals(key3));
-        assertNull(key31.getBindingName());
+        assertTrue(key8.equals(key3));
+        assertNull(key8.getBindingName());
 
         assertFalse(key3.equals(key4));
         assertFalse(key4.equals(key3));
@@ -66,9 +67,9 @@ public class KeyTest {
     @Test
     public void testListKeysEquals() {
         Key<List<Integer>> key1 = Key.getListOf(Integer.class);
-        Key<List<String>> key2 = Key.getListOf(String.class);
+        Key<List<String>>  key2 = Key.getListOf(String.class);
         Key<List<Integer>> key3 = Key.getListOf(Integer.class);
-        Key<List<String>> key4 = Key.getListOf(String.class);
+        Key<List<String>>  key4 = Key.getListOf(String.class);
 
         assertNotEquals(key1, key2);
         assertNotEquals(key3, key4);
@@ -90,30 +91,66 @@ public class KeyTest {
 
         Key key9 = Key.get(List.class, "xyz");
         assertNotEquals(key7, key9);
-     }
+    }
+
+    @Test
+    public void testQualifiedKeysEquals() {
+        Key<Integer> key1 = Key.get(Integer.class, CustomQualifier.class);
+        Key<Integer> key2 = Key.get(Integer.class);
+        Key<Integer> key3 = Key.get(Integer.class, CustomQualifier.class);
+        Key<String>  key4 = Key.get(String.class,  CustomQualifier.class);
+
+        assertEquals(key1, key3);
+        assertNotEquals(key1, key2);
+        assertNotEquals(key1, key4);
+
+        Key<Map<String, List<? extends Number>>> key5 = Key.get(new TypeLiteral<Map<String, List<? extends Number>>>(){}, CustomQualifier.class);
+        Key<Map<String, List<? extends Number>>> key6 = Key.get(new TypeLiteral<Map<String, List<? extends Number>>>(){}, CustomQualifier.class);
+        Key<Map<String, List<? extends Object>>> key7 = Key.get(new TypeLiteral<Map<String, List<? extends Object>>>(){}, CustomQualifier.class);
+
+        assertEquals(key5, key6);
+        assertNotEquals(key5, key7);
+    }
 
     @Test
     public void testHashCode() {
-        Key<String> key1 = Key.get(String.class);
-        Key<String> key2 = Key.get(String.class);
+        Key<String>  key1 = Key.get(String.class);
+        Key<String>  key2 = Key.get(String.class);
         Key<Integer> key3 = Key.get(Integer.class);
         Key<Integer> key4 = Key.get(Integer.class, "a");
         Key<Integer> key5 = Key.get(Integer.class, "a");
         Key<Integer> key6 = Key.get(Integer.class, "b");
-        Key<String> key7 = Key.get(String.class, "a");
+        Key<String>  key7 = Key.get(String.class,  "a");
 
-        assertTrue(
-                "generated different hashcode on second inocation",
-                key1.hashCode() == key1.hashCode());
-        assertTrue(key1.hashCode() == key2.hashCode());
-        assertTrue(key4.hashCode() == key5.hashCode());
+        assertEquals("generated different hashcode on second invocation", key1.hashCode(), key1.hashCode());
+        assertEquals(key1.hashCode(), key2.hashCode());
+        assertEquals(key4.hashCode(), key5.hashCode());
 
         // these are not technically required for hashCode() validity, but as things stand
         // now, these tests will all succeed.
-        assertFalse(key1.hashCode() == key3.hashCode());
-        assertFalse(key4.hashCode() == key3.hashCode());
-        assertFalse(key5.hashCode() == key6.hashCode());
-        assertFalse(key7.hashCode() == key4.hashCode());
+        assertNotEquals(key1.hashCode(), key3.hashCode());
+        assertNotEquals(key4.hashCode(), key3.hashCode());
+        assertNotEquals(key5.hashCode(), key6.hashCode());
+        assertNotEquals(key7.hashCode(), key4.hashCode());
+    }
+
+    @Test
+    public void testQualifiedHashCode() {
+        Key<Integer> key1 = Key.get(Integer.class, CustomQualifier.class);
+        Key<Integer> key2 = Key.get(Integer.class);
+        Key<Integer> key3 = Key.get(Integer.class, CustomQualifier.class);
+        Key<String>  key4 = Key.get(String.class,  CustomQualifier.class);
+
+        assertEquals   (key1.hashCode(), key3.hashCode());
+        assertNotEquals(key1.hashCode(), key2.hashCode());
+        assertNotEquals(key1.hashCode(), key4.hashCode());
+
+        Key<Map<String, List<? extends Number>>> key5 = Key.get(new TypeLiteral<Map<String, List<? extends Number>>>(){}, CustomQualifier.class);
+        Key<Map<String, List<? extends Number>>> key6 = Key.get(new TypeLiteral<Map<String, List<? extends Number>>>(){}, CustomQualifier.class);
+        Key<Map<String, List<? extends Object>>> key7 = Key.get(new TypeLiteral<Map<String, List<? extends Object>>>(){}, CustomQualifier.class);
+
+        assertEquals(key5.hashCode(), key6.hashCode());
+        assertNotEquals(key5.hashCode(), key7.hashCode());
     }
 
     @Test
@@ -126,5 +163,27 @@ public class KeyTest {
                 Key.getListOf(String.class).toString());
         assertEquals("<BindingKey: java.util.List[java.lang.String], 'xyz'>",
                 Key.getListOf(String.class, "xyz").toString());
+        assertEquals("<BindingKey: java.util.Map[java.lang.String, java.lang.Integer]>",
+                Key.getMapOf(String.class, Integer.class).toString());
+    }
+
+    @Test
+    public void testQualifiedToString() {
+        Key<Integer> key1 = Key.get(Integer.class, CustomQualifier.class);
+        Key<Map<String, List<? extends Number>>> key2 =
+                Key.get(new TypeLiteral<Map<String, List<? extends Number>>>(){}, CustomQualifier.class);
+
+        assertEquals("<BindingKey: java.lang.Integer, @io.bootique.di.KeyTest$CustomQualifier>",
+                key1.toString());
+        assertEquals("<BindingKey: "
+                        + "java.util.Map[java.lang.String, java.util.List[io.bootique.di.TypeLiteral$WildcardMarker[java.lang.Object, java.lang.Number]]], "
+                        + "@io.bootique.di.KeyTest$CustomQualifier>",
+                key2.toString());
+    }
+
+    @Qualifier
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface CustomQualifier {
     }
 }

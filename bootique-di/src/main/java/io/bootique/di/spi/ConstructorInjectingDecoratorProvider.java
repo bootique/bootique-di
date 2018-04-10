@@ -3,6 +3,7 @@ package io.bootique.di.spi;
 import io.bootique.di.DIRuntimeException;
 
 import javax.inject.Provider;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 class ConstructorInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
@@ -20,7 +21,7 @@ class ConstructorInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
 
         return new ConstructorInjectingProvider<T>(implementation, injector) {
             @Override
-            protected Object value(Class<?> parameter, Type genericType, String bindingName, InjectionStack stack) {
+            protected Object value(Class<?> parameter, Type genericType, Annotation bindingAnnotation, InjectionStack stack) {
 
                 // delegate (possibly) injected as Provider
                 if (Provider.class.equals(parameter)) {
@@ -41,7 +42,7 @@ class ConstructorInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
                     return undecorated.get();
                 }
 
-                return super.value(parameter, genericType, bindingName, stack);
+                return super.value(parameter, genericType, bindingAnnotation, stack);
             }
         };
     }

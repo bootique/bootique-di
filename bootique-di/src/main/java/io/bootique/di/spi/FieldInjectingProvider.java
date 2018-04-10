@@ -5,8 +5,8 @@ import io.bootique.di.Key;
 import io.bootique.di.TypeLiteral;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Provider;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
@@ -35,21 +35,33 @@ class FieldInjectingProvider<T> implements Provider<T> {
         }
 
         for (Field field : type.getDeclaredFields()) {
-
             Inject inject = field.getAnnotation(Inject.class);
             if (inject != null) {
-                Named named = field.getAnnotation(Named.class);
-                String bindingName = named != null ? named.value() : null;
-                injectMember(object, field, bindingName);
+                injectMember(object, field, getQualifier(field));
             }
         }
 
         injectMembers(object, type.getSuperclass());
     }
 
-    private void injectMember(Object object, Field field, String bindingName) {
+    private Annotation getQualifier(Field field) {
+        Annotation bindingAnnotation = null;
+        for(Annotation fieldAnnotation : field.getAnnotations()) {
+            if(DIUtil.isQualifyingAnnotation(fieldAnnotation)) {
+                if(bindingAnnotation != null) {
+                    throw new DIRuntimeException("Field %s.%s have more than one qualifier annotation."
+                            , field.getDeclaringClass().getName()
+                            , field.getName());
+                }
+                bindingAnnotation = fieldAnnotation;
+            }
+        }
+        return bindingAnnotation;
+    }
 
-        Object value = value(field, bindingName);
+    private void injectMember(Object object, Field field, Annotation bindingAnnotation) {
+
+        Object value = value(field, bindingAnnotation);
 
         field.setAccessible(true);
         try {
@@ -61,7 +73,7 @@ class FieldInjectingProvider<T> implements Provider<T> {
         }
     }
 
-    protected Object value(Field field, String bindingName) {
+    protected Object value(Field field, Annotation bindingAnnotation) {
 
         Class<?> fieldType = field.getType();
         InjectionStack stack = injector.getInjectionStack();
@@ -75,9 +87,9 @@ class FieldInjectingProvider<T> implements Provider<T> {
                         field.getName(), fieldType.getName());
             }
 
-            return injector.getProvider(Key.get(TypeLiteral.of(parameterType), bindingName));
+            return injector.getProvider(Key.get(TypeLiteral.of(parameterType), bindingAnnotation));
         } else {
-            Key<?> key = Key.get(TypeLiteral.of(field.getGenericType()), bindingName);
+            Key<?> key = Key.get(TypeLiteral.of(field.getGenericType()), bindingAnnotation);
             stack.push(key);
             try {
                 return injector.getInstance(key);

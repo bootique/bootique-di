@@ -130,6 +130,20 @@ public class TypeLiteralTest {
         assertNotEquals(typeLiteral2, typeLiteral4);
     }
 
+    @Test
+    public void testNormalize() {
+        TypeLiteral<List<Integer>> type1 = TypeLiteral.listOf(Integer.class);
+        TypeLiteral<List<Integer>> type2 = new TypeLiteral<List<Integer>>(){};
+        TypeLiteral<List<Integer>> type3 = TypeLiteral.normalize(type1);
+        TypeLiteral<List<Integer>> type4 = TypeLiteral.normalize(type2);
+
+        assertEquals(type1, type3);
+        Assert.assertSame(type1, type3);
+
+        assertEquals(type2, type4);
+        Assert.assertNotSame(type2, type4);
+    }
+
 
     @Test(expected = DIRuntimeException.class)
     public void testCreationFailure_NoGenericParam() {

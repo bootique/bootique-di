@@ -31,6 +31,15 @@ public class TypeLiteral<T> {
         return new TypeLiteral<>(type);
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> TypeLiteral<T> of(Type type) {
+        return new TypeLiteral<>(type);
+    }
+
+    public static <T> TypeLiteral<T> of(Class<T> rawType, Type... parameters) {
+        return new TypeLiteral<>(rawType, parameters);
+    }
+
     /**
      * Creates TypeLiteral that represents List&lt;T&gt; type.
      */
@@ -73,13 +82,17 @@ public class TypeLiteral<T> {
         return new TypeLiteral<>(Map.class, keyType.toString(), valueType.toString());
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> TypeLiteral<T> of(Type type) {
-        return new TypeLiteral<>(type);
-    }
-
-    public static <T> TypeLiteral<T> of(Class<T> rawType, Type... parameters) {
-        return new TypeLiteral<>(rawType, parameters);
+    /**
+     * Cuts references to outer objects in case of anonymous subclasses.
+     */
+    static <T> TypeLiteral<T> normalize(TypeLiteral<T> type) {
+        Objects.requireNonNull(type, "Null type");
+        if(type.getClass() == TypeLiteral.class) {
+            // direct instance, pass through
+            return type;
+        }
+        // just recreate it with same content
+        return new TypeLiteral<>(type.getType(), type.argumentTypes);
     }
 
     @SuppressWarnings("unchecked")

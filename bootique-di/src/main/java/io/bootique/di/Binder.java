@@ -1,5 +1,7 @@
 package io.bootique.di;
 
+import java.lang.annotation.Annotation;
+
 /**
  * An object passed to a {@link Module} by the DI container during initialization, that
  * provides the API for the module to bind its services to the container. Note that the
@@ -32,11 +34,12 @@ public interface Binder {
     //----------------------
 
     /**
-     * Starts a binding of a java.util.Map&lt;K, V&gt; distinguished by its keys and values type.
+     * Starts a binding of a java.util.Map&lt;K, V&gt; distinguished by its
+     * keys type, values type and qualifier annotation.
      * Map binding should continue using returned MapBuilder.
      * This is a type safe way of binding a map.
      */
-    <K, V> MapBuilder<K, V> bindMap(Class<K> keyType, Class<V> valueType);
+    <K, V> MapBuilder<K, V> bindMap(Class<K> keyType, Class<V> valueType, Class<? extends Annotation> qualifier);
 
     /**
      * Starts a binding of a java.util.Map&lt;K, V&gt; distinguished by its
@@ -51,7 +54,15 @@ public interface Binder {
      * Map binding should continue using returned MapBuilder.
      * This is a type safe way of binding a map.
      */
-    <K, V> MapBuilder<K, V> bindMap(TypeLiteral<K> keyType, TypeLiteral<V> valueType);
+    <K, V> MapBuilder<K, V> bindMap(Class<K> keyType, Class<V> valueType);
+
+    /**
+     * Starts a binding of a java.util.Map&lt;K, V&gt; distinguished by its
+     * keys type, values type and qualifier annotation.
+     * Map binding should continue using returned MapBuilder.
+     * This is a type safe way of binding a map.
+     */
+    <K, V> MapBuilder<K, V> bindMap(TypeLiteral<K> keyType, TypeLiteral<V> valueType, Class<? extends Annotation> qualifier);
 
     /**
      * Starts a binding of a java.util.Map&lt;K, V&gt; distinguished by its
@@ -61,9 +72,24 @@ public interface Binder {
      */
     <K, V> MapBuilder<K, V> bindMap(TypeLiteral<K> keyType, TypeLiteral<V> valueType, String bindingName);
 
+    /**
+     * Starts a binding of a java.util.Map&lt;K, V&gt; distinguished by its keys and values type.
+     * Map binding should continue using returned MapBuilder.
+     * This is a type safe way of binding a map.
+     */
+    <K, V> MapBuilder<K, V> bindMap(TypeLiteral<K> keyType, TypeLiteral<V> valueType);
+
     //----------------------
     //   List<T> bindings
     //----------------------
+
+    /**
+     * Starts a binding of a java.util.List&lt;T&gt; distinguished by its values type and qualifier annotation.
+     * List binding should continue using returned ListBuilder. This is somewhat equivalent of
+     * using "bind(List.class, qualifier)", however returned ListBuilder provides extra
+     * DI capabilities.
+     */
+    <T> ListBuilder<T> bindList(Class<T> valueType, Class<? extends Annotation> qualifier);
 
     /**
      * Starts a binding of a java.util.List&lt;T&gt; distinguished by its values type and binding name.
@@ -81,9 +107,41 @@ public interface Binder {
      */
     <T> ListBuilder<T> bindList(Class<T> valueType);
 
+    /**
+     * Starts a binding of a java.util.List&lt;T&gt; distinguished by its values type and qualifier annotation.
+     * List binding should continue using returned ListBuilder. This is somewhat equivalent of
+     * using "bind(List.class, qualifier)", however returned ListBuilder provides extra
+     * DI capabilities.
+     */
+    <T> ListBuilder<T> bindList(TypeLiteral<T> valueType, Class<? extends Annotation> qualifier);
+
+    /**
+     * Starts a binding of a java.util.List&lt;T&gt; distinguished by its values type and binding name.
+     * List binding should continue using returned ListBuilder. This is somewhat equivalent of
+     * using "bind(List.class, bindingName)", however returned ListBuilder provides extra
+     * DI capabilities.
+     */
+    <T> ListBuilder<T> bindList(TypeLiteral<T> valueType, String bindingName);
+
+    /**
+     * Starts a binding of a java.util.List&lt;T&gt; distinguished by its values type.
+     * List binding should continue using returned ListBuilder.
+     * This is somewhat equivalent of using "bind(List.class, bindingName)",
+     * however returned ListBuilder provides extra DI capabilities.
+     */
+    <T> ListBuilder<T> bindList(TypeLiteral<T> valueType);
+
     //----------------------
     //   Set<T> bindings
     //----------------------
+
+    /**
+     * Starts a binding of a java.util.Set&lt;T&gt; distinguished by its values type and qualifier annotation.
+     * Set binding should continue using returned SetBuilder. This is somewhat equivalent of
+     * using "bind(Set.class, qualifier)", however returned SetBuilder provides type safety and extra
+     * DI capabilities.
+     */
+    <T> SetBuilder<T> bindSet(Class<T> valueType, Class<? extends Annotation> qualifier);
 
     /**
      * Starts a binding of a java.util.Set&lt;T&gt; distinguished by its values type and binding name.
@@ -100,6 +158,14 @@ public interface Binder {
      * however returned SetBuilder provides type safety and extra DI capabilities.
      */
     <T> SetBuilder<T> bindSet(Class<T> valueType);
+
+    /**
+     * Starts a binding of a java.util.Set&lt;T&gt; distinguished by its values type and qualifier annotation.
+     * Set binding should continue using returned SetBuilder. This is somewhat equivalent of
+     * using "bind(Set.class, qualifier)", however returned SetBuilder provides type safety and extra
+     * DI capabilities.
+     */
+    <T> SetBuilder<T> bindSet(TypeLiteral<T> valueType, Class<? extends Annotation> qualifier);
 
     /**
      * Starts a binding of a java.util.Set&lt;T&gt; distinguished by its values type and binding name.

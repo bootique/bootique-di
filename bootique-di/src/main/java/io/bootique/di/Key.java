@@ -28,7 +28,7 @@ public class Key<T> {
      * binding key is created.
      */
     public static <T> Key<T> get(Class<T> type, String bindingName) {
-        return new Key<>(TypeLiteral.of(type), bindingName);
+        return get(TypeLiteral.of(type), bindingName);
     }
 
     /**
@@ -42,6 +42,7 @@ public class Key<T> {
     public static <T> Key<T> get(Class<T> type, Annotation annotationInstance) {
         return get(TypeLiteral.of(type), annotationInstance);
     }
+
 
     public static <T> Key<T> get(TypeLiteral<T> typeLiteral) {
         return get(typeLiteral, (String)null);
@@ -59,74 +60,95 @@ public class Key<T> {
         return new Key<>(typeLiteral, annotationInstance);
     }
 
-    public static <T> Key<List<T>> getListOf(Class<T> type) {
-        return getListOf(type, null);
+
+    public static <T> Key<List<T>> getListOf(Class<T> type, Class<? extends Annotation> qualifier) {
+        return get(TypeLiteral.listOf(type), qualifier);
     }
 
     public static <T> Key<List<T>> getListOf(Class<T> type, String bindingName) {
         return get(TypeLiteral.listOf(type), bindingName);
     }
 
-    public static <T> Key<Set<T>> getSetOf(Class<T> valueType) {
-        return getSetOf(valueType, null);
+    public static <T> Key<List<T>> getListOf(Class<T> type) {
+        return get(TypeLiteral.listOf(type));
+    }
+
+
+    public static <T> Key<Set<T>> getSetOf(Class<T> valueType, Class<? extends Annotation> qualifier) {
+        return get(TypeLiteral.setOf(valueType), qualifier);
     }
 
     public static <T> Key<Set<T>> getSetOf(Class<T> valueType, String bindingName) {
         return get(TypeLiteral.setOf(valueType), bindingName);
     }
 
-    public static <K, V> Key<Map<K, V>> getMapOf(Class<K> keyType, Class<V> valueType) {
-        return getMapOf(keyType, valueType, null);
+    public static <T> Key<Set<T>> getSetOf(Class<T> valueType) {
+        return get(TypeLiteral.setOf(valueType));
+    }
+
+
+    public static <K, V> Key<Map<K, V>> getMapOf(Class<K> keyType, Class<V> valueType, Class<? extends Annotation> qualifier) {
+        return get(TypeLiteral.mapOf(keyType, valueType), qualifier);
     }
 
     public static <K, V> Key<Map<K, V>> getMapOf(Class<K> keyType, Class<V> valueType, String bindingName) {
         return get(TypeLiteral.mapOf(keyType, valueType), bindingName);
     }
 
-    public static <K, V> Key<Map<K, V>> getMapOf(TypeLiteral<K> keyType, TypeLiteral<V> valueType) {
-        return getMapOf(keyType, valueType, null);
+    public static <K, V> Key<Map<K, V>> getMapOf(Class<K> keyType, Class<V> valueType) {
+        return get(TypeLiteral.mapOf(keyType, valueType));
+    }
+
+
+    public static <K, V> Key<Map<K, V>> getMapOf(TypeLiteral<K> keyType, TypeLiteral<V> valueType, Class<? extends Annotation> qualifier) {
+        return get(TypeLiteral.mapOf(keyType, valueType), qualifier);
     }
 
     public static <K, V> Key<Map<K, V>> getMapOf(TypeLiteral<K> keyType, TypeLiteral<V> valueType, String bindingName) {
         return get(TypeLiteral.mapOf(keyType, valueType), bindingName);
     }
 
-    private final TypeLiteral<T> typeLiteral;
-    private final KeyQualifier keyQualifier;
+    public static <K, V> Key<Map<K, V>> getMapOf(TypeLiteral<K> keyType, TypeLiteral<V> valueType) {
+        return get(TypeLiteral.mapOf(keyType, valueType));
+    }
+
+
+    private final TypeLiteral<T> type;
+    private final KeyQualifier qualifier;
 
     protected Key(TypeLiteral<T> type, String bindingName) {
-        this.typeLiteral = Objects.requireNonNull(type, "Null key type");
+        this.type = TypeLiteral.normalize(type);
         // empty non-null binding names are often passed from annotation defaults and are treated as no qualifier
-        this.keyQualifier = bindingName != null && bindingName.length() > 0
+        this.qualifier = bindingName != null && bindingName.length() > 0
                 ? new NamedKeyQualifier(bindingName)
                 : NO_QUALIFIER;
     }
 
-    protected Key(TypeLiteral<T> typeLiteral, Class<? extends Annotation> annotationType) {
-        this.typeLiteral = Objects.requireNonNull(typeLiteral, "Null key type");
+    protected Key(TypeLiteral<T> type, Class<? extends Annotation> annotationType) {
+        this.type = TypeLiteral.normalize(type);
         // null annotation type treated as no qualifier
-        this.keyQualifier = annotationType == null
+        this.qualifier = annotationType == null
                 ? NO_QUALIFIER
                 : new AnnotationTypeQualifier(annotationType);
     }
 
-    protected Key(TypeLiteral<T> typeLiteral, Annotation annotationInstance) {
-        this.typeLiteral = Objects.requireNonNull(typeLiteral, "Null key type");
+    protected Key(TypeLiteral<T> type, Annotation annotationInstance) {
+        this.type = TypeLiteral.normalize(type);
         if(annotationInstance == null) {
             // null annotation type treated as no qualifier
-            this.keyQualifier = NO_QUALIFIER;
+            this.qualifier = NO_QUALIFIER;
         } else if(annotationInstance instanceof Named) {
             // special case for @Named annotation
             String name = ((Named) annotationInstance).value();
-            this.keyQualifier = name.length() > 0 ? new NamedKeyQualifier(name) : NO_QUALIFIER;
+            this.qualifier = name.length() > 0 ? new NamedKeyQualifier(name) : NO_QUALIFIER;
         } else {
             // general case
-            this.keyQualifier = new AnnotationTypeQualifier(annotationInstance.annotationType());
+            this.qualifier = new AnnotationTypeQualifier(annotationInstance.annotationType());
         }
     }
 
     public TypeLiteral<T> getType() {
-        return typeLiteral;
+        return type;
     }
 
     /**
@@ -134,8 +156,8 @@ public class Key<T> {
      * the same object type.
      */
     String getBindingName() {
-        if (keyQualifier instanceof NamedKeyQualifier) {
-            return ((NamedKeyQualifier) keyQualifier).getName();
+        if (qualifier instanceof NamedKeyQualifier) {
+            return ((NamedKeyQualifier) qualifier).getName();
         }
         return null;
     }
@@ -151,12 +173,12 @@ public class Key<T> {
             Key<?> key = (Key<?>) object;
 
             // type is guaranteed to be not null, so skip null checking...
-            if (!typeLiteral.equals(key.typeLiteral)) {
+            if (!type.equals(key.type)) {
                 return false;
             }
 
             // compare additional qualifier
-            return keyQualifier.equals(key.keyQualifier);
+            return qualifier.equals(key.qualifier);
         }
 
         return false;
@@ -164,17 +186,17 @@ public class Key<T> {
 
     @Override
     public int hashCode() {
-        return 407 + 11 * typeLiteral.hashCode() + keyQualifier.hashCode();
+        return 407 + 11 * type.hashCode() + qualifier.hashCode();
     }
 
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
         buffer.append("<BindingKey: ");
-        buffer.append(typeLiteral);
+        buffer.append(type);
 
-        if (keyQualifier != NO_QUALIFIER) {
-            buffer.append(", ").append(keyQualifier);
+        if (qualifier != NO_QUALIFIER) {
+            buffer.append(", ").append(qualifier);
         }
 
         buffer.append('>');

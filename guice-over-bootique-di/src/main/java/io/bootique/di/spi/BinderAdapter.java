@@ -6,9 +6,6 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.binder.LinkedBindingBuilder;
 
-/**
- * @since 4.1
- */
 public class BinderAdapter implements Binder {
 
     private final io.bootique.di.Binder bootiqueBinder;
@@ -19,17 +16,17 @@ public class BinderAdapter implements Binder {
 
     @Override
     public <T> LinkedBindingBuilder<T> bind(Key<T> key) {
-        return new BindingBuilderAdapter<>(bootiqueBinder.bind(DiUtils.toBootiqueKey(key)));
+        return new BindingBuilderAdapter<>(bootiqueBinder, DiUtils.toBootiqueKey(key));
     }
 
     @Override
     public <T> AnnotatedBindingBuilder<T> bind(TypeLiteral<T> typeLiteral) {
-        return new BindingBuilderAdapter<>(bootiqueBinder.bind(DiUtils.toBootiqueKey(typeLiteral)));
+        return new BindingBuilderAdapter<>(bootiqueBinder, DiUtils.toBootiqueKey(typeLiteral));
     }
 
     @Override
     public <T> AnnotatedBindingBuilder<T> bind(Class<T> type) {
-        return new BindingBuilderAdapter<>(bootiqueBinder.bind(type));
+        return new BindingBuilderAdapter<>(bootiqueBinder, io.bootique.di.Key.get(type));
     }
 
     io.bootique.di.Binder getBootiqueBinder() {

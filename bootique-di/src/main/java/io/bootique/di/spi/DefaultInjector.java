@@ -8,10 +8,12 @@ import io.bootique.di.Provides;
 import io.bootique.di.Scope;
 
 import javax.inject.Provider;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * A default implementations of a DI injector.
@@ -21,25 +23,38 @@ public class DefaultInjector implements Injector {
     private DefaultScope singletonScope;
     private Scope noScope;
 
+    private DefaultBinder binder;
     private Map<Key<?>, Binding<?>> bindings;
     private Map<Key<?>, Decoration<?>> decorations;
+
     private InjectionStack injectionStack;
     private Scope defaultScope;
 
+    private boolean allowDynamicBinding;
+    private boolean allowOverride;
+
     public DefaultInjector(Module... modules) throws DIRuntimeException {
+        this(Collections.emptySet(), modules);
+    }
+
+    public DefaultInjector(Set<Options> options, Module... modules) throws DIRuntimeException {
 
         this.singletonScope = new DefaultScope();
         this.noScope = NoScope.INSTANCE;
+        if(options.contains(Options.NO_SCOPE_BY_DEFAULT)) {
+            this.defaultScope = noScope;
+        } else {
+            this.defaultScope = singletonScope;
+        }
 
-        // this is intentionally hardcoded and is not configurable
-        this.defaultScope = noScope;// singletonScope;
+        this.allowOverride = !options.contains(Options.DECLARED_OVERRIDE_ONLY);
+        this.allowDynamicBinding = options.contains(Options.ENABLE_DYNAMIC_BINDINGS);
 
         this.bindings = new HashMap<>();
         this.decorations = new HashMap<>();
         this.injectionStack = new InjectionStack();
 
-        DefaultBinder binder = new DefaultBinder(this);
-
+        binder = new DefaultBinder(this);
         // bind self for injector injection...
         binder.bind(Injector.class).toInstance(this);
 
@@ -74,8 +89,10 @@ public class DefaultInjector implements Injector {
     }
 
     <T> void putBinding(Key<T> bindingKey, Binding<T> binding) {
-        // TODO: andrus 11/15/2009 - report overriding existing binding??
-        bindings.put(bindingKey, binding);
+        Binding<?> oldBinding = bindings.put(bindingKey, binding);
+        if(oldBinding != null && !allowOverride) {
+            throw new DIRuntimeException("Trying to override key %s.", bindingKey);
+        }
     }
 
     <T> void putDecorationAfter(Key<T> bindingKey, DecoratorProvider<T> decoratorProvider) {
@@ -134,10 +151,19 @@ public class DefaultInjector implements Injector {
     public <T> Provider<T> getProvider(Key<T> key) throws DIRuntimeException {
         Binding<T> binding = getBinding(key);
         if (binding == null) {
-            throw new DIRuntimeException("DI container has no binding for key %s", key);
+            binding = createDynamicBinding(key);
         }
 
         return binding.getScoped();
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> Binding<T> createDynamicBinding(Key<T> key) {
+        if(!allowDynamicBinding) {
+            throw new DIRuntimeException("DI container has no binding for key %s and dynamic bindings are disabled.", key);
+        }
+        binder.bind(key).to((Class)key.getType().getRawType()).withoutScope();
+        return getBinding(key);
     }
 
     @Override
@@ -173,5 +199,11 @@ public class DefaultInjector implements Injector {
 
             b.decorate(e.getValue());
         }
+    }
+
+    public enum Options {
+        NO_SCOPE_BY_DEFAULT,
+        DECLARED_OVERRIDE_ONLY,
+        ENABLE_DYNAMIC_BINDINGS
     }
 }

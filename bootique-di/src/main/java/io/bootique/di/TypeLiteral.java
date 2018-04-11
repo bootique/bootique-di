@@ -92,7 +92,7 @@ public class TypeLiteral<T> {
             return type;
         }
         // just recreate it with same content
-        return new TypeLiteral<>(type.getType(), type.argumentTypes);
+        return new TypeLiteral<>(type.getRawType(), type.argumentTypes);
     }
 
     @SuppressWarnings("unchecked")
@@ -143,7 +143,7 @@ public class TypeLiteral<T> {
         return parameterized.getActualTypeArguments()[0];
     }
 
-    Class<? super T> getType() {
+    public Class<? super T> getRawType() {
         return type;
     }
 

@@ -4,7 +4,7 @@ import javax.inject.Provider;
 
 class InstanceProvider<T> implements Provider<T> {
 
-    private T value;
+    private final T value;
 
     InstanceProvider(T value) {
         this.value = value;

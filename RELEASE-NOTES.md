@@ -6,3 +6,4 @@
 * #4 Support for annotations annotated with @Qualifier as injection markers
 * #9 Module superclass with noop implementation of Module.configure(..)
 * #10 Injecting Map with arbitrary key type 
+* #12 Support Provider as argument type for providing methods in modules

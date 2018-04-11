@@ -144,7 +144,8 @@ public class DefaultInjector implements Injector {
     public void injectMembers(Object object) {
         Provider<Object> provider0 = new InstanceProvider<>(object);
         Provider<Object> provider1 = new FieldInjectingProvider<>(provider0, this);
-        provider1.get();
+        Provider<Object> provider2 = new MethodInjectingProvider<>(provider1, this);
+        provider2.get();
     }
 
     @Override

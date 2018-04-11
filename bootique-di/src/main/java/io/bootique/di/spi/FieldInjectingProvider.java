@@ -10,29 +10,21 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
-class FieldInjectingProvider<T> implements Provider<T> {
-
-    private DefaultInjector injector;
-    private Provider<T> delegate;
+class FieldInjectingProvider<T> extends MemberInjectingProvider<T> {
 
     FieldInjectingProvider(Provider<T> delegate, DefaultInjector injector) {
-        this.delegate = delegate;
-        this.injector = injector;
+        super(delegate, injector);
     }
 
     @Override
-    public T get() {
-        T object = delegate.get();
-        injectMembers(object, object.getClass());
-        return object;
-    }
-
-    private void injectMembers(T object, Class<?> type) {
+    protected void injectMembers(T object, Class<?> type) {
 
         // bail on recursion stop condition
         if (type == null) {
             return;
         }
+
+        injectMembers(object, type.getSuperclass());
 
         for (Field field : type.getDeclaredFields()) {
             Inject inject = field.getAnnotation(Inject.class);
@@ -40,23 +32,6 @@ class FieldInjectingProvider<T> implements Provider<T> {
                 injectMember(object, field, getQualifier(field));
             }
         }
-
-        injectMembers(object, type.getSuperclass());
-    }
-
-    private Annotation getQualifier(Field field) {
-        Annotation bindingAnnotation = null;
-        for(Annotation fieldAnnotation : field.getAnnotations()) {
-            if(DIUtil.isQualifyingAnnotation(fieldAnnotation)) {
-                if(bindingAnnotation != null) {
-                    throw new DIRuntimeException("Field %s.%s have more than one qualifier annotation."
-                            , field.getDeclaringClass().getName()
-                            , field.getName());
-                }
-                bindingAnnotation = fieldAnnotation;
-            }
-        }
-        return bindingAnnotation;
     }
 
     private void injectMember(Object object, Field field, Annotation bindingAnnotation) {

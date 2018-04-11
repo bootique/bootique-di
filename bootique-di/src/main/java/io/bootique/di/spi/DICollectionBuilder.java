@@ -24,7 +24,8 @@ public abstract class DICollectionBuilder<K, E> {
 
     protected Provider<E> createInstanceProvider(E value) {
         Provider<E> provider0 = new InstanceProvider<>(value);
-        return new FieldInjectingProvider<>(provider0, injector);
+        Provider<E> provider1 =  new FieldInjectingProvider<>(provider0, injector);
+        return new MethodInjectingProvider<>(provider1, injector);
     }
 
     protected <SubT extends E> Provider<SubT> createTypeProvider(final Class<SubT> interfaceType) throws DIRuntimeException {
@@ -48,7 +49,8 @@ public abstract class DICollectionBuilder<K, E> {
         if (binding == null) {
             Provider<SubT> provider0 = new ConstructorInjectingProvider<>(interfaceType, injector);
             Provider<SubT> provider1 = new FieldInjectingProvider<>(provider0, injector);
-            injector.putBinding(key, provider1);
+            Provider<SubT> provider2 = new MethodInjectingProvider<>(provider1, injector);
+            injector.putBinding(key, provider2);
 
             binding = injector.getBinding(key);
         }

@@ -18,9 +18,12 @@ package com.google.inject.util;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
+import io.bootique.di.spi.BinderAdapter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -103,15 +106,15 @@ public final class Modules {
 
         @Override
         public Module with(Iterable<? extends Module> overrides) {
-            return new OverrideModule(baseModules);
+            return new OverrideModule(baseModules, overrides);
         }
     }
 
     static class OverrideModule implements Module {
-        private final Set<Module> baseModules;
+        private final List<Module> baseModules;
 
-        OverrideModule(Iterable<? extends Module> overrides) {
-            this.baseModules = new HashSet<>();
+        OverrideModule(Set<Module> baseModules, Iterable<? extends Module> overrides) {
+            this.baseModules = new ArrayList<>(baseModules);
             for (Module m : overrides) {
                 this.baseModules.add(m);
             }
@@ -119,10 +122,8 @@ public final class Modules {
 
         @Override
         public void configure(Binder binder) {
-            // TODO: implement actual override
-            for (Module m : baseModules) {
-                m.configure(binder);
-            }
+            BinderAdapter adapter = (BinderAdapter)binder;
+            baseModules.forEach(m -> adapter.getInjectorAdapter().installModule(m));
         }
     }
 

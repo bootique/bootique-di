@@ -6,7 +6,7 @@ import io.bootique.di.TypeLiteral;
 class DiUtils {
 
     static <T> io.bootique.di.Key<T> toBootiqueKey(com.google.inject.Key<T> key) {
-        return toBootiqueKey(key.getTypeLiteral());
+        return Key.get(toTypeLiteral(key.getTypeLiteral()), key.getAnnotationType());
     }
 
     static <T> io.bootique.di.Key<T> toBootiqueKey(com.google.inject.TypeLiteral<T> typeLiteral) {

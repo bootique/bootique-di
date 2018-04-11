@@ -16,7 +16,6 @@
 
 package com.google.inject.util;
 
-import com.google.inject.Provider;
 import com.google.inject.internal.MoreTypes.ParameterizedTypeImpl;
 
 import java.lang.reflect.ParameterizedType;
@@ -34,33 +33,12 @@ public final class Types {
     }
 
     /**
-     * Returns a new parameterized type, applying {@code typeArguments} to {@code rawType}. The
-     * returned type does not have an owner type.
-     *
-     * @return a {@link java.io.Serializable serializable} parameterized type.
-     */
-    private static ParameterizedType newParameterizedType(Type rawType, Type... typeArguments) {
-        return new ParameterizedTypeImpl(null, rawType, typeArguments);
-    }
-
-    /**
      * Returns a type modelling a {@link Set} whose elements are of type {@code elementType}.
      *
      * @return a {@link java.io.Serializable serializable} parameterized type.
      */
     public static ParameterizedType setOf(Type elementType) {
-        return newParameterizedType(Set.class, elementType);
-    }
-
-    // for other custom collections types, use newParameterizedType()
-
-    /**
-     * Returns a type modelling a {@link Provider} that provides elements of type {@code elementType}.
-     *
-     * @return a {@link java.io.Serializable serializable} parameterized type.
-     */
-    public static ParameterizedType providerOf(Type providedType) {
-        return newParameterizedType(Provider.class, providedType);
+        return new ParameterizedTypeImpl(null, Set.class, elementType);
     }
 
 }

@@ -16,21 +16,28 @@ public class InjectorAdapter implements com.google.inject.Injector {
 
     private BinderAdapter adapter;
 
+    private final ProvidesHandler providesHandler;
+
     public InjectorAdapter(Iterable<? extends Module> modules) {
 
         // Create empty injector
         bootiqueInjector = new DefaultInjector();
+        providesHandler = new ProvidesHandler(bootiqueInjector, Provides.class);
 
         // Guice -> Bootique adapters
         io.bootique.di.Binder bootiqueBinder = new DefaultBinder(bootiqueInjector);
-        adapter = new BinderAdapter(bootiqueBinder);
-        ProvidesHandler providesHandler = new ProvidesHandler(bootiqueInjector, Provides.class);
+        adapter = new BinderAdapter(bootiqueBinder, this);
+
+        // provide Guice injector in DI container
+        bootiqueBinder.bind(com.google.inject.Injector.class).toInstance(this);
 
         // Configure all modules manually
-        modules.forEach(module -> {
-            module.configure(adapter);
-            providesHandler.bindingsFromAnnotatedMethods(module);
-        });
+        modules.forEach(this::installModule);
+    }
+
+    public void installModule(Module module) {
+        module.configure(adapter);
+        providesHandler.bindingsFromAnnotatedMethods(module).forEach(p -> p.bind(bootiqueInjector));
     }
 
     @Override

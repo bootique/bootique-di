@@ -23,8 +23,7 @@ public class MapBinderAdapter<K, V> {
             throw new IllegalArgumentException("Unexpected binder implementation: " + guiceBinder.getClass().getName());
         }
         Binder bootiqueBinder = ((BinderAdapter) guiceBinder).getBootiqueBinder();
-        // TODO: use annotatedWith param ...
-        this.bootiqueMapBuilder = bootiqueBinder.bindMap(DiUtils.toTypeLiteral(keyType), DiUtils.toTypeLiteral(valueType));
+        this.bootiqueMapBuilder = bootiqueBinder.bindMap(DiUtils.toTypeLiteral(keyType), DiUtils.toTypeLiteral(valueType), annotatedWith);
         // TODO: guice default is no scope, bootique - singleton
 //        this.bootiqueMapBuilder.in(NoScope.INSTANCE);
     }

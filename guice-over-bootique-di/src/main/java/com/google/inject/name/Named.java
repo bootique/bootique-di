@@ -18,11 +18,10 @@ package com.google.inject.name;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import com.google.inject.BindingAnnotation;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import javax.inject.Qualifier;
 
 /**
  * Annotates named things.
@@ -31,7 +30,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RUNTIME)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@BindingAnnotation
+@Qualifier
 public @interface Named {
     String value();
 }

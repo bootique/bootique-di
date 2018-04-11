@@ -10,8 +10,11 @@ public class BinderAdapter implements Binder {
 
     private final io.bootique.di.Binder bootiqueBinder;
 
-    BinderAdapter(io.bootique.di.Binder bootiqueBinder) {
+    private final InjectorAdapter injectorAdapter;
+
+    BinderAdapter(io.bootique.di.Binder bootiqueBinder, InjectorAdapter injectorAdapter) {
         this.bootiqueBinder = bootiqueBinder;
+        this.injectorAdapter = injectorAdapter;
     }
 
     @Override
@@ -31,5 +34,9 @@ public class BinderAdapter implements Binder {
 
     io.bootique.di.Binder getBootiqueBinder() {
         return bootiqueBinder;
+    }
+
+    public InjectorAdapter getInjectorAdapter() {
+        return injectorAdapter;
     }
 }

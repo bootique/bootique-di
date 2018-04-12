@@ -22,9 +22,11 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
     public BindingBuilder<T> to(Class<? extends T> implementation) throws DIRuntimeException {
         Provider<T> provider0 = new ConstructorInjectingProvider<>(implementation, injector);
         Provider<T> provider1 = new FieldInjectingProvider<>(provider0, injector);
-        Provider<T> provider2 = new MethodInjectingProvider<>(provider1, injector);
+        if(injector.isMethodInjectionEnabled()) {
+            provider1 = new MethodInjectingProvider<>(provider1, injector);
+        }
 
-        injector.putBinding(bindingKey, provider2);
+        injector.putBinding(bindingKey, provider1);
         if(implementation.getAnnotation(Singleton.class) != null) {
             injector.changeBindingScope(bindingKey, injector.getSingletonScope());
         }

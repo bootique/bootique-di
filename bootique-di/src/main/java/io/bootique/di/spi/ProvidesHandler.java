@@ -6,6 +6,7 @@ import io.bootique.di.Scope;
 import io.bootique.di.TypeLiteral;
 
 import javax.inject.Provider;
+import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -132,8 +133,10 @@ class ProvidesHandler {
     }
 
     private Scope createScope(Method method) {
-        // TODO: settle on scope default (no scope like Guice? Singleton like Cayenne?); process @Singleton annotation?
-        return injector.getSingletonScope();
+        if(method.getAnnotation(Singleton.class) != null) {
+            return injector.getSingletonScope();
+        }
+        return injector.getNoScope();
     }
 
     private Provider<?>[] createArgumentProviders(Method method) {

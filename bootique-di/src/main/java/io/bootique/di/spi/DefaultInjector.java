@@ -32,7 +32,7 @@ public class DefaultInjector implements Injector {
         this.noScope = NoScope.INSTANCE;
 
         // this is intentionally hardcoded and is not configurable
-        this.defaultScope = singletonScope;
+        this.defaultScope = noScope;// singletonScope;
 
         this.bindings = new HashMap<>();
         this.decorations = new HashMap<>();

@@ -6,6 +6,7 @@ import io.bootique.di.Key;
 import io.bootique.di.Scope;
 
 import javax.inject.Provider;
+import javax.inject.Singleton;
 
 class DefaultBindingBuilder<T> implements BindingBuilder<T> {
 
@@ -24,6 +25,10 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
         Provider<T> provider2 = new MethodInjectingProvider<>(provider1, injector);
 
         injector.putBinding(bindingKey, provider2);
+        if(implementation.getAnnotation(Singleton.class) != null) {
+            injector.changeBindingScope(bindingKey, injector.getSingletonScope());
+        }
+
         return this;
     }
 
@@ -39,6 +44,8 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
         Provider<T> provider2 = new MethodInjectingProvider<>(provider1, injector);
 
         injector.putBinding(bindingKey, provider2);
+        injector.changeBindingScope(bindingKey, injector.getSingletonScope());
+
         return this;
     }
 

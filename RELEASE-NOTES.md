@@ -7,3 +7,5 @@
 * #9 Module superclass with noop implementation of Module.configure(..)
 * #10 Injecting Map with arbitrary key type 
 * #12 Support Provider as argument type for providing methods in modules
+* #13 Support Method injection
+* #16 Configurable default injection scope

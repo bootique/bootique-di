@@ -13,8 +13,6 @@
     <name>bootique-di-jsr330-tck: Dependency Injection for Java TCK</name>
     <description>Dependency Injection for Java (JSR-330) Technology Compatibility Kit</description>
 
-    <packaging>pom</packaging>
-
     <build>
         <plugins>
             <plugin>

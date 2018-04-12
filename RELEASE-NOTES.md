@@ -8,4 +8,5 @@
 * #10 Injecting Map with arbitrary key type 
 * #12 Support Provider as argument type for providing methods in modules
 * #13 Support Method injection
+* #15 Remove injection of static fields #15
 * #16 Configurable default injection scope

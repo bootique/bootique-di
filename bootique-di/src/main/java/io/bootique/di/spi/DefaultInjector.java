@@ -32,6 +32,7 @@ public class DefaultInjector implements Injector {
 
     private boolean allowDynamicBinding;
     private boolean allowOverride;
+    private boolean allowMethodInjection;
 
     public DefaultInjector(Module... modules) throws DIRuntimeException {
         this(Collections.emptySet(), modules);
@@ -49,6 +50,7 @@ public class DefaultInjector implements Injector {
 
         this.allowOverride = !options.contains(Options.DECLARED_OVERRIDE_ONLY);
         this.allowDynamicBinding = options.contains(Options.ENABLE_DYNAMIC_BINDINGS);
+        this.allowMethodInjection = options.contains(Options.ENABLE_METHOD_INJECTION);
 
         this.bindings = new HashMap<>();
         this.decorations = new HashMap<>();
@@ -168,10 +170,12 @@ public class DefaultInjector implements Injector {
 
     @Override
     public void injectMembers(Object object) {
-        Provider<Object> provider0 = new InstanceProvider<>(object);
-        Provider<Object> provider1 = new FieldInjectingProvider<>(provider0, this);
-        Provider<Object> provider2 = new MethodInjectingProvider<>(provider1, this);
-        provider2.get();
+        Provider<Object> provider = new InstanceProvider<>(object);
+        provider = new FieldInjectingProvider<>(provider, this);
+        if(allowMethodInjection) {
+            provider = new MethodInjectingProvider<>(provider, this);
+        }
+        provider.get();
     }
 
     @Override
@@ -185,6 +189,10 @@ public class DefaultInjector implements Injector {
 
     Scope getNoScope() {
         return noScope;
+    }
+
+    boolean isMethodInjectionEnabled() {
+        return allowMethodInjection;
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -204,6 +212,7 @@ public class DefaultInjector implements Injector {
     public enum Options {
         NO_SCOPE_BY_DEFAULT,
         DECLARED_OVERRIDE_ONLY,
-        ENABLE_DYNAMIC_BINDINGS
+        ENABLE_DYNAMIC_BINDINGS,
+        ENABLE_METHOD_INJECTION
     }
 }

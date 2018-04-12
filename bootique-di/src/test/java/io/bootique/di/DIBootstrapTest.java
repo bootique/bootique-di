@@ -1,7 +1,6 @@
 
 package io.bootique.di;
 
-
 import java.util.Arrays;
 
 import org.junit.Test;

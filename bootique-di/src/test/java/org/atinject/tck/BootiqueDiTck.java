@@ -3,6 +3,7 @@ package org.atinject.tck;
 import io.bootique.di.DIBootstrap;
 import io.bootique.di.Injector;
 import io.bootique.di.Key;
+import io.bootique.di.Module;
 import org.atinject.tck.auto.Car;
 import junit.framework.Test;
 import org.atinject.tck.auto.Convertible;
@@ -24,7 +25,7 @@ public class BootiqueDiTck {
     }
 
     private static Injector createInjector() {
-        return DIBootstrap.createInjector(binder -> {
+        Module module = binder -> {
             binder.bind(Car.class).to(Convertible.class);
 
             binder.bind(Seat.class).to(Seat.class);
@@ -38,7 +39,12 @@ public class BootiqueDiTck {
             binder.bind(Cupholder.class).to(Cupholder.class);
             binder.bind(SpareTire.class).to(SpareTire.class);
             binder.bind(FuelTank.class).to(FuelTank.class);
-        });
+        };
+
+        return DIBootstrap.injectorBuilder(module)
+                .enableMethodInjection()
+                .defaultNoScope()
+                .build();
     }
 
 }

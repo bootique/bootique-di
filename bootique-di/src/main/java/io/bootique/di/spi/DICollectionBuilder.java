@@ -25,6 +25,9 @@ public abstract class DICollectionBuilder<K, E> {
     protected Provider<E> createInstanceProvider(E value) {
         Provider<E> provider0 = new InstanceProvider<>(value);
         Provider<E> provider1 =  new FieldInjectingProvider<>(provider0, injector);
+        if(!injector.isMethodInjectionEnabled()) {
+            return provider1;
+        }
         return new MethodInjectingProvider<>(provider1, injector);
     }
 
@@ -49,8 +52,10 @@ public abstract class DICollectionBuilder<K, E> {
         if (binding == null) {
             Provider<SubT> provider0 = new ConstructorInjectingProvider<>(interfaceType, injector);
             Provider<SubT> provider1 = new FieldInjectingProvider<>(provider0, injector);
-            Provider<SubT> provider2 = new MethodInjectingProvider<>(provider1, injector);
-            injector.putBinding(key, provider2);
+            if(injector.isMethodInjectionEnabled()) {
+                provider1 = new MethodInjectingProvider<>(provider1, injector);
+            }
+            injector.putBinding(key, provider1);
 
             binding = injector.getBinding(key);
         }

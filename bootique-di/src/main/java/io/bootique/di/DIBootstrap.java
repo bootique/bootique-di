@@ -48,7 +48,7 @@ public class DIBootstrap {
             this.modules = modules;
         }
 
-        public InjectorBuilder allowDynamicBindings() {
+        public InjectorBuilder enableDynamicBindings() {
             this.options.add(DefaultInjector.Options.ENABLE_DYNAMIC_BINDINGS);
             return this;
         }
@@ -58,8 +58,13 @@ public class DIBootstrap {
             return this;
         }
 
-        public InjectorBuilder noScopeByDefault() {
+        public InjectorBuilder defaultNoScope() {
             this.options.add(DefaultInjector.Options.NO_SCOPE_BY_DEFAULT);
+            return this;
+        }
+
+        public InjectorBuilder enableMethodInjection() {
+            this.options.add(DefaultInjector.Options.ENABLE_METHOD_INJECTION);
             return this;
         }
 

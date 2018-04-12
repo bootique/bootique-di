@@ -41,9 +41,11 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
     public BindingBuilder<T> toInstance(T instance) throws DIRuntimeException {
         Provider<T> provider0 = new InstanceProvider<>(instance);
         Provider<T> provider1 = new FieldInjectingProvider<>(provider0, injector);
-        Provider<T> provider2 = new MethodInjectingProvider<>(provider1, injector);
+        if(injector.isMethodInjectionEnabled()) {
+            provider1 = new MethodInjectingProvider<>(provider1, injector);
+        }
 
-        injector.putBinding(bindingKey, provider2);
+        injector.putBinding(bindingKey, provider1);
         injector.changeBindingScope(bindingKey, injector.getSingletonScope());
 
         return this;
@@ -53,13 +55,17 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
     public BindingBuilder<T> toProvider(Class<? extends Provider<? extends T>> providerType) {
         Provider<Provider<? extends T>> provider0 = new ConstructorInjectingProvider<>(providerType, injector);
         Provider<Provider<? extends T>> provider1 = new FieldInjectingProvider<>(provider0, injector);
-        Provider<Provider<? extends T>> provider2 = new MethodInjectingProvider<>(provider1, injector);
+        if(injector.isMethodInjectionEnabled()) {
+            provider1 = new MethodInjectingProvider<>(provider1, injector);
+        }
 
-        Provider<T> provider3 = new CustomProvidersProvider<>(provider2);
+        Provider<T> provider3 = new CustomProvidersProvider<>(provider1);
         Provider<T> provider4 = new FieldInjectingProvider<>(provider3, injector);
-        Provider<T> provider5 = new MethodInjectingProvider<>(provider4, injector);
+        if(injector.isMethodInjectionEnabled()) {
+            provider4 = new MethodInjectingProvider<>(provider4, injector);
+        }
 
-        injector.putBinding(bindingKey, provider5);
+        injector.putBinding(bindingKey, provider4);
         return this;
     }
 
@@ -67,13 +73,17 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
     public BindingBuilder<T> toProviderInstance(Provider<? extends T> provider) {
         Provider<Provider<? extends T>> provider0 = new InstanceProvider<>(provider);
         Provider<Provider<? extends T>> provider1 = new FieldInjectingProvider<>(provider0, injector);
-        Provider<Provider<? extends T>> provider2 = new MethodInjectingProvider<>(provider1, injector);
+        if(injector.isMethodInjectionEnabled()) {
+            provider1 = new MethodInjectingProvider<>(provider1, injector);
+        }
 
-        Provider<T> provider3 = new CustomProvidersProvider<>(provider2);
+        Provider<T> provider3 = new CustomProvidersProvider<>(provider1);
         Provider<T> provider4 = new FieldInjectingProvider<>(provider3, injector);
-        Provider<T> provider5 = new MethodInjectingProvider<>(provider4, injector);
+        if(injector.isMethodInjectionEnabled()) {
+            provider4 = new MethodInjectingProvider<>(provider4, injector);
+        }
 
-        injector.putBinding(bindingKey, provider5);
+        injector.putBinding(bindingKey, provider4);
         return this;
     }
 

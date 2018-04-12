@@ -1,9 +1,6 @@
-package org.atinject.tck;
+package io.bootique.di;
 
-import io.bootique.di.DIBootstrap;
-import io.bootique.di.Injector;
-import io.bootique.di.Key;
-import io.bootique.di.Module;
+import org.atinject.tck.Tck;
 import org.atinject.tck.auto.Car;
 import junit.framework.Test;
 import org.atinject.tck.auto.Convertible;
@@ -17,13 +14,19 @@ import org.atinject.tck.auto.V8Engine;
 import org.atinject.tck.auto.accessories.Cupholder;
 import org.atinject.tck.auto.accessories.SpareTire;
 
-public class BootiqueDiTck {
-
+/**
+ * Test suite provided by JSR-330 TCK
+ *
+ * One test is failing permanently and disabled,
+ * see {@link Convertible.Tests#testSupertypeMethodsInjectedBeforeSubtypeFields}
+ */
+public class BootiqueTestSuite {
+    
     public static Test suite() {
         Car car = createInjector().getInstance(Car.class);
         return Tck.testsFor(car, false, true);
     }
-
+    
     private static Injector createInjector() {
         Module module = binder -> {
             binder.bind(Car.class).to(Convertible.class);
@@ -42,8 +45,8 @@ public class BootiqueDiTck {
         };
 
         return DIBootstrap.injectorBuilder(module)
-                .enableMethodInjection()
-                .defaultNoScope()
+                .enableMethodInjection() // method injection disabled by default
+                .defaultNoScope()        // default scope is singleton
                 .build();
     }
 

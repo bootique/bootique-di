@@ -21,6 +21,15 @@ import org.atinject.tck.auto.Convertible;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.atinject.tck.auto.Drivers;
+import org.atinject.tck.auto.DriversSeat;
+import org.atinject.tck.auto.Engine;
+import org.atinject.tck.auto.FuelTank;
+import org.atinject.tck.auto.Seat;
+import org.atinject.tck.auto.Tire;
+import org.atinject.tck.auto.V8Engine;
+import org.atinject.tck.auto.accessories.Cupholder;
+import org.atinject.tck.auto.accessories.SpareTire;
 
 /**
  * Manufactures the compatibility test suite. This TCK relies on
@@ -48,34 +57,34 @@ import junit.framework.TestSuite;
  * <p>Configure the injector as follows:
  *
  * <ul>
- *   <li>{@link org.atinject.tck.auto.Car} is implemented by
- *       {@link org.atinject.tck.auto.Convertible Convertible}.
- *   <li>{@link org.atinject.tck.auto.Drivers @Drivers}
- *       {@link org.atinject.tck.auto.Seat Seat} is
- *       implemented by {@link org.atinject.tck.auto.DriversSeat DriversSeat}.
- *   <li>{@link org.atinject.tck.auto.Seat Seat} is
- *       implemented by {@link org.atinject.tck.auto.Seat Seat} itself, and
- *       {@link org.atinject.tck.auto.Tire Tire} by
- *       {@link org.atinject.tck.auto.Tire Tire} itself
+ *   <li>{@link Car} is implemented by
+ *       {@link Convertible Convertible}.
+ *   <li>{@link Drivers @Drivers}
+ *       {@link Seat Seat} is
+ *       implemented by {@link DriversSeat DriversSeat}.
+ *   <li>{@link Seat Seat} is
+ *       implemented by {@link Seat Seat} itself, and
+ *       {@link Tire Tire} by
+ *       {@link Tire Tire} itself
  *       (not subclasses).
- *   <li>{@link org.atinject.tck.auto.Engine Engine} is implemented by
- *       {@link org.atinject.tck.auto.V8Engine V8Engine}.
+ *   <li>{@link Engine Engine} is implemented by
+ *       {@link V8Engine V8Engine}.
  *   <li>{@link javax.inject.Named @Named("spare")}
- *       {@link org.atinject.tck.auto.Tire Tire} is implemented by
- *       {@link org.atinject.tck.auto.accessories.SpareTire SpareTire}.
+ *       {@link Tire Tire} is implemented by
+ *       {@link SpareTire SpareTire}.
  *   <li>The following classes may also be injected directly:
- *       {@link org.atinject.tck.auto.accessories.Cupholder Cupholder},
- *       {@link org.atinject.tck.auto.accessories.SpareTire SpareTire}, and
- *       {@link org.atinject.tck.auto.FuelTank FuelTank}.
+ *       {@link Cupholder Cupholder},
+ *       {@link SpareTire SpareTire}, and
+ *       {@link FuelTank FuelTank}.
  * </ul>
  *
  * <p>Static and private member injection support is optional, but if your
  * injector supports those features, it must pass the respective tests. If
  * static member injection is supported, the static members of the following
  * types shall also be injected once:
- * {@link org.atinject.tck.auto.Convertible Convertible},
- * {@link org.atinject.tck.auto.Tire Tire}, and
- * {@link org.atinject.tck.auto.accessories.SpareTire SpareTire}.
+ * {@link Convertible Convertible},
+ * {@link Tire Tire}, and
+ * {@link SpareTire SpareTire}.
  *
  * <p>Use your favorite JUnit tool to run the tests. For example, you can use
  * your IDE or JUnit's command line runner:

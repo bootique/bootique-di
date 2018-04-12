@@ -7,6 +7,11 @@ import javax.inject.Provider;
 
 import io.bootique.di.DIRuntimeException;
 
+/**
+ * Base abstract implementation for providers injecting into object members (fields and methods)
+ *
+ * @param <T> type of object for wich we perform injection
+ */
 abstract class MemberInjectingProvider<T> implements Provider<T> {
 
     protected final DefaultInjector injector;

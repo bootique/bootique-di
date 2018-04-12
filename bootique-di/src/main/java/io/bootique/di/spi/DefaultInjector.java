@@ -187,6 +187,10 @@ public class DefaultInjector implements Injector {
         return singletonScope;
     }
 
+    Scope getDefaultScope() {
+        return defaultScope;
+    }
+
     Scope getNoScope() {
         return noScope;
     }

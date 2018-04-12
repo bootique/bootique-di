@@ -46,7 +46,6 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
         }
 
         injector.putBinding(bindingKey, provider1);
-        injector.changeBindingScope(bindingKey, injector.getSingletonScope());
 
         return this;
     }

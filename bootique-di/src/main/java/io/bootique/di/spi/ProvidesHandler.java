@@ -133,10 +133,12 @@ class ProvidesHandler {
     }
 
     private Scope createScope(Method method) {
+        // force singleton for annotated methods
         if(method.getAnnotation(Singleton.class) != null) {
             return injector.getSingletonScope();
         }
-        return injector.getNoScope();
+        // otherwise use injector's default scope
+        return injector.getDefaultScope();
     }
 
     private Provider<?>[] createArgumentProviders(Method method) {

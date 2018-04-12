@@ -2,10 +2,12 @@ package io.bootique.di.spi;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
@@ -21,35 +23,77 @@ class MethodInjectingProvider<T> extends MemberInjectingProvider<T> {
 
     @Override
     protected void injectMembers(T object, Class<?> type) {
-        injectMembers(object, type, new HashSet<>());
+        Map<String, List<Method>> methods = new LinkedHashMap<>();
+        collectMethods(type, methods);
+
+        for (List<Method> methodList : methods.values()){
+            for(Method method : methodList) {
+                Inject inject = method.getAnnotation(Inject.class);
+                if (inject != null) {
+                    injectMember(object, method);
+                }
+            }
+        }
     }
 
-    protected void injectMembers(T object, Class<?> type, Set<String> seenMethods) {
+    private void collectMethods(Class<?> type, Map<String, List<Method>> seenMethods) {
         // bail on recursion stop condition
-        if (type == null) {
+        if (type == Object.class) {
             return;
         }
 
-        injectMembers(object, type.getSuperclass(), seenMethods);
+        collectMethods(type.getSuperclass(), seenMethods);
 
         for (Method method : type.getDeclaredMethods()) {
-            if(!seenMethods.add(formatMethodSignature(method))) {
+            // skip static and abstract methods
+            if(Modifier.isStatic(method.getModifiers()) || Modifier.isAbstract(method.getModifiers())) {
                 continue;
             }
-            Inject inject = method.getAnnotation(Inject.class);
-            if (inject != null) {
-                injectMember(object, method);
-            }
+            // calculate method signature
+            String methodSignature = formatMethodSignature(method);
+
+            // lookup for overridden method
+            List<Method> overriddenMethods = seenMethods.computeIfAbsent(methodSignature, s -> new ArrayList<>());
+            overriddenMethods.removeIf(overriddenMethod -> isMethodOverride(overriddenMethod, method));
+            overriddenMethods.add(method);
         }
+    }
+
+    /**
+     * Check if method overrides parent (assuming basic check performed by compiler)
+     */
+    private boolean isMethodOverride(Method parentMethod, Method method) {
+        // method has same or broader scope
+        int parentModifier = modifiersToInt(parentMethod.getModifiers());
+        if(parentModifier == 0) {
+            // no private methods override
+            return false;
+        }
+        if(parentModifier == 1) {
+            return method.getDeclaringClass().getPackage().equals(parentMethod.getDeclaringClass().getPackage());
+        }
+        return true;
+    }
+
+    private int modifiersToInt(int methodModifiers) {
+        if(Modifier.isPrivate(methodModifiers)) {
+            return 0;
+        }
+        if(Modifier.isProtected(methodModifiers)) {
+            return 2;
+        }
+        if(Modifier.isPublic(methodModifiers)) {
+            return 3;
+        }
+
+        // package private
+        return 1;
     }
 
     private String formatMethodSignature(Method method) {
         StringBuilder sb = new StringBuilder();
-        sb.append(method.getReturnType().getSimpleName())
-                .append(' ')
-                .append(method.getName())
-                .append('(');
-        for(Type type : method.getGenericParameterTypes()) {
+        sb.append(method.getReturnType().getName()).append(' ').append(method.getName()).append('(');
+        for (Type type : method.getGenericParameterTypes()) {
             sb.append(type.getTypeName()).append(',');
         }
         sb.append(')');
@@ -80,7 +124,7 @@ class MethodInjectingProvider<T> extends MemberInjectingProvider<T> {
 
         InjectionStack stack = injector.getInjectionStack();
 
-        for(int i=0; i<parameterTypes.length; i++) {
+        for (int i = 0; i < parameterTypes.length; i++) {
             Type parameterType = parameterTypes[i];
             Annotation bindingAnnotation = getQualifier(parameterAnnotations[i], method);
 

@@ -32,6 +32,16 @@ class DefaultBinder implements Binder {
         return new DefaultBindingBuilder<>(key, injector);
     }
 
+    @Override
+    public <T> BindingBuilder<T> bindOptional(Class<T> interfaceType) {
+        return new OptionalBindingBuilder<>(Key.get(interfaceType), injector);
+    }
+
+    @Override
+    public <T> BindingBuilder<T> bindOptional(Key<T> key) {
+        return new OptionalBindingBuilder<>(key, injector);
+    }
+
 
     @Override
     public <T> ListBuilder<T> bindList(Class<T> valueType, Class<? extends Annotation> qualifier) {

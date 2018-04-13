@@ -30,6 +30,24 @@ public interface Binder {
     <T> BindingBuilder<T> bind(Key<T> key);
 
     //----------------------
+    //   Optional bindings
+    //----------------------
+
+    /**
+     * Starts an unnamed optional binding of a specific interface.
+     * Binding should continue using returned BindingBuilder.
+     */
+    <T> BindingBuilder<T> bindOptional(Class<T> interfaceType);
+
+    /**
+     * Starts an optional binding of a specific interface based on a provided binding key.
+     * This method is more generic than {@link #bind(Class)} and allows to create qualified
+     * bindings in addition to default ones.
+     * Binding should continue using returned BindingBuilder.
+     */
+    <T> BindingBuilder<T> bindOptional(Key<T> key);
+
+    //----------------------
     //  Map<K,V> bindings
     //----------------------
 

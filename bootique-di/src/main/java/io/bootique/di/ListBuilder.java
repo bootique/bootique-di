@@ -29,4 +29,6 @@ public interface ListBuilder<T> {
 
     void in(Scope scope);
 
+    void inSingleton();
+
 }

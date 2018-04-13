@@ -66,4 +66,8 @@ public abstract class DICollectionBuilder<K, E> {
     public void in(Scope scope) {
         injector.changeBindingScope(bindingKey, scope);
     }
+
+    public void inSingleton() {
+        in(injector.getSingletonScope());
+    }
 }

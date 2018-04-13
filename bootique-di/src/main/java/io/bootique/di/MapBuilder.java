@@ -19,4 +19,6 @@ public interface MapBuilder<K, V> {
     MapBuilder<K, V> putAll(Map<K, V> map) throws DIRuntimeException;
 
     void in(Scope scope);
+
+    void inSingleton();
 }

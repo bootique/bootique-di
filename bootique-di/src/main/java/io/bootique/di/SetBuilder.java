@@ -12,4 +12,5 @@ public interface SetBuilder<T> {
 
     void in(Scope scope);
 
+    void inSingleton();
 }

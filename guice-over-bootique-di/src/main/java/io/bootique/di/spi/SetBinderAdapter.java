@@ -22,8 +22,6 @@ public class SetBinderAdapter<T> {
         }
         Binder bootiqueBinder = ((BinderAdapter) guiceBinder).getBootiqueBinder();
         this.bootiqueSetBuilder = bootiqueBinder.bindSet(DiUtils.toBootiqueKey(key).getType(), key.getAnnotationType());
-        // TODO: guice default is no scope, bootique - singleton
-//        this.bootiqueSetBuilder.in(NoScope.INSTANCE);
     }
 
     public LinkedBindingBuilder<T> addBinding() {
@@ -41,28 +39,28 @@ public class SetBinderAdapter<T> {
 
             @Override
             public ScopedBindingBuilder to(TypeLiteral<? extends T> implementation) {
-                return this;
+                throw new UnsupportedOperationException();
             }
 
             @Override
             public ScopedBindingBuilder to(Key<? extends T> targetKey) {
-                return this;
+                throw new UnsupportedOperationException();
             }
 
             @Override
             public ScopedBindingBuilder toProvider(Provider<? extends T> provider) {
-                return this;
+                throw new UnsupportedOperationException();
             }
 
             @Override
             public ScopedBindingBuilder toProvider(Class<? extends Provider<? extends T>> providerType) {
-                return this;
+                throw new UnsupportedOperationException();
             }
 
             @Override
             public void in(Class<? extends Annotation> scopeAnnotation) {
                 if(scopeAnnotation == Singleton.class) {
-                    // TODO: bootiqueSetBuilder.inSingleton();
+                    bootiqueSetBuilder.inSingleton();
                 } else {
                     throw new UnsupportedOperationException();
                 }
@@ -70,12 +68,12 @@ public class SetBinderAdapter<T> {
 
             @Override
             public void in(Scope scope) {
-
+                throw new UnsupportedOperationException();
             }
 
             @Override
             public void asEagerSingleton() {
-
+                throw new UnsupportedOperationException();
             }
         };
     }

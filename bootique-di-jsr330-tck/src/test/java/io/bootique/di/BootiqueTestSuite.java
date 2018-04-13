@@ -30,22 +30,14 @@ public class BootiqueTestSuite {
     private static Injector createInjector() {
         Module module = binder -> {
             binder.bind(Car.class).to(Convertible.class);
-
-            binder.bind(Seat.class).to(Seat.class);
             binder.bind(Key.get(Seat.class, Drivers.class)).to(DriversSeat.class);
-
-            binder.bind(Tire.class).to(Tire.class);
             binder.bind(Key.get(Tire.class, "spare")).to(SpareTire.class);
-
             binder.bind(Engine.class).to(V8Engine.class);
-
-            binder.bind(Cupholder.class).to(Cupholder.class);
-            binder.bind(SpareTire.class).to(SpareTire.class);
-            binder.bind(FuelTank.class).to(FuelTank.class);
         };
 
         return DIBootstrap.injectorBuilder(module)
                 .enableMethodInjection() // method injection disabled by default
+                .enableDynamicBindings() // create objects on-demand
                 .defaultNoScope()        // default scope is singleton
                 .build();
     }

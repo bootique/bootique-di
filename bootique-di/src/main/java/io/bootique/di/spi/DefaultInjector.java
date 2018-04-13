@@ -176,7 +176,9 @@ public class DefaultInjector implements Injector {
         if(!allowDynamicBinding) {
             throw new DIRuntimeException("DI container has no binding for key %s and dynamic bindings are disabled.", key);
         }
-        binder.bind(key).to((Class)key.getType().getRawType()).withoutScope();
+        // create new binding
+        // TODO: can we use something better than raw key type?
+        binder.bind(key).to((Class)key.getType().getRawType());
         return getBinding(key);
     }
 

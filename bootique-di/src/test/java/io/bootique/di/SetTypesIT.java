@@ -128,6 +128,21 @@ public class SetTypesIT {
         assertThat(set, hasItems(1,2,3,4));
     }
 
+    @Test
+    public void testAddKey() {
+        Injector injector = DIBootstrap.createInjector(b -> {
+            b.bind(Key.get(Integer.class, "1")).toInstance(1);
+            b.bind(Key.get(Integer.class, "2")).toInstance(2);
+            b.bindSet(Integer.class)
+                    .add(Key.get(Integer.class, "1"))
+                    .add(Key.get(Integer.class, "2"));
+        });
+
+        Set<Integer> set = injector.getInstance(Key.getSetOf(Integer.class));
+        assertEquals(2, set.size());
+        assertThat(set, hasItems(1,2));
+    }
+
     private void assertSetContent(Injector injector) {
         Service service = injector.getInstance(Service.class);
 

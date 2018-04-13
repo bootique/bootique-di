@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.inject.Inject;
 
 import org.junit.Test;
@@ -87,6 +88,20 @@ public class MapTypesIT {
         assertArrayEquals(new Object[]{1,2,3}, impl.getMap().get("1").toArray());
     }
 
+    @Test
+    public void testPutKey() {
+        Injector injector = DIBootstrap.createInjector(b -> {
+            b.bind(Key.get(String.class, "1")).toInstance("str1");
+            b.bind(Key.get(String.class, "2")).toInstance("str2");
+            b.bindMap(Integer.class, String.class)
+                    .put(1, Key.get(String.class, "1"))
+                    .put(2, Key.get(String.class, "2"));
+        });
+
+        Map<Integer,String> map = injector.getInstance(Key.getMapOf(Integer.class, String.class));
+        assertEquals(2, map.size());
+        assertThat(map.values(), hasItems("str1","str2"));
+    }
 
     private void assertMapContent(Injector injector) {
         Service service = injector.getInstance(Service.class);

@@ -24,7 +24,6 @@ class DefaultListBuilder<T> extends DICollectionBuilder<List<T>, T> implements L
 
     @Override
     public ListBuilder<T> add(Class<? extends T> interfaceType) {
-
         Provider<? extends T> provider = createTypeProvider(interfaceType);
         findOrCreateListProvider().add(Key.get(interfaceType), provider);
         return this;
@@ -32,7 +31,6 @@ class DefaultListBuilder<T> extends DICollectionBuilder<List<T>, T> implements L
 
     @Override
     public ListBuilder<T> addAfter(Class<? extends T> interfaceType, Class<? extends T> afterType) {
-
         Provider<? extends T> provider = createTypeProvider(interfaceType);
         findOrCreateListProvider().addAfter(Key.get(interfaceType), provider, Key.get(afterType));
         return this;
@@ -40,7 +38,6 @@ class DefaultListBuilder<T> extends DICollectionBuilder<List<T>, T> implements L
 
     @Override
     public ListBuilder<T> insertBefore(Class<? extends T> interfaceType, Class<? extends T> beforeType) {
-
         Provider<? extends T> provider = createTypeProvider(interfaceType);
         findOrCreateListProvider().insertBefore(Key.get(interfaceType), provider, Key.get(beforeType));
         return this;
@@ -55,6 +52,12 @@ class DefaultListBuilder<T> extends DICollectionBuilder<List<T>, T> implements L
         return this;
     }
 
+    @Override
+    public ListBuilder<T> add(Key<? extends T> valueKey) {
+        findOrCreateListProvider().add(valueKey, getByKeyProvider(valueKey));
+        return this;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public ListBuilder<T> addAfter(T value, Class<? extends T> afterType) {
@@ -64,12 +67,24 @@ class DefaultListBuilder<T> extends DICollectionBuilder<List<T>, T> implements L
         return this;
     }
 
+    @Override
+    public ListBuilder<T> addAfter(Key<? extends T> valueKey, Class<? extends T> afterType) {
+        findOrCreateListProvider().addAfter(valueKey, getByKeyProvider(valueKey), Key.get(afterType));
+        return this;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public ListBuilder<T> insertBefore(T value, Class<? extends T> beforeType) {
         Key<? extends T> key = Key.get((Class<? extends T>) value.getClass(),
                 String.valueOf(incrementer.getAndIncrement()));
         findOrCreateListProvider().insertBefore(key, createInstanceProvider(value), Key.get(beforeType));
+        return this;
+    }
+
+    @Override
+    public ListBuilder<T> insertBefore(Key<? extends T> valueKey, Class<? extends T> beforeType) {
+        findOrCreateListProvider().insertBefore(valueKey, getByKeyProvider(valueKey), Key.get(beforeType));
         return this;
     }
 

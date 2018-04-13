@@ -13,17 +13,23 @@ public interface ListBuilder<T> {
 
     ListBuilder<T> add(T value) throws DIRuntimeException;
 
+    ListBuilder<T> add(Key<? extends T> valueKey) throws DIRuntimeException;
+
     ListBuilder<T> addAll(Collection<T> values) throws DIRuntimeException;
 
     ListBuilder<T> addAfter(Class<? extends T> interfaceType, Class<? extends T> afterType) throws DIRuntimeException;
 
     ListBuilder<T> addAfter(T value, Class<? extends T> afterType) throws DIRuntimeException;
 
+    ListBuilder<T> addAfter(Key<? extends T> valueKey, Class<? extends T> afterType) throws DIRuntimeException;
+
     ListBuilder<T> addAllAfter(Collection<T> values, Class<? extends T> afterType) throws DIRuntimeException;
 
     ListBuilder<T> insertBefore(Class<? extends T> interfaceType, Class<? extends T> beforeType) throws DIRuntimeException;
 
     ListBuilder<T> insertBefore(T value, Class<? extends T> beforeType) throws DIRuntimeException;
+
+    ListBuilder<T> insertBefore(Key<? extends T> valueKey, Class<? extends T> beforeType) throws DIRuntimeException;
 
     ListBuilder<T> insertAllBefore(Collection<T> values, Class<? extends T> afterType) throws DIRuntimeException;
 

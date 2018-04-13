@@ -1,10 +1,19 @@
 package io.bootique.di.spi;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Qualifier;
+
 import com.google.inject.Binding;
+import com.google.inject.BindingAnnotation;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import io.bootique.di.DIBootstrap;
 
 /**
  * Implementation of {@link com.google.inject.Injector} that
@@ -12,32 +21,40 @@ import com.google.inject.Provides;
  */
 public class InjectorAdapter implements com.google.inject.Injector {
 
-    private DefaultInjector bootiqueInjector;
-
-    private BinderAdapter adapter;
-
-    private final ProvidesHandler providesHandler;
+    private final DefaultInjector bootiqueInjector;
+    private final BinderAdapter adapter;
+    private final List<io.bootique.di.Key<?>> eagerSingletons;
 
     public InjectorAdapter(Iterable<? extends Module> modules) {
 
-        // Create empty injector
-        bootiqueInjector = new DefaultInjector();
-        providesHandler = new ProvidesHandler(bootiqueInjector, Provides.class);
+        // Create customized injector
+        eagerSingletons = new ArrayList<>();
+        bootiqueInjector = (DefaultInjector) DIBootstrap.injectorBuilder(b -> b.bind(Injector.class).toInstance(this))
+                .defaultNoScope()
+                .enableDynamicBindings()
+                .withProvidesMethodPredicate(m -> m.isAnnotationPresent(Provides.class))
+                .withQualifierPredicate(c -> c.isAnnotationPresent(Qualifier.class)
+                        || c.isAnnotationPresent(BindingAnnotation.class))
+                .withInjectAnnotationPredicate(o -> o.isAnnotationPresent(Inject.class)
+                        || o.isAnnotationPresent(javax.inject.Inject.class))
+                .withSingletonPredicate(el -> el.isAnnotationPresent(Singleton.class)
+                        || el.isAnnotationPresent(javax.inject.Singleton.class))
+                .withProviderPredicate(t -> Provider.class.equals(t)
+                        || javax.inject.Provider.class.equals(t))
+                .withProviderWrapper(p -> (Provider<Object>) p::get)
+                .build();
 
         // Guice -> Bootique adapters
-        io.bootique.di.Binder bootiqueBinder = new DefaultBinder(bootiqueInjector);
-        adapter = new BinderAdapter(bootiqueBinder, this);
-
-        // provide Guice injector in DI container
-        bootiqueBinder.bind(com.google.inject.Injector.class).toInstance(this);
-
+        adapter = new BinderAdapter(bootiqueInjector.getBinder(), this);
         // Configure all modules manually
         modules.forEach(this::installModule);
+        // Create eager singletons
+        eagerSingletons.forEach(bootiqueInjector::getInstance);
     }
 
     public void installModule(Module module) {
         module.configure(adapter);
-        providesHandler.bindingsFromAnnotatedMethods(module).forEach(p -> p.bind(bootiqueInjector));
+        bootiqueInjector.getProvidesHandler().bindingsFromAnnotatedMethods(module).forEach(p -> p.bind(bootiqueInjector));
     }
 
     @Override
@@ -85,5 +102,9 @@ public class InjectorAdapter implements com.google.inject.Injector {
                 return () -> bootiqueBinding.getScoped().get();
             }
         };
+    }
+
+    <T> void markAsEagerSingleton(io.bootique.di.Key<T> bootiqueKey) {
+        eagerSingletons.add(bootiqueKey);
     }
 }

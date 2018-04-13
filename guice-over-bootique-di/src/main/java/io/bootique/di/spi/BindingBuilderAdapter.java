@@ -10,15 +10,15 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.binder.ScopedBindingBuilder;
+import io.bootique.di.BindingBuilder;
 
 public class BindingBuilderAdapter<T> implements AnnotatedBindingBuilder<T> {
 
-    private final io.bootique.di.Binder bootiqueBinder;
+    private final BinderAdapter binderAdapter;
     private io.bootique.di.Key<T> bootiqueKey;
-    private io.bootique.di.BindingBuilder<T> bootiqueBindingBuilder;
 
-    BindingBuilderAdapter(io.bootique.di.Binder bootiqueBinder, io.bootique.di.Key<T> bootiqueKey) {
-        this.bootiqueBinder = bootiqueBinder;
+    BindingBuilderAdapter(BinderAdapter binderAdapter, io.bootique.di.Key<T> bootiqueKey) {
+        this.binderAdapter = binderAdapter;
         this.bootiqueKey = bootiqueKey;
     }
 
@@ -36,63 +36,59 @@ public class BindingBuilderAdapter<T> implements AnnotatedBindingBuilder<T> {
 
     @Override
     public ScopedBindingBuilder to(Class<? extends T> implementation) {
-        bootiqueBindingBuilder = bootiqueBinder.bind(bootiqueKey);
-        bootiqueBindingBuilder.to(implementation);
+        getBinding().to(implementation);
         return this;
     }
 
     @Override
     public ScopedBindingBuilder to(TypeLiteral<? extends T> implementation) {
-        bootiqueBindingBuilder = bootiqueBinder.bind(bootiqueKey);
-        bootiqueBindingBuilder.to(DiUtils.toBootiqueKey(implementation));
+        getBinding().to(DiUtils.toBootiqueKey(implementation));
         return this;
     }
 
     @Override
     public ScopedBindingBuilder to(Key<? extends T> targetKey) {
-        bootiqueBindingBuilder = bootiqueBinder.bind(bootiqueKey);
-        bootiqueBindingBuilder.to(DiUtils.toBootiqueKey(targetKey));
+        getBinding().to(DiUtils.toBootiqueKey(targetKey));
         return this;
     }
 
     @Override
     public void toInstance(T instance) {
-        bootiqueBindingBuilder = bootiqueBinder.bind(bootiqueKey);
-        bootiqueBindingBuilder.toInstance(instance);
+        getBinding().toInstance(instance);
     }
 
     @Override
     public ScopedBindingBuilder toProvider(Provider<? extends T> provider) {
-        bootiqueBindingBuilder = bootiqueBinder.bind(bootiqueKey);
-        bootiqueBindingBuilder.toProviderInstance(provider);
+        getBinding().toProviderInstance(provider);
         return this;
     }
 
     @Override
     public ScopedBindingBuilder toProvider(Class<? extends Provider<? extends T>> providerType) {
-        bootiqueBindingBuilder = bootiqueBinder.bind(bootiqueKey);
-        bootiqueBindingBuilder.toProvider(providerType);
+        getBinding().toProvider(providerType);
         return this;
     }
 
     @Override
     public void in(Class<? extends Annotation> scopeAnnotation) {
-        bootiqueBindingBuilder = bootiqueBinder.bind(bootiqueKey);
         if(scopeAnnotation == Singleton.class) {
-            bootiqueBindingBuilder.inSingletonScope();
+            getBinding().inSingletonScope();
         } else {
-            // TODO: unimplemented
+            throw new UnsupportedOperationException("Unable to use custom scope Annotation on Bootique DI");
         }
     }
 
     @Override
     public void in(Scope scope) {
-        // TODO: unimplemented
+        throw new UnsupportedOperationException("Unable to use custom Guice scope on Bootique DI");
     }
 
     @Override
     public void asEagerSingleton() {
-        // TODO: should we support this?
-        // it will launch creation of this binding automatically after configuration is done.
+        binderAdapter.getInjectorAdapter().markAsEagerSingleton(bootiqueKey);
+    }
+
+    private BindingBuilder<T> getBinding() {
+        return binderAdapter.getBootiqueBinder().bind(bootiqueKey);
     }
 }

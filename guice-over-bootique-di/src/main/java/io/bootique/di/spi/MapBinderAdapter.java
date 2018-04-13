@@ -24,8 +24,6 @@ public class MapBinderAdapter<K, V> {
         }
         Binder bootiqueBinder = ((BinderAdapter) guiceBinder).getBootiqueBinder();
         this.bootiqueMapBuilder = bootiqueBinder.bindMap(DiUtils.toTypeLiteral(keyType), DiUtils.toTypeLiteral(valueType), annotatedWith);
-        // TODO: guice default is no scope, bootique - singleton
-//        this.bootiqueMapBuilder.in(NoScope.INSTANCE);
     }
 
     public LinkedBindingBuilder<V> addBinding(K key) {
@@ -66,7 +64,7 @@ public class MapBinderAdapter<K, V> {
             @Override
             public void in(Class<? extends Annotation> scopeAnnotation) {
                 if(scopeAnnotation == Singleton.class) {
-                    // TODO: bootiqueMapBuilder.inSingleton();
+                    bootiqueMapBuilder.inSingleton();
                 } else {
                     throw new UnsupportedOperationException();
                 }

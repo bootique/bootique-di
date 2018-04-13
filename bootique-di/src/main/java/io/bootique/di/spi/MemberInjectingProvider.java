@@ -34,7 +34,7 @@ abstract class MemberInjectingProvider<T> implements Provider<T> {
     Annotation getQualifier(Annotation[] annotations, AccessibleObject object) {
         Annotation bindingAnnotation = null;
         for(Annotation fieldAnnotation : annotations) {
-            if(DIUtil.isQualifyingAnnotation(fieldAnnotation)) {
+            if(injector.getPredicates().isQualifierAnnotation(fieldAnnotation)) {
                 if(bindingAnnotation != null) {
                     throw new DIRuntimeException("Found more than one qualifier annotation for '%s.%s'."
                             , ((Member)object).getDeclaringClass().getName()

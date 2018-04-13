@@ -4,7 +4,6 @@ import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Key;
 import io.bootique.di.TypeLiteral;
 
-import javax.inject.Inject;
 import javax.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -17,17 +16,8 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
     private Annotation[] bindingAnnotations;
 
     ConstructorInjectingProvider(Class<? extends T> implementation, DefaultInjector injector) {
-
-        initConstructor(implementation);
-
-        if (constructor == null) {
-            throw new DIRuntimeException(
-                    "Can't find approprate constructor for implementation class '%s'",
-                    implementation.getName());
-        }
-
-        this.constructor.setAccessible(true);
         this.injector = injector;
+        initConstructor(implementation);
     }
 
     @SuppressWarnings("unchecked")
@@ -51,7 +41,7 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
                 continue;
             }
 
-            if (constructor.getAnnotation(Inject.class) != null) {
+            if (injector.getPredicates().haveInjectAnnotation(constructor)) {
                 lastSize = size;
                 lastMatch = constructor;
             }
@@ -73,7 +63,7 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
         for (int i = 0; i < annotations.length; i++) {
             Annotation[] parameterAnnotations = annotations[i];
             for (Annotation annotation : parameterAnnotations) {
-                if(DIUtil.isQualifyingAnnotation(annotation)) {
+                if(injector.getPredicates().isQualifierAnnotation(annotation)) {
                     bindingAnnotations[i] = annotation;
                 }
             }
@@ -93,6 +83,7 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
         }
 
         try {
+            this.constructor.setAccessible(true);
             return constructor.newInstance(args);
         } catch (Exception e) {
             throw new DIRuntimeException(
@@ -102,7 +93,7 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
 
     protected Object value(Class<?> parameter, Type genericType, Annotation bindingAnnotation, InjectionStack stack) {
 
-        if (Provider.class.equals(parameter)) {
+        if (injector.getPredicates().isProviderType(parameter)) {
             Type parameterType = DIUtil.getGenericParameterType(genericType);
             if (parameterType == null) {
                 throw new DIRuntimeException("Constructor provider parameter %s must be "

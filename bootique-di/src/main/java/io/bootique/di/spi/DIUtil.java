@@ -42,11 +42,4 @@ class DIUtil {
         }
     }
 
-    /**
-     * @param annotation instance
-     * @return true if annotation is marked as {@link javax.inject.Qualifier}
-     */
-    static boolean isQualifyingAnnotation(Annotation annotation) {
-        return null != annotation.annotationType().getAnnotation(Qualifier.class);
-    }
 }

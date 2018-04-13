@@ -4,7 +4,6 @@ import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Injector;
 import io.bootique.di.Key;
 import io.bootique.di.Module;
-import io.bootique.di.Provides;
 import io.bootique.di.Scope;
 
 import javax.inject.Provider;
@@ -23,9 +22,10 @@ public class DefaultInjector implements Injector {
     private DefaultScope singletonScope;
     private Scope noScope;
 
-    private DefaultBinder binder;
-    private Map<Key<?>, Binding<?>> bindings;
-    private Map<Key<?>, Decoration<?>> decorations;
+    private final DefaultBinder binder;
+    private final Map<Key<?>, Binding<?>> bindings;
+    private final Map<Key<?>, Decoration<?>> decorations;
+    private final ProvidesHandler providesHandler;
 
     private InjectionStack injectionStack;
     private Scope defaultScope;
@@ -34,11 +34,14 @@ public class DefaultInjector implements Injector {
     private boolean allowOverride;
     private boolean allowMethodInjection;
 
-    public DefaultInjector(Module... modules) throws DIRuntimeException {
-        this(Collections.emptySet(), modules);
+    private final InjectorPredicates predicates;
+
+    DefaultInjector(Module... modules) throws DIRuntimeException {
+        this(Collections.emptySet(), new InjectorPredicates(), modules);
     }
 
-    public DefaultInjector(Set<Options> options, Module... modules) throws DIRuntimeException {
+    public DefaultInjector(Set<Options> options, InjectorPredicates predicates, Module... modules) throws DIRuntimeException {
+        this.predicates = predicates;
 
         this.singletonScope = new DefaultScope();
         this.noScope = NoScope.INSTANCE;
@@ -56,17 +59,14 @@ public class DefaultInjector implements Injector {
         this.decorations = new HashMap<>();
         this.injectionStack = new InjectionStack();
 
-        binder = new DefaultBinder(this);
+        this.providesHandler = new ProvidesHandler(this);
+        this.binder = new DefaultBinder(this);
+
         // bind self for injector injection...
         binder.bind(Injector.class).toInstance(this);
 
         // bind modules
         if (modules != null && modules.length > 0) {
-
-            // annotation may be chosen dynamically...
-            // E.g. for Guice compatibility per https://github.com/bootique/bootique-di/issues/6
-            ProvidesHandler providesHandler = new ProvidesHandler(this, Provides.class);
-
             for (Module module : modules) {
                 module.configure(binder);
                 providesHandler.bindingsFromAnnotatedMethods(module).forEach(p -> p.bind(this));
@@ -78,6 +78,18 @@ public class DefaultInjector implements Injector {
 
     InjectionStack getInjectionStack() {
         return injectionStack;
+    }
+
+    DefaultBinder getBinder() {
+        return binder;
+    }
+
+    ProvidesHandler getProvidesHandler() {
+        return providesHandler;
+    }
+
+    InjectorPredicates getPredicates() {
+        return predicates;
     }
 
     @SuppressWarnings("unchecked")
@@ -156,7 +168,7 @@ public class DefaultInjector implements Injector {
             binding = createDynamicBinding(key);
         }
 
-        return binding.getScoped();
+        return predicates.wrapProvider(binding.getScoped());
     }
 
     @SuppressWarnings("unchecked")
@@ -219,4 +231,5 @@ public class DefaultInjector implements Injector {
         ENABLE_DYNAMIC_BINDINGS,
         ENABLE_METHOD_INJECTION
     }
+
 }

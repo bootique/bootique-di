@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Inject;
 import javax.inject.Provider;
 
 import io.bootique.di.DIRuntimeException;
@@ -32,7 +31,7 @@ class MethodInjectingProvider<T> extends MemberInjectingProvider<T> {
         Map<String, List<Method>> methods = collectMethods(type, new LinkedHashMap<>());
         for (List<Method> methodList : methods.values()){
             methodList.forEach(method -> {
-                if (method.getAnnotation(Inject.class) != null) {
+                if (injector.getPredicates().haveInjectAnnotation(method)) {
                     injectMember(object, method);
                 }
             });
@@ -168,7 +167,7 @@ class MethodInjectingProvider<T> extends MemberInjectingProvider<T> {
             Type parameterType = parameterTypes[i];
             Annotation bindingAnnotation = getQualifier(parameterAnnotations[i], method);
 
-            if (Provider.class.equals(parameterClasses[i])) {
+            if (injector.getPredicates().isProviderType(parameterClasses[i])) {
                 parameterType = DIUtil.getGenericParameterType(parameterType);
                 if (parameterType == null) {
                     throw new DIRuntimeException("Parameter of method '%s.%s()' of 'Provider' type must be "

@@ -6,7 +6,6 @@ import io.bootique.di.Scope;
 import io.bootique.di.TypeLiteral;
 
 import javax.inject.Provider;
-import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -22,11 +21,9 @@ import java.util.Collections;
 class ProvidesHandler {
 
     private final DefaultInjector injector;
-    private final Class<? extends Annotation> providesAnnotation;
 
-    ProvidesHandler(DefaultInjector injector, Class<? extends Annotation> providesAnnotation) {
+    ProvidesHandler(DefaultInjector injector) {
         this.injector = injector;
-        this.providesAnnotation = providesAnnotation;
     }
 
     Collection<KeyBindingPair<?>> bindingsFromAnnotatedMethods(Object module) {
@@ -35,9 +32,7 @@ class ProvidesHandler {
 
         // consider annotated methods in the module class
         for (Method m : module.getClass().getDeclaredMethods()) {
-            Annotation pa = m.getAnnotation(providesAnnotation);
-            if (pa != null) {
-
+            if (injector.getPredicates().isProviderMethod(m)) {
                 validateProvidesMethod(module, m);
 
                 // change to mutable array on first match
@@ -72,7 +67,7 @@ class ProvidesHandler {
     private Annotation extractQualifier(Method method, Annotation[] annotations) {
         Annotation found = null;
         for (Annotation a : annotations) {
-            if (DIUtil.isQualifyingAnnotation(a)) {
+            if (injector.getPredicates().isQualifierAnnotation(a)) {
                 if (found != null) {
                     throw new DIRuntimeException("Multiple qualifying annotations found for method '%s()' or its parameter on module '%s'"
                             , method.getName()
@@ -96,7 +91,7 @@ class ProvidesHandler {
     private boolean isProviderType(Type type) {
         if (type instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) type;
-            return parameterizedType.getRawType().equals(Provider.class);
+            return injector.getPredicates().isProviderType(parameterizedType.getRawType());
         }
         return false;
     }
@@ -134,7 +129,7 @@ class ProvidesHandler {
 
     private Scope createScope(Method method) {
         // force singleton for annotated methods
-        if(method.getAnnotation(Singleton.class) != null) {
+        if(injector.getPredicates().isSingleton(method)) {
             return injector.getSingletonScope();
         }
         // otherwise use injector's default scope

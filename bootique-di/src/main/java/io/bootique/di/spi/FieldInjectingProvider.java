@@ -4,7 +4,6 @@ import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Key;
 import io.bootique.di.TypeLiteral;
 
-import javax.inject.Inject;
 import javax.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -32,8 +31,8 @@ class FieldInjectingProvider<T> extends MemberInjectingProvider<T> {
                 // skip static fields completely
                 continue;
             }
-            Inject inject = field.getAnnotation(Inject.class);
-            if (inject != null) {
+
+            if (injector.getPredicates().haveInjectAnnotation(field)) {
                 injectMember(object, field, getQualifier(field));
             }
         }
@@ -58,7 +57,7 @@ class FieldInjectingProvider<T> extends MemberInjectingProvider<T> {
         Class<?> fieldType = field.getType();
         InjectionStack stack = injector.getInjectionStack();
 
-        if (Provider.class.equals(fieldType)) {
+        if (injector.getPredicates().isProviderType(fieldType)) {
             Type parameterType = DIUtil.getGenericParameterType(field.getGenericType());
 
             if (parameterType == null) {

@@ -6,7 +6,6 @@ import io.bootique.di.Key;
 import io.bootique.di.Scope;
 
 import javax.inject.Provider;
-import javax.inject.Singleton;
 
 class DefaultBindingBuilder<T> implements BindingBuilder<T> {
 
@@ -27,7 +26,7 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
         }
 
         injector.putBinding(bindingKey, provider1);
-        if(implementation.getAnnotation(Singleton.class) != null) {
+        if(injector.getPredicates().isSingleton(implementation)) {
             injector.changeBindingScope(bindingKey, injector.getSingletonScope());
         }
 

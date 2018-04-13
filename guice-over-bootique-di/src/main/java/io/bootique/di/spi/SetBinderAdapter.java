@@ -39,12 +39,14 @@ public class SetBinderAdapter<T> {
 
             @Override
             public ScopedBindingBuilder to(TypeLiteral<? extends T> implementation) {
-                throw new UnsupportedOperationException();
+                bootiqueSetBuilder.add(DiUtils.toBootiqueKey(implementation));
+                return this;
             }
 
             @Override
             public ScopedBindingBuilder to(Key<? extends T> targetKey) {
-                throw new UnsupportedOperationException();
+                bootiqueSetBuilder.add(DiUtils.toBootiqueKey(targetKey));
+                return this;
             }
 
             @Override

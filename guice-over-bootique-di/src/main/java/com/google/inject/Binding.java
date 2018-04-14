@@ -24,12 +24,10 @@ package com.google.inject;
  *
  * <ul>
  * <li>Explicitly in a module, via {@code bind()} and {@code bindConstant()} statements:
- *     <pre>
+ * <pre>
  *     bind(Service.class).annotatedWith(Red.class).to(ServiceImpl.class);
  *     bindConstant().annotatedWith(ServerHost.class).to(args[0]);</pre>
  *
- * <li>Implicitly by the Injector by following a type's {@link ImplementedBy pointer} {@link
- *     ProvidedBy annotations} or by using its {@link Inject annotated} or default constructor.
  * <li>By converting a bound instance to a different type.
  * <li>For {@link Provider providers}, by delegating to the binding for the provided type.
  * </ul>
@@ -38,13 +36,13 @@ package com.google.inject;
  *
  * <ul>
  * <li><strong>Module bindings</strong> are incomplete and cannot be used to provide instances. This
- *     is because the applicable scopes and interceptors may not be known until an injector is
- *     created. From a tool's perspective, module bindings are like the injector's source code. They
- *     can be inspected or rewritten, but this analysis must be done statically.
+ * is because the applicable scopes and interceptors may not be known until an injector is
+ * created. From a tool's perspective, module bindings are like the injector's source code. They
+ * can be inspected or rewritten, but this analysis must be done statically.
  * <li><strong>Injector bindings</strong> are complete and valid and can be used to provide
- *     instances. From a tools' perspective, injector bindings are like reflection for an injector.
- *     They have full runtime information, including the complete graph of injections necessary to
- *     satisfy a binding.
+ * instances. From a tools' perspective, injector bindings are like reflection for an injector.
+ * They have full runtime information, including the complete graph of injections necessary to
+ * satisfy a binding.
  * </ul>
  *
  * @param <T> the bound type. The injected is always assignable to this type.
@@ -53,16 +51,18 @@ package com.google.inject;
  */
 public interface Binding<T> {
 
-  /** Returns the key for this binding. */
-  Key<T> getKey();
+    /**
+     * Returns the key for this binding.
+     */
+    Key<T> getKey();
 
-  /**
-   * Returns the scoped provider guice uses to fulfill requests for this binding.
-   *
-   * @throws UnsupportedOperationException when invoked on a {@link Binding} created via
-   *     com.google.inject.spi.Elements#getElements. This method is only supported on {@link
-   *     Binding}s returned from an injector.
-   */
-  Provider<T> getProvider();
+    /**
+     * Returns the scoped provider guice uses to fulfill requests for this binding.
+     *
+     * @throws UnsupportedOperationException when invoked on a {@link Binding} created via
+     *                                       com.google.inject.spi.Elements#getElements. This method is only supported on {@link
+     *                                       Binding}s returned from an injector.
+     */
+    Provider<T> getProvider();
 
 }

@@ -25,7 +25,7 @@ import com.google.inject.binder.LinkedBindingBuilder;
  * they may each contribute their own bindings and other registrations.
  *
  * <h3>The Guice Binding EDSL</h3>
- *
+ * <p>
  * Guice uses an <i>embedded domain-specific language</i>, or EDSL, to help you create bindings
  * simply and readably. This approach is great for overall usability, but it does come with a small
  * cost: <b>it is difficult to learn how to use the Binding EDSL by reading method-level
@@ -34,7 +34,7 @@ import com.google.inject.binder.LinkedBindingBuilder;
  *
  * <pre>
  *     bind(ServiceImpl.class);</pre>
- *
+ * <p>
  * This statement does essentially nothing; it "binds the {@code ServiceImpl} class to itself" and
  * does not change Guice's default behavior. You may still want to use this if you prefer your
  * {@link Module} class to serve as an explicit <i>manifest</i> for the services it provides. Also,
@@ -43,16 +43,13 @@ import com.google.inject.binder.LinkedBindingBuilder;
  *
  * <pre>
  *     bind(Service.class).to(ServiceImpl.class);</pre>
- *
+ * <p>
  * Specifies that a request for a {@code Service} instance with no binding annotations should be
- * treated as if it were a request for a {@code ServiceImpl} instance. This <i>overrides</i> the
- * function of any {@link ImplementedBy @ImplementedBy} or {@link ProvidedBy @ProvidedBy}
- * annotations found on {@code Service}, since Guice will have already "moved on" to {@code
- * ServiceImpl} before it reaches the point when it starts looking for these annotations.
+ * treated as if it were a request for a {@code ServiceImpl} instance.
  *
  * <pre>
  *     bind(Service.class).toProvider(ServiceProvider.class);</pre>
- *
+ * <p>
  * In this example, {@code ServiceProvider} must extend or implement {@code Provider<Service>}. This
  * binding specifies that Guice should resolve an unannotated injection request for {@code Service}
  * by first resolving an instance of {@code ServiceProvider} in the regular way, then calling {@link
@@ -65,7 +62,7 @@ import com.google.inject.binder.LinkedBindingBuilder;
  *
  * <pre>
  *     bind(Service.class).annotatedWith(Red.class).to(ServiceImpl.class);</pre>
- *
+ * <p>
  * Like the previous example, but only applies to injection requests that use the binding annotation
  * {@code @Red}. If your module also includes bindings for particular <i>values</i> of the
  * {@code @Red} annotation (see below), then this binding will serve as a "catch-all" for any values
@@ -75,7 +72,7 @@ import com.google.inject.binder.LinkedBindingBuilder;
  *     bind(ServiceImpl.class).in(Singleton.class);
  *     // or, alternatively
  *     bind(ServiceImpl.class).in(Scopes.SINGLETON);</pre>
- *
+ * <p>
  * Either of these statements places the {@code ServiceImpl} class into singleton scope. Guice will
  * create only one instance of {@code ServiceImpl} and will reuse it for all injection requests of
  * this type. Note that it is still possible to bind another instance of {@code ServiceImpl} if the
@@ -94,7 +91,7 @@ import com.google.inject.binder.LinkedBindingBuilder;
  * <pre>
  *     bind(new TypeLiteral&lt;PaymentService&lt;CreditCard>>() {})
  *         .to(CreditCardPaymentService.class);</pre>
- *
+ * <p>
  * This admittedly odd construct is the way to bind a parameterized type. It tells Guice how to
  * honor an injection request for an element of type {@code PaymentService<CreditCard>}. The class
  * {@code CreditCardPaymentService} must implement the {@code PaymentService<CreditCard>} interface.
@@ -105,7 +102,7 @@ import com.google.inject.binder.LinkedBindingBuilder;
  *     bind(Service.class).toInstance(new ServiceImpl());
  *     // or, alternatively
  *     bind(Service.class).toInstance(SomeLegacyRegistry.getService());</pre>
- *
+ * <p>
  * In this example, your module itself, <i>not Guice</i>, takes responsibility for obtaining a
  * {@code ServiceImpl} instance, then asks Guice to always use this single instance to fulfill all
  * {@code Service} injection requests. When the {@link Injector} is created, it will automatically
@@ -115,7 +112,7 @@ import com.google.inject.binder.LinkedBindingBuilder;
  *
  * <pre>
  *     bindConstant().annotatedWith(ServerHost.class).to(args[0]);</pre>
- *
+ * <p>
  * Sets up a constant binding. Constant injections must always be annotated. When a constant
  * binding's value is a string, it is eligile for conversion to all primitive types, to {@link
  * Enum#valueOf(Class, String) all enums}, and to {@link Class#forName class literals}.
@@ -125,7 +122,7 @@ import com.google.inject.binder.LinkedBindingBuilder;
  *    . . .
  *     red = MyModule.class.getDeclaredField("red").getAnnotation(Color.class);
  *     bind(Service.class).annotatedWith(red).to(RedService.class);</pre>
- *
+ * <p>
  * If your binding annotation has parameters you can apply different bindings to different specific
  * values of your annotation. Getting your hands on the right instance of the annotation is a bit of
  * a pain -- one approach, shown above, is to apply a prototype annotation to a field in your module
@@ -135,7 +132,7 @@ import com.google.inject.binder.LinkedBindingBuilder;
  *     bind(Service.class)
  *         .annotatedWith(Names.named("blue"))
  *         .to(BlueService.class);</pre>
- *
+ * <p>
  * Differentiating by names is a common enough use case that we provided a standard annotation,
  * {@link com.google.inject.name.Named @Named}. Because of Guice's library support, binding by name
  * is quite easier than in the arbitrary binding annotation case we just saw. However, remember that
@@ -146,7 +143,7 @@ import com.google.inject.binder.LinkedBindingBuilder;
  *     Constructor<T> loneCtor = getLoneCtorFromServiceImplViaReflection();
  *     bind(ServiceImpl.class)
  *         .toConstructor(loneCtor);</pre>
- *
+ * <p>
  * In this example, we directly tell Guice which constructor to use in a concrete class
  * implementation. It means that we do not need to place {@literal @}Inject on any of the
  * constructors and that Guice treats the provided constructor as though it were annotated so. It is
@@ -165,13 +162,19 @@ import com.google.inject.binder.LinkedBindingBuilder;
  */
 public interface Binder {
 
-    /** See the EDSL examples at {@link Binder}. */
+    /**
+     * See the EDSL examples at {@link Binder}.
+     */
     <T> LinkedBindingBuilder<T> bind(Key<T> key);
 
-    /** See the EDSL examples at {@link Binder}. */
+    /**
+     * See the EDSL examples at {@link Binder}.
+     */
     <T> AnnotatedBindingBuilder<T> bind(TypeLiteral<T> typeLiteral);
 
-    /** See the EDSL examples at {@link Binder}. */
+    /**
+     * See the EDSL examples at {@link Binder}.
+     */
     <T> AnnotatedBindingBuilder<T> bind(Class<T> type);
 
 }

@@ -43,13 +43,13 @@ public class BindingBuilderAdapter<T> implements AnnotatedBindingBuilder<T> {
 
     @Override
     public ScopedBindingBuilder to(TypeLiteral<? extends T> implementation) {
-        getBinding().to(DiUtils.toBootiqueKey(implementation));
+        getBinding().to(ConversionUtils.toBootiqueKey(implementation));
         return this;
     }
 
     @Override
     public ScopedBindingBuilder to(Key<? extends T> targetKey) {
-        getBinding().to(DiUtils.toBootiqueKey(targetKey));
+        getBinding().to(ConversionUtils.toBootiqueKey(targetKey));
         return this;
     }
 

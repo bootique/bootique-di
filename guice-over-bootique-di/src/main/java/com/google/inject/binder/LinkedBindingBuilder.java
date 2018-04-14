@@ -26,31 +26,39 @@ import com.google.inject.TypeLiteral;
  */
 public interface LinkedBindingBuilder<T> extends ScopedBindingBuilder {
 
-  /** See the EDSL examples at {@link com.google.inject.Binder}. */
-  ScopedBindingBuilder to(Class<? extends T> implementation);
+    /**
+     * See the EDSL examples at {@link com.google.inject.Binder}.
+     */
+    ScopedBindingBuilder to(Class<? extends T> implementation);
 
-  /** See the EDSL examples at {@link com.google.inject.Binder}. */
-  ScopedBindingBuilder to(TypeLiteral<? extends T> implementation);
+    /**
+     * See the EDSL examples at {@link com.google.inject.Binder}.
+     */
+    ScopedBindingBuilder to(TypeLiteral<? extends T> implementation);
 
-  /** See the EDSL examples at {@link com.google.inject.Binder}. */
-  ScopedBindingBuilder to(Key<? extends T> targetKey);
+    /**
+     * See the EDSL examples at {@link com.google.inject.Binder}.
+     */
+    ScopedBindingBuilder to(Key<? extends T> targetKey);
 
-  /**
-   * See the EDSL examples at {@link com.google.inject.Binder}.
-   *
-   * @see com.google.inject.Injector#injectMembers
-   */
-  void toInstance(T instance);
+    /**
+     * See the EDSL examples at {@link com.google.inject.Binder}.
+     *
+     * @see com.google.inject.Injector#injectMembers
+     */
+    void toInstance(T instance);
 
-  /**
-   * See the EDSL examples at {@link com.google.inject.Binder}.
-   *
-   * @see com.google.inject.Injector#injectMembers
-   * @since 4.0
-   */
-  ScopedBindingBuilder toProvider(javax.inject.Provider<? extends T> provider);
+    /**
+     * See the EDSL examples at {@link com.google.inject.Binder}.
+     *
+     * @see com.google.inject.Injector#injectMembers
+     * @since 4.0
+     */
+    ScopedBindingBuilder toProvider(javax.inject.Provider<? extends T> provider);
 
-  /** See the EDSL examples at {@link com.google.inject.Binder}. */
-  ScopedBindingBuilder toProvider(Class<? extends javax.inject.Provider<? extends T>> providerType);
+    /**
+     * See the EDSL examples at {@link com.google.inject.Binder}.
+     */
+    ScopedBindingBuilder toProvider(Class<? extends javax.inject.Provider<? extends T>> providerType);
 
 }

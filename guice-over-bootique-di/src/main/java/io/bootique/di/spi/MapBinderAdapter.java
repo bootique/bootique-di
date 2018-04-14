@@ -23,7 +23,7 @@ public class MapBinderAdapter<K, V> {
             throw new IllegalArgumentException("Unexpected binder implementation: " + guiceBinder.getClass().getName());
         }
         Binder bootiqueBinder = ((BinderAdapter) guiceBinder).getBootiqueBinder();
-        this.bootiqueMapBuilder = bootiqueBinder.bindMap(DiUtils.toTypeLiteral(keyType), DiUtils.toTypeLiteral(valueType), annotatedWith);
+        this.bootiqueMapBuilder = bootiqueBinder.bindMap(ConversionUtils.toTypeLiteral(keyType), ConversionUtils.toTypeLiteral(valueType), annotatedWith);
     }
 
     public LinkedBindingBuilder<V> addBinding(K key) {
@@ -36,13 +36,13 @@ public class MapBinderAdapter<K, V> {
 
             @Override
             public ScopedBindingBuilder to(TypeLiteral<? extends V> implementation) {
-                bootiqueMapBuilder.put(key, DiUtils.toBootiqueKey(implementation));
+                bootiqueMapBuilder.put(key, ConversionUtils.toBootiqueKey(implementation));
                 return this;
             }
 
             @Override
             public ScopedBindingBuilder to(Key<? extends V> targetKey) {
-                bootiqueMapBuilder.put(key, DiUtils.toBootiqueKey(targetKey));
+                bootiqueMapBuilder.put(key, ConversionUtils.toBootiqueKey(targetKey));
                 return this;
             }
 

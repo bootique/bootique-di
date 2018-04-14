@@ -21,7 +21,7 @@ public class SetBinderAdapter<T> {
             throw new IllegalArgumentException("Unexpected binder implementation: " + guiceBinder.getClass().getName());
         }
         Binder bootiqueBinder = ((BinderAdapter) guiceBinder).getBootiqueBinder();
-        this.bootiqueSetBuilder = bootiqueBinder.bindSet(DiUtils.toBootiqueKey(key).getType(), key.getAnnotationType());
+        this.bootiqueSetBuilder = bootiqueBinder.bindSet(ConversionUtils.toBootiqueKey(key).getType(), key.getAnnotationType());
     }
 
     public LinkedBindingBuilder<T> addBinding() {
@@ -39,13 +39,13 @@ public class SetBinderAdapter<T> {
 
             @Override
             public ScopedBindingBuilder to(TypeLiteral<? extends T> implementation) {
-                bootiqueSetBuilder.add(DiUtils.toBootiqueKey(implementation));
+                bootiqueSetBuilder.add(ConversionUtils.toBootiqueKey(implementation));
                 return this;
             }
 
             @Override
             public ScopedBindingBuilder to(Key<? extends T> targetKey) {
-                bootiqueSetBuilder.add(DiUtils.toBootiqueKey(targetKey));
+                bootiqueSetBuilder.add(ConversionUtils.toBootiqueKey(targetKey));
                 return this;
             }
 

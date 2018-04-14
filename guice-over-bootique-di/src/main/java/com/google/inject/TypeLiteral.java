@@ -19,6 +19,7 @@ package com.google.inject;
 import static java.util.Objects.requireNonNull;
 
 import com.google.inject.internal.MoreTypes;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -49,7 +50,7 @@ import java.lang.reflect.Type;
 public class TypeLiteral<T> {
 
     private final Class<? super T> rawType;
-    final Type type;
+    private final Type type;
 
     /**
      * Constructs a new type literal. Derives represented class from type parameter.

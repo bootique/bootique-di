@@ -19,9 +19,8 @@
         <dependency>
             <groupId>io.bootique.di</groupId>
             <artifactId>bootique-di</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
-
 
 </project>

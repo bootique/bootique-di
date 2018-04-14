@@ -25,9 +25,13 @@ import java.lang.annotation.Annotation;
  */
 public interface AnnotatedBindingBuilder<T> extends LinkedBindingBuilder<T> {
 
-  /** See the EDSL examples at {@link com.google.inject.Binder}. */
-  LinkedBindingBuilder<T> annotatedWith(Class<? extends Annotation> annotationType);
+    /**
+     * See the EDSL examples at {@link com.google.inject.Binder}.
+     */
+    LinkedBindingBuilder<T> annotatedWith(Class<? extends Annotation> annotationType);
 
-  /** See the EDSL examples at {@link com.google.inject.Binder}. */
-  LinkedBindingBuilder<T> annotatedWith(Annotation annotation);
+    /**
+     * See the EDSL examples at {@link com.google.inject.Binder}.
+     */
+    LinkedBindingBuilder<T> annotatedWith(Annotation annotation);
 }

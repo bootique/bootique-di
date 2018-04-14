@@ -24,16 +24,16 @@ package com.google.inject.internal;
  * @author jessewilson@google.com (Jesse Wilson)
  */
 public class ErrorsException extends Exception {
-  // NOTE: this is used by Gin which is abandoned.  So changing this API will prevent Gin users from
-  // upgrading Guice version.
+    // NOTE: this is used by Gin which is abandoned.  So changing this API will prevent Gin users from
+    // upgrading Guice version.
 
-  private final Errors errors;
+    private final Errors errors;
 
-  ErrorsException(Errors errors) {
-    this.errors = errors;
-  }
+    ErrorsException(Errors errors) {
+        this.errors = errors;
+    }
 
-  public Errors getErrors() {
-    return errors;
-  }
+    public Errors getErrors() {
+        return errors;
+    }
 }

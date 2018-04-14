@@ -63,7 +63,9 @@ public class Annotations {
         return hasMethods;
     }
 
-    /** Gets a key for the given type, member and annotations. */
+    /**
+     * Gets a key for the given type, member and annotations.
+     */
     public static Key<?> getKey(TypeLiteral<?> type, Member member, Annotation[] annotations, Errors errors) throws ErrorsException {
         int numErrorsBefore = errors.size();
         Annotation found = findBindingAnnotation(errors, member, annotations);
@@ -71,7 +73,9 @@ public class Annotations {
         return found == null ? Key.get(type) : Key.get(type, found);
     }
 
-    /** Returns the binding annotation on {@code member}, or null if there isn't one. */
+    /**
+     * Returns the binding annotation on {@code member}, or null if there isn't one.
+     */
     public static Annotation findBindingAnnotation(Errors errors, Member member, Annotation[] annotations) {
         Annotation found = null;
         for (Annotation annotation : annotations) {

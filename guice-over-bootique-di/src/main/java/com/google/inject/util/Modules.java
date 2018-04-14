@@ -122,7 +122,7 @@ public final class Modules {
 
         @Override
         public void configure(Binder binder) {
-            BinderAdapter adapter = (BinderAdapter)binder;
+            BinderAdapter adapter = (BinderAdapter) binder;
             baseModules.forEach(m -> adapter.getInjectorAdapter().installModule(m));
         }
     }

@@ -17,6 +17,7 @@
 package com.google.inject.internal;
 
 import com.google.inject.spi.Message;
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Member;
@@ -33,10 +34,14 @@ import java.util.List;
  */
 public final class Errors implements Serializable {
 
-    /** The root errors object. Used to access the list of error messages. */
+    /**
+     * The root errors object. Used to access the list of error messages.
+     */
     private final Errors root;
 
-    /** null unless (root == this) and error messages exist. Never an empty list. */
+    /**
+     * null unless (root == this) and error messages exist. Never an empty list.
+     */
     private List<Message> errors; // lazy, use getErrorsForAdd()
 
     public Errors(Object source) {

@@ -67,7 +67,7 @@ public class InjectorAdapter implements com.google.inject.Injector {
     @SuppressWarnings("unchecked")
     @Override
     public <T> Provider<T> getProvider(Key<T> key) {
-        return () -> (T)bootiqueInjector.getProvider(DiUtils.toBootiqueKey(key)).get();
+        return () -> (T)bootiqueInjector.getProvider(ConversionUtils.toBootiqueKey(key)).get();
     }
 
     @Override
@@ -78,7 +78,7 @@ public class InjectorAdapter implements com.google.inject.Injector {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getInstance(Key<T> key) {
-        return bootiqueInjector.getInstance(DiUtils.toBootiqueKey(key));
+        return bootiqueInjector.getInstance(ConversionUtils.toBootiqueKey(key));
     }
 
     @Override
@@ -88,7 +88,7 @@ public class InjectorAdapter implements com.google.inject.Injector {
 
     @Override
     public <T> Binding<T> getExistingBinding(Key<T> key) {
-        io.bootique.di.spi.Binding<T> bootiqueBinding = bootiqueInjector.getBinding(DiUtils.toBootiqueKey(key));
+        io.bootique.di.spi.Binding<T> bootiqueBinding = bootiqueInjector.getBinding(ConversionUtils.toBootiqueKey(key));
         if(bootiqueBinding == null) {
             return null;
         }
@@ -113,13 +113,14 @@ public class InjectorAdapter implements com.google.inject.Injector {
     @SuppressWarnings("unchecked")
     @Override
     public <T> List<Binding<T>> findBindingsByType(TypeLiteral<T> type) {
-        io.bootique.di.TypeLiteral<T> bootiqueType = DiUtils.toTypeLiteral(type);
+        io.bootique.di.TypeLiteral<T> bootiqueType = ConversionUtils.toTypeLiteral(type);
         List<Binding<T>> result = new ArrayList<>();
+        // TODO: this is slow, should be probably cached
         for(Map.Entry<io.bootique.di.Key<?>, io.bootique.di.spi.Binding<?>> entry
                 : bootiqueInjector.getAllBindings().entrySet()) {
             if(entry.getKey().getType().equals(bootiqueType)) {
                 result.add(toGuiceBinding(
-                        DiUtils.toGuiceKey(type, (io.bootique.di.Key)entry.getKey())
+                        ConversionUtils.toGuiceKey(type, (io.bootique.di.Key)entry.getKey())
                         , (io.bootique.di.spi.Binding)entry.getValue())
                 );
             }

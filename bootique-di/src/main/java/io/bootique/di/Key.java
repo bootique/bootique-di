@@ -155,9 +155,16 @@ public class Key<T> {
      * Returns an optional name of the binding used to distinguish multiple bindings of
      * the same object type.
      */
-    String getBindingName() {
+    public String getBindingName() {
         if (qualifier instanceof NamedKeyQualifier) {
             return ((NamedKeyQualifier) qualifier).getName();
+        }
+        return null;
+    }
+
+    public Class<? extends Annotation> getBindingAnnotation() {
+        if (qualifier instanceof AnnotationTypeQualifier) {
+            return ((AnnotationTypeQualifier) qualifier).getAnnotationType();
         }
         return null;
     }
@@ -267,6 +274,10 @@ public class Key<T> {
         @Override
         public String toString() {
             return "@" + annotationType.getName();
+        }
+
+        public Class<? extends Annotation> getAnnotationType() {
+            return annotationType;
         }
     }
 

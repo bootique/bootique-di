@@ -21,6 +21,7 @@ import com.google.inject.spi.Messages;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -41,6 +42,10 @@ public final class ProvisionException extends RuntimeException {
 
     public ProvisionException(String message) {
         this.messages = Collections.singleton(new Message(message));
+    }
+
+    public ProvisionException(Collection<Message> messages) {
+        this.messages = new HashSet<>(messages);
     }
 
     /**

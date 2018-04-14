@@ -16,6 +16,8 @@
 
 package com.google.inject;
 
+import java.util.List;
+
 /**
  * Builds the graphs of objects that make up your application. The injector tracks the dependencies
  * for each type and uses bindings to inject them. This is the core of Guice, although you rarely
@@ -98,4 +100,12 @@ public interface Injector {
      * @since 3.0
      */
     <T> Binding<T> getExistingBinding(Key<T> key);
+
+    /**
+     * Returns all explicit bindings for {@code type}.
+     *
+     * <p>This method is part of the Guice SPI and is intended for use by tools and extensions.
+     */
+    <T> List<Binding<T>> findBindingsByType(TypeLiteral<T> type);
+
 }

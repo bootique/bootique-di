@@ -294,6 +294,10 @@ public class DefaultInjector implements Injector {
         return injectionTraceEnabled;
     }
 
+    Map<Key<?>, Binding<?>> getAllBindings() {
+        return Collections.unmodifiableMap(bindings);
+    }
+
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void applyDecorators() {
         for (Entry<Key<?>, Decoration<?>> e : decorations.entrySet()) {

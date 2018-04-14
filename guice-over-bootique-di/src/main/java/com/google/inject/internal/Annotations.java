@@ -19,12 +19,15 @@ package com.google.inject.internal;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import com.google.inject.BindingAnnotation;
+import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
@@ -58,6 +61,31 @@ public class Annotations {
             }
         }
         return hasMethods;
+    }
+
+    /** Gets a key for the given type, member and annotations. */
+    public static Key<?> getKey(TypeLiteral<?> type, Member member, Annotation[] annotations, Errors errors) throws ErrorsException {
+        int numErrorsBefore = errors.size();
+        Annotation found = findBindingAnnotation(errors, member, annotations);
+        errors.throwIfNewErrors(numErrorsBefore);
+        return found == null ? Key.get(type) : Key.get(type, found);
+    }
+
+    /** Returns the binding annotation on {@code member}, or null if there isn't one. */
+    public static Annotation findBindingAnnotation(Errors errors, Member member, Annotation[] annotations) {
+        Annotation found = null;
+        for (Annotation annotation : annotations) {
+            Class<? extends Annotation> annotationType = annotation.annotationType();
+            if (isBindingAnnotation(annotationType)) {
+                if (found != null) {
+                    errors.duplicateBindingAnnotations(member, found.annotationType(), annotationType);
+                } else {
+                    found = annotation;
+                }
+            }
+        }
+
+        return found;
     }
 
     // TODO: Guice cache had weak keys..

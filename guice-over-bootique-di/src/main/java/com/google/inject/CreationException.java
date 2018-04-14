@@ -47,4 +47,8 @@ public class CreationException extends RuntimeException {
     }
 
     private static final long serialVersionUID = 0;
+
+    public Collection<Message> getErrorMessages() {
+        return messages;
+    }
 }

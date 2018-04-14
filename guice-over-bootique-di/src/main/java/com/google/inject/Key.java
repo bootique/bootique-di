@@ -20,6 +20,7 @@ import static com.google.inject.internal.Annotations.generateAnnotation;
 import static com.google.inject.internal.Annotations.isAllDefaultMethods;
 
 import com.google.inject.internal.Annotations;
+import io.bootique.di.spi.DiUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -156,6 +157,19 @@ public class Key<T> {
     private interface AnnotationStrategy {
         Annotation getAnnotation();
         Class<? extends Annotation> getAnnotationType();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Key<?> key = (Key<?>) o;
+        return DiUtils.toBootiqueKey(this).equals(DiUtils.toBootiqueKey(key));
+    }
+
+    @Override
+    public int hashCode() {
+        return DiUtils.toBootiqueKey(this).hashCode();
     }
 
     /**

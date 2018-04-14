@@ -2,6 +2,7 @@ package io.bootique.di.spi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Qualifier;
 
 import com.google.inject.Binding;
@@ -13,6 +14,7 @@ import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
 import io.bootique.di.DIBootstrap;
 
 /**
@@ -91,6 +93,10 @@ public class InjectorAdapter implements com.google.inject.Injector {
             return null;
         }
 
+        return toGuiceBinding(key, bootiqueBinding);
+    }
+
+    private <T> Binding<T> toGuiceBinding(Key<T> key, io.bootique.di.spi.Binding<T> bootiqueBinding) {
         return new Binding<T>() {
             @Override
             public Key<T> getKey() {
@@ -102,6 +108,23 @@ public class InjectorAdapter implements com.google.inject.Injector {
                 return () -> bootiqueBinding.getScoped().get();
             }
         };
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> List<Binding<T>> findBindingsByType(TypeLiteral<T> type) {
+        io.bootique.di.TypeLiteral<T> bootiqueType = DiUtils.toTypeLiteral(type);
+        List<Binding<T>> result = new ArrayList<>();
+        for(Map.Entry<io.bootique.di.Key<?>, io.bootique.di.spi.Binding<?>> entry
+                : bootiqueInjector.getAllBindings().entrySet()) {
+            if(entry.getKey().getType().equals(bootiqueType)) {
+                result.add(toGuiceBinding(
+                        DiUtils.toGuiceKey(type, (io.bootique.di.Key)entry.getKey())
+                        , (io.bootique.di.spi.Binding)entry.getValue())
+                );
+            }
+        }
+        return result;
     }
 
     <T> void markAsEagerSingleton(io.bootique.di.Key<T> bootiqueKey) {

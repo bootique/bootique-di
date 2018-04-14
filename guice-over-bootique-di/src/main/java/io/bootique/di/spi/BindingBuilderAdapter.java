@@ -15,6 +15,7 @@ import io.bootique.di.BindingBuilder;
 public class BindingBuilderAdapter<T> implements AnnotatedBindingBuilder<T> {
 
     private final BinderAdapter binderAdapter;
+    private BindingBuilder<T> bindingBuilder;
     private io.bootique.di.Key<T> bootiqueKey;
 
     BindingBuilderAdapter(BinderAdapter binderAdapter, io.bootique.di.Key<T> bootiqueKey) {
@@ -89,6 +90,9 @@ public class BindingBuilderAdapter<T> implements AnnotatedBindingBuilder<T> {
     }
 
     private BindingBuilder<T> getBinding() {
-        return binderAdapter.getBootiqueBinder().bind(bootiqueKey);
+        if(bindingBuilder == null) {
+            bindingBuilder = binderAdapter.getBootiqueBinder().bind(bootiqueKey);
+        }
+        return bindingBuilder;
     }
 }

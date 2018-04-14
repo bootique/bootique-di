@@ -128,6 +128,12 @@ public class InjectorAdapter implements com.google.inject.Injector {
     }
 
     <T> void markAsEagerSingleton(io.bootique.di.Key<T> bootiqueKey) {
+        io.bootique.di.spi.Binding<T> binding = bootiqueInjector.getBinding(bootiqueKey);
+        if(binding != null) {
+            binding.changeScope(bootiqueInjector.getSingletonScope());
+        } else {
+            bootiqueInjector.getBinder().bind(bootiqueKey).inSingletonScope();
+        }
         eagerSingletons.add(bootiqueKey);
     }
 }

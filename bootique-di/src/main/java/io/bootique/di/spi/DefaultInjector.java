@@ -1,5 +1,6 @@
 package io.bootique.di.spi;
 
+import io.bootique.di.BindingBuilder;
 import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Injector;
 import io.bootique.di.Key;
@@ -108,9 +109,28 @@ public class DefaultInjector implements Injector {
 
     <T> void putBinding(Key<T> bindingKey, Binding<T> binding) {
         Binding<?> oldBinding = bindings.put(bindingKey, binding);
-        if(oldBinding != null && !oldBinding.isOptional() && !allowOverride) {
-            throw new DIRuntimeException("Trying to override key %s.", bindingKey);
+        if(!canOverride(oldBinding, binding)) {
+            throw new DIRuntimeException("Unable to override key %s. It is final and override is disabled.", bindingKey);
         }
+    }
+
+    /**
+     * <ul>
+     *     <li> Can always override optional bindings
+     *     <li> Can override if new binding marked as override
+     *     <li> Can always override if Injector configured with overrides enabled
+     * </ul>
+     *
+     * @param oldBinding existing binding (or null if absent) to override
+     * @param withBinding new binding that wants to override existing one
+     *
+     * @return can binding be overridden with new one
+     */
+    private boolean canOverride(Binding<?> oldBinding, Binding<?> withBinding) {
+        // binding provider can be null if it is incomplete (e.g. binder.bind(MyClass.class);)
+        return oldBinding == null || oldBinding.getOriginal() == null
+                || oldBinding.isOptional()
+                || allowOverride;
     }
 
     <T> void putDecorationAfter(Key<T> bindingKey, DecoratorProvider<T> decoratorProvider) {
@@ -168,21 +188,24 @@ public class DefaultInjector implements Injector {
     @Override
     public <T> Provider<T> getProvider(Key<T> key) throws DIRuntimeException {
         Binding<T> binding = getBinding(key);
-        if (binding == null) {
-            binding = createDynamicBinding(key);
+        if (binding == null || binding.getOriginal() == null) {
+            binding = createDynamicBinding(key, binding);
         }
 
         return predicates.wrapProvider(binding.getScoped());
     }
 
     @SuppressWarnings("unchecked")
-    private <T> Binding<T> createDynamicBinding(Key<T> key) {
-        if(!allowDynamicBinding) {
+    private <T> Binding<T> createDynamicBinding(Key<T> key, Binding<T> binding) {
+        if(binding == null && !allowDynamicBinding) {
             throw new DIRuntimeException("DI container has no binding for key %s and dynamic bindings are disabled.", key);
         }
         // create new binding
-        // TODO: can we use something better than raw key type?
-        binder.bind(key).to((Class)key.getType().getRawType());
+        BindingBuilder<T> builder = binder.bind(key).to((Class)key.getType().getRawType());
+        // if binding was already declared use it's scope
+        if(binding != null) {
+            builder.in(binding.getScope());
+        }
         return getBinding(key);
     }
 

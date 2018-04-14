@@ -68,6 +68,10 @@ class Binding<T> {
         return scoped;
     }
 
+    Scope getScope() {
+        return scope;
+    }
+
     public void setOptional(boolean optional) {
         this.optional = optional;
     }

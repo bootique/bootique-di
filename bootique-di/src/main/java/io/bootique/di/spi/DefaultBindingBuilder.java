@@ -18,10 +18,10 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
         initBinding();
     }
 
-    @SuppressWarnings("unchecked")
     protected void initBinding() {
-        // TODO: init binding with key type, to allow direct binding to class w/o explicit call to to() methods
-        // to((Class<? extends T>)bindingKey.getType().getRawType());
+        // Put binding without provider.
+        // If no provider will be configured in this builder, it will be created at resolve time by Injector.
+        injector.putBinding(bindingKey, (Provider<T>) null);
     }
 
     @Override

@@ -99,12 +99,16 @@ public class DefaultInjector implements Injector {
     }
 
     <T> void putBinding(Key<T> bindingKey, Provider<T> provider) {
-        putBinding(bindingKey, new Binding<>(provider, defaultScope));
+        putBinding(bindingKey, new Binding<>(provider, defaultScope, false));
+    }
+
+    <T> void putOptionalBinding(Key<T> bindingKey, Provider<T> provider) {
+        putBinding(bindingKey, new Binding<>(provider, defaultScope, true));
     }
 
     <T> void putBinding(Key<T> bindingKey, Binding<T> binding) {
         Binding<?> oldBinding = bindings.put(bindingKey, binding);
-        if(oldBinding != null && !allowOverride) {
+        if(oldBinding != null && !oldBinding.isOptional() && !allowOverride) {
             throw new DIRuntimeException("Trying to override key %s.", bindingKey);
         }
     }

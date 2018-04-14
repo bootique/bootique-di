@@ -15,6 +15,13 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
     DefaultBindingBuilder(Key<T> bindingKey, DefaultInjector injector) {
         this.injector = injector;
         this.bindingKey = bindingKey;
+        initBinding();
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void initBinding() {
+        // TODO: init binding with key type, to allow direct binding to class w/o explicit call to to() methods
+        // to((Class<? extends T>)bindingKey.getType().getRawType());
     }
 
     @Override

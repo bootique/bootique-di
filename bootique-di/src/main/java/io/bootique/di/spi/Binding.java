@@ -15,16 +15,21 @@ class Binding<T> {
     private Provider<T> decorated;
     private Provider<T> scoped;
     private Scope scope;
+    private boolean optional;
 
-    Binding(Provider<T> provider, Scope initialScope) {
+    Binding(Provider<T> provider, Scope initialScope, boolean optional) {
         this.original = provider;
         this.decorated = provider;
+        this.optional = optional;
 
         changeScope(initialScope);
     }
 
     void changeScope(Scope scope) {
         if (scope == null) {
+            scope = NoScope.INSTANCE;
+        } else if(optional) {
+            // optional binding should not have scope, as it resolves to null
             scope = NoScope.INSTANCE;
         }
 
@@ -61,5 +66,13 @@ class Binding<T> {
 
     Provider<T> getScoped() {
         return scoped;
+    }
+
+    public void setOptional(boolean optional) {
+        this.optional = optional;
+    }
+
+    boolean isOptional() {
+        return optional;
     }
 }

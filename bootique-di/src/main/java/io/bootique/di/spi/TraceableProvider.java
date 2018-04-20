@@ -25,7 +25,12 @@ class TraceableProvider<T> implements Provider<T> {
     @Override
     public T get() {
         injector.tracePush(key);
-        T result = delegate.get();
+        T result;
+        try {
+            result = delegate.get();
+        } catch (Exception ex) {
+            return injector.throwException("Underlying provider (%s) thrown exception", ex, DIUtil.getProviderName(delegate));
+        }
         if (result == null && delegate != OptionalBindingBuilder.NULL_PROVIDER) {
             // throw early here, to trace this error with more details
             injector.throwException("Underlying provider (%s) returned NULL instance", DIUtil.getProviderName(delegate));

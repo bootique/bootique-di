@@ -22,12 +22,17 @@ abstract class MemberInjectingProvider<T> implements NamedProvider<T> {
 
     @Override
     public T get() {
-        T object = delegate.get();
-        if(object == null) {
+        T result;
+        try {
+            result = delegate.get();
+        } catch (Exception ex) {
+            return injector.throwException("Underlying provider (%s) thrown exception", ex, DIUtil.getProviderName(delegate));
+        }
+        if(result == null) {
             injector.throwException("Underlying provider (%s) returned NULL instance", DIUtil.getProviderName(delegate));
         }
-        injectMembers(object, object.getClass());
-        return object;
+        injectMembers(result, result.getClass());
+        return result;
     }
 
     abstract void injectMembers(T object, Class<?> aClass);

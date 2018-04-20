@@ -65,7 +65,7 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
             provider1 = new MethodInjectingProvider<>(provider1, injector);
         }
 
-        Provider<T> provider3 = new CustomProvidersProvider<>(provider1);
+        Provider<T> provider3 = new CustomProvidersProvider<>(injector, providerType, provider1);
         Provider<T> provider4 = new FieldInjectingProvider<>(provider3, injector);
         if(injector.isMethodInjectionEnabled()) {
             provider4 = new MethodInjectingProvider<>(provider4, injector);
@@ -83,7 +83,9 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
             provider1 = new MethodInjectingProvider<>(provider1, injector);
         }
 
-        Provider<T> provider3 = new CustomProvidersProvider<>(provider1);
+        @SuppressWarnings("unchecked")
+        Class<? extends Provider<? extends T>> providerType = (Class<? extends Provider<? extends T>>)provider1.getClass();
+        Provider<T> provider3 = new CustomProvidersProvider<>(injector, providerType, provider1);
         Provider<T> provider4 = new FieldInjectingProvider<>(provider3, injector);
         if(injector.isMethodInjectionEnabled()) {
             provider4 = new MethodInjectingProvider<>(provider4, injector);

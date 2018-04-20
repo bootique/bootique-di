@@ -1,15 +1,15 @@
 package io.bootique.di.spi;
 
-import io.bootique.di.DIRuntimeException;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The implementation here is basically an adjacency list, but a {@link Map} is
@@ -137,7 +137,9 @@ class DIGraph<V> {
 
         // Check that we have used the entire graph (if not, there was a cycle)
         if (result.size() != neighbors.size()) {
-            throw new DIRuntimeException("Dependency cycle detected in DI container");
+            Set<V> remainingKeys = new HashSet<>(neighbors.keySet());
+            remainingKeys.removeIf(result::contains);
+            throw new IllegalStateException("Cycle detected in list for keys: " + remainingKeys);
         }
 
         return result;

@@ -22,7 +22,14 @@ class ListProvider<T> implements Provider<List<T>> {
 
     @Override
     public List<T> get() {
-        List<Key<? extends T>> insertOrder = graph.topSort();
+        List<Key<? extends T>> insertOrder;
+
+        injector.trace("Sorting list elements");
+        try {
+            insertOrder = graph.topSort();
+        } catch (IllegalStateException e) {
+            return injector.throwException(e.getMessage());
+        }
 
         if (insertOrder.size() != providers.size()) {
             List<Key<? extends T>> emptyKeys = new ArrayList<>();

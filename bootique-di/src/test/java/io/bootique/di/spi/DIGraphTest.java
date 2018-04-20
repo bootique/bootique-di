@@ -18,7 +18,6 @@
  */
 package io.bootique.di.spi;
 
-import io.bootique.di.DIRuntimeException;
 import org.junit.Test;
 
 import java.util.List;
@@ -39,7 +38,7 @@ public class DIGraphTest {
         assertEquals(asList("y", "a", "z", "x"), sorted);
     }
 
-    @Test(expected = DIRuntimeException.class)
+    @Test(expected = IllegalStateException.class)
     public void testTopSortDirectCycle() {
         DIGraph<String> graph = new DIGraph<>();
         graph.add("x", "y");
@@ -47,7 +46,7 @@ public class DIGraphTest {
         graph.topSort();
     }
 
-    @Test(expected = DIRuntimeException.class)
+    @Test(expected = IllegalStateException.class)
     public void testTopSortInDirectCycle() {
         DIGraph<String> graph = new DIGraph<>();
         graph.add("x", "y");

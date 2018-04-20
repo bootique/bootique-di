@@ -1,5 +1,6 @@
 package io.bootique.di;
 
+import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -60,6 +61,36 @@ public class DIErrorsIT {
         }
     }
 
+    @Test
+    public void testListCycleError() {
+
+        Injector injector = DIBootstrap.createInjector(binder -> {
+            binder.bind(Bar.class).to(BarImpl2.class);
+            binder.bindList(Foo.class).add(FooImpl2.class)
+                    .addAfter(FooImpl3.class, FooImpl2.class)
+                    .addAfter(FooImpl4.class, FooImpl3.class)
+                    .insertBefore(FooImpl4.class, FooImpl2.class)
+                    .addAfter(FooImpl5.class, FooImpl4.class);
+        });
+
+        try {
+            injector.getInstance(Bar.class);
+            fail("Should throw DIRuntimeExceptio");
+        } catch (DIRuntimeException ex) {
+            String message = ex.getOriginalMessage();
+            String fullMessage = ex.getMessage();
+            assertTrue(message, message.contains("Cycle detected in list"));
+            assertTrue(fullMessage, fullMessage.contains("Cycle detected in list"));
+            assertTrue(fullMessage, fullMessage.contains("Sorting list elements"));
+
+            InjectionTraceElement[] traceElements = ex.getInjectionTrace();
+            assertEquals(2, traceElements.length);
+            assertEquals(Key.getListOf(Foo.class), traceElements[0].getBindingKey());
+            assertEquals(Key.get(Bar.class), traceElements[1].getBindingKey());
+        }
+
+    }
+
     private static class TestModule extends BaseModule {
         @Override
         public void configure(Binder binder) {
@@ -108,6 +139,20 @@ public class DIErrorsIT {
         public Bar get() {
             return new Bar() {};
         }
+    }
+
+    private static class FooImpl2 implements Foo {}
+    private static class FooImpl3 implements Foo {}
+    private static class FooImpl4 implements Foo {}
+
+    private static class FooImpl5 implements Foo {
+        @Inject
+        Baz baz;
+    }
+
+    private static class BarImpl2 implements Bar {
+        @Inject
+        List<Foo> fooList;
     }
 
     interface Foo  {}

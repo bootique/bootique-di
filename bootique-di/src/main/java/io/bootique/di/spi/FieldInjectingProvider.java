@@ -1,6 +1,5 @@
 package io.bootique.di.spi;
 
-import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Key;
 import io.bootique.di.TypeLiteral;
 
@@ -40,15 +39,16 @@ class FieldInjectingProvider<T> extends MemberInjectingProvider<T> {
 
     private void injectMember(Object object, Field field, Annotation bindingAnnotation) {
 
+        injector.trace("Injecting field '%s' of class %s"
+                , field.getName(), field.getDeclaringClass().getName());
         Object value = value(field, bindingAnnotation);
 
         field.setAccessible(true);
         try {
             field.set(object, value);
         } catch (Exception e) {
-            String message = String.format("Error injecting into field %s.%s of type %s", field.getDeclaringClass()
-                    .getName(), field.getName(), field.getType().getName());
-            throw new DIRuntimeException(message, e);
+            injector.throwException("Error injecting into field %s.%s of type %s"
+                    , e, field.getDeclaringClass().getName(), field.getName(), field.getType().getName());
         }
     }
 
@@ -61,9 +61,8 @@ class FieldInjectingProvider<T> extends MemberInjectingProvider<T> {
             Type parameterType = DIUtil.getGenericParameterType(field.getGenericType());
 
             if (parameterType == null) {
-                throw new DIRuntimeException("Provider field %s.%s of type %s must be "
-                        + "parameterized to be usable for injection", field.getDeclaringClass().getName(),
-                        field.getName(), fieldType.getName());
+                injector.throwException("Provider field %s.%s of type %s must be parameterized to be usable for injection"
+                        , field.getDeclaringClass().getName(), field.getName(), fieldType.getName());
             }
 
             return injector.getProvider(Key.get(TypeLiteral.of(parameterType), bindingAnnotation));
@@ -76,5 +75,10 @@ class FieldInjectingProvider<T> extends MemberInjectingProvider<T> {
                 stack.pop();
             }
         }
+    }
+
+    @Override
+    public String getName() {
+        return "field injecting provider";
     }
 }

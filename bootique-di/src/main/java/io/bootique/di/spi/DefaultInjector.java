@@ -2,12 +2,14 @@ package io.bootique.di.spi;
 
 import io.bootique.di.BindingBuilder;
 import io.bootique.di.DIRuntimeException;
+import io.bootique.di.InjectionTraceElement;
 import io.bootique.di.Injector;
 import io.bootique.di.Key;
 import io.bootique.di.Module;
 import io.bootique.di.Scope;
 
 import javax.inject.Provider;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,28 +22,29 @@ import java.util.Set;
  */
 public class DefaultInjector implements Injector {
 
-    private DefaultScope singletonScope;
-    private Scope noScope;
+    private final DefaultScope singletonScope;
+    private final Scope noScope;
 
     private final DefaultBinder binder;
     private final Map<Key<?>, Binding<?>> bindings;
     private final Map<Key<?>, Decoration<?>> decorations;
     private final ProvidesHandler providesHandler;
-
-    private InjectionStack injectionStack;
-    private Scope defaultScope;
+    private final InjectionStack injectionStack;
+    private final InjectionTrace injectionTrace;
+    private final Scope defaultScope;
 
     private boolean allowDynamicBinding;
     private boolean allowOverride;
     private boolean allowMethodInjection;
+    private boolean injectionTraceEnabled;
 
     private final InjectorPredicates predicates;
 
-    DefaultInjector(Module... modules) throws DIRuntimeException {
+    DefaultInjector(Module... modules) {
         this(Collections.emptySet(), new InjectorPredicates(), modules);
     }
 
-    public DefaultInjector(Set<Options> options, InjectorPredicates predicates, Module... modules) throws DIRuntimeException {
+    public DefaultInjector(Set<Options> options, InjectorPredicates predicates, Module... modules) {
         this.predicates = predicates;
 
         this.singletonScope = new DefaultScope();
@@ -55,11 +58,12 @@ public class DefaultInjector implements Injector {
         this.allowOverride = !options.contains(Options.DECLARED_OVERRIDE_ONLY);
         this.allowDynamicBinding = options.contains(Options.ENABLE_DYNAMIC_BINDINGS);
         this.allowMethodInjection = options.contains(Options.ENABLE_METHOD_INJECTION);
+        this.injectionTraceEnabled = !options.contains(Options.DISABLE_TRACE);
 
         this.bindings = new HashMap<>();
         this.decorations = new HashMap<>();
-        this.injectionStack = new InjectionStack();
-
+        this.injectionStack = new InjectionStack(this);
+        this.injectionTrace = injectionTraceEnabled ? new InjectionTrace() : null;
         this.providesHandler = new ProvidesHandler(this);
         this.binder = new DefaultBinder(this);
 
@@ -94,23 +98,23 @@ public class DefaultInjector implements Injector {
     }
 
     @SuppressWarnings("unchecked")
-    <T> Binding<T> getBinding(Key<T> key) throws DIRuntimeException {
+    <T> Binding<T> getBinding(Key<T> key) {
         // may return null - this is intentionally allowed in this non-public method
         return (Binding<T>) bindings.get(Objects.requireNonNull(key, "Null key"));
     }
 
     <T> void putBinding(Key<T> bindingKey, Provider<T> provider) {
-        putBinding(bindingKey, new Binding<>(provider, defaultScope, false));
+        putBinding(bindingKey, new Binding<>(wrapProvider(bindingKey, provider), defaultScope, false));
     }
 
     <T> void putOptionalBinding(Key<T> bindingKey, Provider<T> provider) {
-        putBinding(bindingKey, new Binding<>(provider, defaultScope, true));
+        putBinding(bindingKey, new Binding<>(wrapProvider(bindingKey, provider), defaultScope, true));
     }
 
     <T> void putBinding(Key<T> bindingKey, Binding<T> binding) {
         Binding<?> oldBinding = bindings.put(bindingKey, binding);
         if(!canOverride(oldBinding, binding)) {
-            throw new DIRuntimeException("Unable to override key %s. It is final and override is disabled.", bindingKey);
+            throwException("Unable to override key %s. It is final and override is disabled.", bindingKey);
         }
     }
 
@@ -164,29 +168,29 @@ public class DefaultInjector implements Injector {
 
         Binding<?> binding = bindings.get(bindingKey);
         if (binding == null) {
-            throw new DIRuntimeException("No existing binding for key " + bindingKey);
+            throwException("No existing binding for key " + bindingKey);
         }
 
         binding.changeScope(scope);
     }
 
     @Override
-    public <T> T getInstance(Class<T> type) throws DIRuntimeException {
-        return getProvider(type).get();
+    public <T> T getInstance(Class<T> type) {
+        return getInstance(Key.get(type));
     }
 
     @Override
-    public <T> T getInstance(Key<T> key) throws DIRuntimeException {
+    public <T> T getInstance(Key<T> key) {
         return getProvider(key).get();
     }
 
     @Override
-    public <T> Provider<T> getProvider(Class<T> type) throws DIRuntimeException {
+    public <T> Provider<T> getProvider(Class<T> type) {
         return getProvider(Key.get(type));
     }
 
     @Override
-    public <T> Provider<T> getProvider(Key<T> key) throws DIRuntimeException {
+    public <T> Provider<T> getProvider(Key<T> key) {
         Binding<T> binding = getBinding(key);
         if (binding == null || binding.getOriginal() == null) {
             binding = createDynamicBinding(key, binding);
@@ -198,7 +202,7 @@ public class DefaultInjector implements Injector {
     @SuppressWarnings("unchecked")
     private <T> Binding<T> createDynamicBinding(Key<T> key, Binding<T> binding) {
         if(binding == null && !allowDynamicBinding) {
-            throw new DIRuntimeException("DI container has no binding for key %s and dynamic bindings are disabled.", key);
+            throwException("DI container has no binding for key %s and dynamic bindings are disabled.", key);
         }
         // create new binding
         BindingBuilder<T> builder = binder.bind(key).to((Class)key.getType().getRawType());
@@ -216,7 +220,9 @@ public class DefaultInjector implements Injector {
         if(allowMethodInjection) {
             provider = new MethodInjectingProvider<>(provider, this);
         }
-        provider.get();
+        @SuppressWarnings("unchecked")
+        Class<Object> objectClass = (Class<Object>)object.getClass();
+        wrapProvider(Key.get(objectClass), provider).get();
     }
 
     @Override
@@ -240,6 +246,10 @@ public class DefaultInjector implements Injector {
         return allowMethodInjection;
     }
 
+    public boolean isInjectionTraceEnabled() {
+        return injectionTraceEnabled;
+    }
+
     @SuppressWarnings({"rawtypes", "unchecked"})
     void applyDecorators() {
         for (Entry<Key<?>, Decoration<?>> e : decorations.entrySet()) {
@@ -258,7 +268,119 @@ public class DefaultInjector implements Injector {
         NO_SCOPE_BY_DEFAULT,
         DECLARED_OVERRIDE_ONLY,
         ENABLE_DYNAMIC_BINDINGS,
-        ENABLE_METHOD_INJECTION
+        ENABLE_METHOD_INJECTION,
+        DISABLE_TRACE
+    }
+
+    /**
+     * Wraps provider in traceable provider if trace is enabled
+     */
+    <T> Provider<T> wrapProvider(Key<T> key, Provider<T> provider) {
+        if(!injectionTraceEnabled || provider == null) {
+            return provider;
+        }
+
+        return new TraceableProvider<>(key, provider, this);
+    }
+
+    /**
+     * @param message trace message format
+     * @param args for message formatting
+     */
+    void trace(String message, Object... args) {
+        if (injectionTraceEnabled) {
+            injectionTrace.updateMessage(String.format(message, args));
+        }
+    }
+
+    /**
+     * Push currently resolving key into trace stack
+     * @param key that is resolving
+     */
+    void tracePush(Key<?> key) {
+        if (injectionTraceEnabled) {
+            injectionTrace.push(key);
+        }
+    }
+
+    /**
+     * Pop key out of trace stack
+     */
+    void tracePop() {
+        if (injectionTraceEnabled) {
+            injectionTrace.pop();
+        }
+    }
+
+    /**
+     * Formats and throws DI exception with injection trace attached to it.
+     * <p>
+     * Can be used anywhere like {@code return throwException("some message");}
+     *
+     * @param message message
+     * @param args message format arguments
+     * @param <T> generic type to return
+     * @return nothing, alwasy throws
+     * @throws DIRuntimeException throws DI exception always
+     */
+    <T> T throwException(String message, Object... args) throws DIRuntimeException {
+        throw setTrace(new DIRuntimeException(message, args));
+    }
+
+    /**
+     * Formats and throws DI exception with injection trace attached to it.
+     * <p>
+     * Can be used anywhere like {@code return throwException("some message", cause);}
+     * <p>
+     * This method will try to unwrap {@code cause}
+     * <ul>
+     *     <li>if it is another {@link DIRuntimeException} it will be rethrown as is
+     *     <li>if it is {@link InvocationTargetException} it cause will be used as cause for DI exception
+     *     <li>otherwise cause will be used as is
+     * </ul>
+     *
+     * @param message message
+     * @param cause underlying cause of this exception
+     * @param args message format arguments
+     * @param <T> generic type to return
+     * @return nothing, alwasy throws
+     * @throws DIRuntimeException throws DI exception always
+     */
+    <T> T  throwException(String message, Throwable cause, Object... args) throws DIRuntimeException {
+        if (cause instanceof InvocationTargetException && cause.getCause() != null) {
+            // if reflection method call thrown an exception unwrap and use it as a cause
+            cause = cause.getCause();
+        }
+
+        // TODO: is assumption bellow always correct?
+        // If it was other DI exception, use it. It will better point to the actual problem.
+        if (cause instanceof DIRuntimeException) {
+            throw (DIRuntimeException) cause;
+        }
+
+        throw setTrace(new DIRuntimeException(message, cause, args));
+    }
+
+
+    /**
+     * Set trace (if any) to exception
+     * @param ex exception
+     * @return ex
+     */
+    private DIRuntimeException setTrace(DIRuntimeException ex) {
+        if (!injectionTraceEnabled) {
+            return ex;
+        }
+
+        InjectionTraceElement[] traceElements = new InjectionTraceElement[injectionTrace.size()];
+        InjectionTraceElement element;
+        int i = 0;
+        while((element = injectionTrace.pop()) != null) {
+            traceElements[i++] = element;
+        }
+
+        ex.setInjectionTrace(traceElements);
+        return ex;
     }
 
 }

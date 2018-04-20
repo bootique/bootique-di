@@ -1,7 +1,6 @@
 package io.bootique.di.spi;
 
 import io.bootique.di.BindingBuilder;
-import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Key;
 import io.bootique.di.Scope;
 
@@ -25,7 +24,7 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
     }
 
     @Override
-    public BindingBuilder<T> to(Class<? extends T> implementation) throws DIRuntimeException {
+    public BindingBuilder<T> to(Class<? extends T> implementation) {
         Provider<T> provider0 = new ConstructorInjectingProvider<>(implementation, injector);
         Provider<T> provider1 = new FieldInjectingProvider<>(provider0, injector);
         if(injector.isMethodInjectionEnabled()) {
@@ -41,12 +40,12 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
     }
 
     @Override
-    public BindingBuilder<T> to(Key<? extends T> key) throws DIRuntimeException {
+    public BindingBuilder<T> to(Key<? extends T> key) {
         return toProviderInstance(() -> injector.getProvider(key).get());
     }
 
     @Override
-    public BindingBuilder<T> toInstance(T instance) throws DIRuntimeException {
+    public BindingBuilder<T> toInstance(T instance) {
         Provider<T> provider0 = new InstanceProvider<>(instance);
         Provider<T> provider1 = new FieldInjectingProvider<>(provider0, injector);
         if(injector.isMethodInjectionEnabled()) {

@@ -1,7 +1,5 @@
 package io.bootique.di.spi;
 
-import io.bootique.di.DIRuntimeException;
-
 import javax.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -17,7 +15,7 @@ class ConstructorInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
     }
 
     @Override
-    public Provider<T> get(final Provider<T> undecorated) throws DIRuntimeException {
+    public Provider<T> get(final Provider<T> undecorated) {
 
         return new ConstructorInjectingProvider<T>(implementation, injector) {
             @Override
@@ -29,7 +27,7 @@ class ConstructorInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
                     Class<?> objectClass = DIUtil.parameterClass(genericType);
 
                     if (objectClass == null) {
-                        throw new DIRuntimeException("Constructor provider parameter %s must be "
+                        return injector.throwException("Constructor provider parameter %s must be "
                                 + "parameterized to be usable for injection", parameter.getName());
                     }
 

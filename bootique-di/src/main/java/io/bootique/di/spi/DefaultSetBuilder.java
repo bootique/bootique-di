@@ -48,10 +48,14 @@ class DefaultSetBuilder<T> extends DICollectionBuilder<Set<T>, T> implements Set
         SetProvider<T> provider;
         Binding<Set<T>> binding = injector.getBinding(bindingKey);
         if (binding == null) {
-            provider = new SetProvider<>(bindingKey);
+            provider = new SetProvider<>(injector, bindingKey);
             injector.putBinding(bindingKey, provider);
         } else {
-            provider = (SetProvider<T>) binding.getOriginal();
+            if (injector.isInjectionTraceEnabled()) {
+                provider = ((TraceableProvider<Set<T>>) binding.getOriginal()).unwrap();
+            } else {
+                provider = (SetProvider<T>) binding.getOriginal();
+            }
         }
 
         return provider;

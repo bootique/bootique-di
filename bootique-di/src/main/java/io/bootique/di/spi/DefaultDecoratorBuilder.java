@@ -1,6 +1,5 @@
 package io.bootique.di.spi;
 
-import io.bootique.di.DIRuntimeException;
 import io.bootique.di.DecoratorBuilder;
 import io.bootique.di.Key;
 
@@ -15,13 +14,13 @@ class DefaultDecoratorBuilder<T> implements DecoratorBuilder<T> {
     }
 
     @Override
-    public DecoratorBuilder<T> after(Class<? extends T> decoratorImplementationType) throws DIRuntimeException {
+    public DecoratorBuilder<T> after(Class<? extends T> decoratorImplementationType) {
         injector.putDecorationAfter(bindingKey, decoratorProvider(decoratorImplementationType));
         return this;
     }
 
     @Override
-    public DecoratorBuilder<T> before(Class<? extends T> decoratorImplementationType) throws DIRuntimeException {
+    public DecoratorBuilder<T> before(Class<? extends T> decoratorImplementationType) {
         injector.putDecorationBefore(bindingKey, decoratorProvider(decoratorImplementationType));
         return this;
     }

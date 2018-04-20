@@ -1,6 +1,5 @@
 package io.bootique.di.spi;
 
-import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Key;
 import io.bootique.di.Scope;
 
@@ -31,14 +30,14 @@ public abstract class DICollectionBuilder<K, E> {
         return new MethodInjectingProvider<>(provider1, injector);
     }
 
-    protected <SubT extends E> Provider<SubT> createTypeProvider(final Class<SubT> interfaceType) throws DIRuntimeException {
+    protected <SubT extends E> Provider<SubT> createTypeProvider(final Class<SubT> interfaceType) {
 
         // Create deferred provider to prevent caching the intermediate provider from the Injector.
         // The actual provider may get overridden after list builder is created.
         return () -> findOrCreateBinding(interfaceType).getScoped().get();
     }
 
-    protected <SubT extends E> Provider<SubT> getByKeyProvider(final Key<SubT> key) throws DIRuntimeException {
+    protected <SubT extends E> Provider<SubT> getByKeyProvider(final Key<SubT> key) {
         // Create deferred provider to prevent caching the intermediate provider from the Injector.
         // The actual provider may get overridden after list builder is created.
         return () -> injector.getProvider(key).get();

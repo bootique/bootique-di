@@ -5,14 +5,12 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import javax.inject.Provider;
 
-import io.bootique.di.DIRuntimeException;
-
 /**
  * Base abstract implementation for providers injecting into object members (fields and methods)
  *
- * @param <T> type of object for wich we perform injection
+ * @param <T> type of object for which we perform injection
  */
-abstract class MemberInjectingProvider<T> implements Provider<T> {
+abstract class MemberInjectingProvider<T> implements NamedProvider<T> {
 
     protected final DefaultInjector injector;
     protected final Provider<T> delegate;
@@ -25,6 +23,9 @@ abstract class MemberInjectingProvider<T> implements Provider<T> {
     @Override
     public T get() {
         T object = delegate.get();
+        if(object == null) {
+            injector.throwException("Underlying provider (%s) returned NULL instance", DIUtil.getProviderName(delegate));
+        }
         injectMembers(object, object.getClass());
         return object;
     }
@@ -36,7 +37,7 @@ abstract class MemberInjectingProvider<T> implements Provider<T> {
         for(Annotation fieldAnnotation : annotations) {
             if(injector.getPredicates().isQualifierAnnotation(fieldAnnotation)) {
                 if(bindingAnnotation != null) {
-                    throw new DIRuntimeException("Found more than one qualifier annotation for '%s.%s'."
+                    injector.throwException("Found more than one qualifier annotation for '%s.%s'."
                             , ((Member)object).getDeclaringClass().getName()
                             , ((Member)object).getName());
                 }

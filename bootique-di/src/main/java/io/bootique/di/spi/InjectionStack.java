@@ -1,6 +1,5 @@
 package io.bootique.di.spi;
 
-import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Key;
 
 import java.util.LinkedList;
@@ -11,9 +10,11 @@ import java.util.List;
  */
 class InjectionStack {
 
-    private ThreadLocal<LinkedList<Key<?>>> stack;
+    private final DefaultInjector injector;
+    private final ThreadLocal<LinkedList<Key<?>>> stack;
 
-    InjectionStack() {
+    InjectionStack(DefaultInjector injector) {
+        this.injector = injector;
         this.stack = new ThreadLocal<>();
     }
 
@@ -24,7 +25,7 @@ class InjectionStack {
         }
     }
 
-    void push(Key<?> bindingKey) throws DIRuntimeException {
+    void push(Key<?> bindingKey) {
         LinkedList<Key<?>> localStack = stack.get();
         if (localStack == null) {
             localStack = new LinkedList<>();
@@ -32,8 +33,8 @@ class InjectionStack {
         }
 
         if (localStack.contains(bindingKey)) {
-            throw new DIRuntimeException(
-                    "Circular dependency detected when binding a key \"%s\". Nested keys: %s"
+            injector.throwException(
+                    "Circular dependency detected when binding a key %s. Nested keys: %s"
                             + ". To resolve it, you should inject a Provider instead of an object.",
                     bindingKey,
                     localStack);

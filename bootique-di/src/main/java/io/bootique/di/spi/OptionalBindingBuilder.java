@@ -6,7 +6,7 @@ import io.bootique.di.Key;
 
 class OptionalBindingBuilder<T> extends DefaultBindingBuilder<T> {
 
-    private static final Provider<?> NULL_PROVIDER = () -> null;
+    static final Provider<?> NULL_PROVIDER = () -> null;
 
     OptionalBindingBuilder(Key<T> bindingKey, DefaultInjector injector) {
         super(bindingKey, injector);

@@ -1,7 +1,5 @@
 package io.bootique.di.spi;
 
-import io.bootique.di.DIRuntimeException;
-
 import javax.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -20,7 +18,7 @@ class FieldInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
     }
 
     @Override
-    public Provider<T> get(final Provider<T> undecorated) throws DIRuntimeException {
+    public Provider<T> get(final Provider<T> undecorated) {
         return new FieldInjectingProvider<T>(delegate.get(undecorated), injector) {
 
             @Override
@@ -33,7 +31,7 @@ class FieldInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
                     Class<?> objectClass = DIUtil.parameterClass(field.getGenericType());
 
                     if (objectClass == null) {
-                        throw new DIRuntimeException("Provider field %s.%s of type %s must be "
+                        return injector.throwException("Provider field %s.%s of type %s must be "
                                 + "parameterized to be usable for injection", field.getDeclaringClass().getName(),
                                 field.getName(), fieldType.getName());
                     }

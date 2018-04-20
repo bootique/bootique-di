@@ -1,6 +1,5 @@
 package io.bootique.di.spi;
 
-import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Key;
 import io.bootique.di.Scope;
 import io.bootique.di.TypeLiteral;
@@ -50,16 +49,16 @@ class ProvidesHandler {
     private void validateProvidesMethod(Object module, Method method) {
 
         if (method.getReturnType().equals(Void.TYPE)) {
-            throw new DIRuntimeException(
-                    "Invalid 'void' provider method '%s()' on module '%s' is void. To be a proper provider method, it must return a value",
-                    method.getName(), module.getClass().getSimpleName());
+            injector.throwException(
+                    "Provider method '%s()' on module '%s' is void. To be a proper provider method, it must return a value",
+                    method.getName(), module.getClass().getName());
         }
     }
 
     private <T> KeyBindingPair<T> createBindingPair(Object module, Method method) {
 
         Key<T> key = createKey(method.getGenericReturnType(), extractQualifier(method, method.getDeclaredAnnotations()));
-        Binding<T> binding = createBinding(module, method);
+        Binding<T> binding = createBinding(key, module, method);
 
         return new KeyBindingPair<>(key, binding);
     }
@@ -69,9 +68,9 @@ class ProvidesHandler {
         for (Annotation a : annotations) {
             if (injector.getPredicates().isQualifierAnnotation(a)) {
                 if (found != null) {
-                    throw new DIRuntimeException("Multiple qualifying annotations found for method '%s()' or its parameter on module '%s'"
+                    injector.throwException("Multiple qualifying annotations found for method '%s()' or its parameter on module '%s'"
                             , method.getName()
-                            , method.getDeclaringClass().getSimpleName());
+                            , method.getDeclaringClass().getName());
                 }
                 found = a;
             }
@@ -96,40 +95,19 @@ class ProvidesHandler {
         return false;
     }
 
-    private <T> Binding<T> createBinding(Object module, Method method) {
-        return new Binding<>(createProvider(module, method), createScope(method), false);
+    private <T> Binding<T> createBinding(Key<T> key, Object module, Method method) {
+        return new Binding<>(createProvider(key, module, method), createScope(method), false);
     }
 
-    private <T> Provider<T> createProvider(Object module, Method method) {
-
+    private <T> Provider<T> createProvider(Key<T> key, Object module, Method method) {
         Provider<?>[] argumentProviders = createArgumentProviders(method);
-
-        return () -> {
-            try {
-                int len = argumentProviders.length;
-                Object[] arguments = new Object[len];
-
-                for (int i = 0; i < len; i++) {
-                    arguments[i] = argumentProviders[i].get();
-                }
-
-                // supporting both 'static' and instance methods..
-                method.setAccessible(true);
-                @SuppressWarnings("unchecked")
-                T result = (T) method.invoke(module, arguments);
-                return result;
-            } catch (Exception e) {
-                throw new DIRuntimeException("Error invoking provider method '%s()' on module '%s'",
-                        e,
-                        method.getName(),
-                        module.getClass().getSimpleName());
-            }
-        };
+        Provider<T> provider = new ProvidesMethodProvider<>(injector, argumentProviders, method, module);
+        return injector.wrapProvider(key, provider);
     }
 
     private Scope createScope(Method method) {
         // force singleton for annotated methods
-        if(injector.getPredicates().isSingleton(method)) {
+        if (injector.getPredicates().isSingleton(method)) {
             return injector.getSingletonScope();
         }
         // otherwise use injector's default scope
@@ -157,5 +135,54 @@ class ProvidesHandler {
         }
 
         return providers;
+    }
+
+    /**
+     * Separate class just for better error reporting.
+     * @param <T> provided type
+     */
+    private static class ProvidesMethodProvider<T> implements NamedProvider<T> {
+        private final DefaultInjector injector;
+        private final Provider<?>[] argumentProviders;
+        private final Method method;
+        private final Object module;
+
+        public ProvidesMethodProvider(DefaultInjector injector, Provider<?>[] argumentProviders, Method method, Object module) {
+            this.injector = injector;
+            this.argumentProviders = argumentProviders;
+            this.method = method;
+            this.module = module;
+        }
+
+        @Override
+        public T get() {
+            int len = argumentProviders.length;
+            Object[] arguments = new Object[len];
+
+            for (int i = 0; i < len; i++) {
+                injector.trace("Get argument %d for provider method '%s()' of module '%s'"
+                        , i, method.getName(), module.getClass().getName());
+                arguments[i] = argumentProviders[i].get();
+            }
+
+            injector.trace("Invoking provider method '%s()' on module '%s'"
+                    , method.getName(), module.getClass().getName());
+
+            method.setAccessible(true);
+
+            try {
+                @SuppressWarnings("unchecked")
+                T result = (T) method.invoke(module, arguments);
+                return result;
+            } catch (Exception e) {
+                injector.throwException("Error invoking provider %s", e, getName());
+                return null;
+            }
+        }
+
+        @Override
+        public String getName() {
+            return String.format("provider method '%s()' of module '%s'", method.getName(), module.getClass().getName());
+        }
     }
 }

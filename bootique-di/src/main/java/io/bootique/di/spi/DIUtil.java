@@ -1,14 +1,24 @@
 package io.bootique.di.spi;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import javax.inject.Qualifier;
+import javax.inject.Provider;
 
 /**
  * A helper class used by Bootique DI implementation.
  */
 class DIUtil {
+
+    /**
+     * @param provider to get name for
+     * @return name of provider
+     */
+    static String getProviderName(Provider<?> provider) {
+        if(provider instanceof NamedProvider) {
+            return ((NamedProvider<?>) provider).getName();
+        }
+        return provider.getClass().getName();
+    }
 
     static Type getGenericParameterType(Type type) {
         if (type instanceof ParameterizedType) {

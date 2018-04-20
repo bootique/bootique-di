@@ -1,7 +1,5 @@
 package io.bootique.di.spi;
 
-import io.bootique.di.DIRuntimeException;
-
 import javax.inject.Provider;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,24 +7,27 @@ import java.util.Map.Entry;
 
 class MapProvider<K, V> implements Provider<Map<K, V>> {
 
-	private Map<K, Provider<? extends V>> providers;
+    private final Map<K, Provider<? extends V>> providers;
+    private final DefaultInjector injector;
 
-	MapProvider() {
-		this.providers = new HashMap<>();
-	}
+    MapProvider(DefaultInjector injector) {
+        this.providers = new HashMap<>();
+        this.injector = injector;
+    }
 
-	@Override
-	public Map<K, V> get() throws DIRuntimeException {
-		Map<K, V> map = new HashMap<>();
+    @Override
+    public Map<K, V> get() {
+        Map<K, V> map = new HashMap<>();
 
-		for (Entry<K, Provider<? extends V>> entry : providers.entrySet()) {
-			map.put(entry.getKey(), entry.getValue().get());
-		}
+        for (Entry<K, Provider<? extends V>> entry : providers.entrySet()) {
+            injector.trace("Resolve map key '%s'", entry.getKey());
+            map.put(entry.getKey(), entry.getValue().get());
+        }
 
-		return map;
-	}
+        return map;
+    }
 
-	void put(K key, Provider<? extends V> provider) {
-		providers.put(key, provider);
-	}
+    void put(K key, Provider<? extends V> provider) {
+        providers.put(key, provider);
+    }
 }

@@ -1,7 +1,5 @@
 package io.bootique.di.spi;
 
-import io.bootique.di.DIRuntimeException;
-
 import javax.inject.Provider;
 
 /**
@@ -16,7 +14,7 @@ class CustomProvidersProvider<T> implements Provider<T> {
     }
 
     @Override
-    public T get() throws DIRuntimeException {
+    public T get() {
         return providerOfProviders.get().get();
     }
 }

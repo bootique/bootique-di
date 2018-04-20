@@ -125,10 +125,14 @@ class DefaultListBuilder<T> extends DICollectionBuilder<List<T>, T> implements L
 
         Binding<List<T>> binding = injector.getBinding(bindingKey);
         if (binding == null) {
-            provider = new ListProvider<>();
+            provider = new ListProvider<>(injector);
             injector.putBinding(bindingKey, provider);
         } else {
-            provider = (ListProvider<T>) binding.getOriginal();
+            if (injector.isInjectionTraceEnabled()) {
+                provider = ((TraceableProvider<List<T>>) binding.getOriginal()).unwrap();
+            } else {
+                provider = (ListProvider<T>) binding.getOriginal();
+            }
         }
 
         return provider;

@@ -19,7 +19,6 @@
 package io.bootique.di.spi;
 
 import io.bootique.di.DIRuntimeException;
-import io.bootique.di.spi.DIGraph;
 import org.junit.Test;
 
 import java.util.List;

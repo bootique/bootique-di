@@ -121,6 +121,18 @@ public class DIBootstrap {
         }
 
         /**
+         *
+         * Disable detailed injection trace (e.g. in production environment).
+         * Enabled by default.
+         *
+         * @return this
+         */
+        public InjectorBuilder disableTrace() {
+            this.options.add(DefaultInjector.Options.DISABLE_TRACE);
+            return this;
+        }
+
+        /**
          * Set custom predicate for methods in modules that should be used as providers.
          * Default predicate test methods for {@link io.bootique.di.Provides} annotation.
          *

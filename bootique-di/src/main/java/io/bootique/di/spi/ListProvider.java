@@ -1,6 +1,5 @@
 package io.bootique.di.spi;
 
-import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Key;
 
 import javax.inject.Provider;
@@ -13,14 +12,16 @@ class ListProvider<T> implements Provider<List<T>> {
 
     private Map<Key<? extends T>, Provider<? extends T>> providers;
     private DIGraph<Key<? extends T>> graph;
+    private DefaultInjector injector;
 
-    ListProvider() {
+    ListProvider(DefaultInjector injector) {
         this.providers = new HashMap<>();
         this.graph = new DIGraph<>();
+        this.injector = injector;
     }
 
     @Override
-    public List<T> get() throws DIRuntimeException {
+    public List<T> get() {
         List<Key<? extends T>> insertOrder = graph.topSort();
 
         if (insertOrder.size() != providers.size()) {
@@ -32,11 +33,12 @@ class ListProvider<T> implements Provider<List<T>> {
                 }
             }
 
-            throw new DIRuntimeException("DI list has no providers for keys: %s", emptyKeys);
+            injector.throwException("DI list has no providers for keys: %s", emptyKeys);
         }
 
         List<T> list = new ArrayList<>(insertOrder.size());
         for (Key<? extends T> key : insertOrder) {
+            injector.trace("Resolving list element %s", key);
             list.add(providers.get(key).get());
         }
 

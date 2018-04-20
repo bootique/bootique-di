@@ -1,15 +1,13 @@
 package io.bootique.di.spi;
 
-import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Key;
 import io.bootique.di.TypeLiteral;
 
-import javax.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 
-class ConstructorInjectingProvider<T> implements Provider<T> {
+class ConstructorInjectingProvider<T> implements NamedProvider<T> {
 
     private Constructor<? extends T> constructor;
     private DefaultInjector injector;
@@ -48,7 +46,7 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
         }
 
         if (lastMatch == null) {
-            throw new DIRuntimeException(
+            injector.throwException(
                     "No applicable constructor is found for constructor injection in class '%s'",
                     implementation.getName());
         }
@@ -79,15 +77,16 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
         InjectionStack stack = injector.getInjectionStack();
 
         for (int i = 0; i < constructorParameters.length; i++) {
+            injector.trace("Get argument %d for %s", i, getName());
             args[i] = value(constructorParameters[i], genericTypes[i], bindingAnnotations[i], stack);
         }
 
         try {
+            injector.trace("Invoking %s", getName());
             this.constructor.setAccessible(true);
             return constructor.newInstance(args);
         } catch (Exception e) {
-            throw new DIRuntimeException(
-                    "Error instantiating class '%s'", e, constructor.getDeclaringClass().getName());
+            return injector.throwException("Error invoking %s", e, getName());
         }
     }
 
@@ -96,7 +95,7 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
         if (injector.getPredicates().isProviderType(parameter)) {
             Type parameterType = DIUtil.getGenericParameterType(genericType);
             if (parameterType == null) {
-                throw new DIRuntimeException("Constructor provider parameter %s must be "
+                return injector.throwException("Constructor provider parameter %s must be "
                         + "parameterized to be usable for injection", parameter.getName());
             }
             return injector.getProvider(Key.get(TypeLiteral.of(parameterType), bindingAnnotation));
@@ -111,4 +110,8 @@ class ConstructorInjectingProvider<T> implements Provider<T> {
         }
     }
 
+    @Override
+    public String getName() {
+        return "constructor of class '" + constructor.getDeclaringClass().getName() + "'";
+    }
 }

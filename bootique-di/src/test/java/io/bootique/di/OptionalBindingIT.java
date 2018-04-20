@@ -12,7 +12,7 @@ public class OptionalBindingIT {
     @Test(expected = DIRuntimeException.class)
     public void testMandatoryBinding() {
         Injector injector = DIBootstrap.createInjector(b -> {
-            b.bind(Consumer1.class).to(Consumer1.class);
+            b.bind(Consumer1.class);
         });
 
         // should throw, no Service bound
@@ -23,7 +23,7 @@ public class OptionalBindingIT {
     public void testOptionalBinding() {
         Injector injector = DIBootstrap.createInjector(b -> {
             b.bindOptional(Service.class);
-            b.bind(Consumer1.class).to(Consumer1.class);
+            b.bind(Consumer1.class);
         });
 
         Consumer1 consumer1 = injector.getInstance(Consumer1.class);
@@ -34,7 +34,7 @@ public class OptionalBindingIT {
     public void testBoundOptionalBinding() {
         Injector injector = DIBootstrap.createInjector(b -> {
             b.bindOptional(Service.class).to(Service_Impl1.class);
-            b.bind(Consumer1.class).to(Consumer1.class);
+            b.bind(Consumer1.class);
         });
 
         Consumer1 consumer1 = injector.getInstance(Consumer1.class);
@@ -46,7 +46,7 @@ public class OptionalBindingIT {
         Injector injector = DIBootstrap.createInjector(
                 b -> {
                     b.bindOptional(Service.class);
-                    b.bind(Consumer1.class).to(Consumer1.class);
+                    b.bind(Consumer1.class);
                 },
                 b -> b.bind(Service.class).to(Service_Impl1.class)
         );
@@ -60,7 +60,7 @@ public class OptionalBindingIT {
         Injector injector = DIBootstrap.injectorBuilder(
                 b -> {
                     b.bindOptional(Service.class);
-                    b.bind(Consumer1.class).to(Consumer1.class);
+                    b.bind(Consumer1.class);
                 },
                 b -> b.bind(Service.class).to(Service_Impl1.class)
         ).declaredOverridesOnly().build();
@@ -74,7 +74,7 @@ public class OptionalBindingIT {
         Injector injector = DIBootstrap.createInjector(
                 b -> {
                     b.bindOptional(Service.class);
-                    b.bind(Consumer1.class).to(Consumer1.class);
+                    b.bind(Consumer1.class);
                 },
                 b -> b.bindOptional(Service.class).to(Service_Impl1.class)
         );
@@ -86,10 +86,10 @@ public class OptionalBindingIT {
     interface Service {
     }
 
-    static class Service_Impl1 implements Service {
+    private static class Service_Impl1 implements Service {
     }
 
-    static class Consumer1 {
+    private static class Consumer1 {
         @Inject
         Service service;
     }

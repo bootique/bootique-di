@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Provider;
 
-import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Key;
 import io.bootique.di.TypeLiteral;
 
@@ -18,7 +17,7 @@ import io.bootique.di.TypeLiteral;
  * Injection provider that performs injection into object methods annotate with {@link javax.inject.Inject}
  * This provider correctly resolves and injects object supertypes' methods.
  *
- * @param <T> type of object for wich we perform injection
+ * @param <T> type of object for which we perform injection
  */
 class MethodInjectingProvider<T> extends MemberInjectingProvider<T> {
 
@@ -74,7 +73,7 @@ class MethodInjectingProvider<T> extends MemberInjectingProvider<T> {
     /**
      * Check if method overrides parent (assuming basic check performed by compiler)
      */
-    static boolean isMethodOverride(Method parentMethod, Method method) {
+    private static boolean isMethodOverride(Method parentMethod, Method method) {
         int parentModifier = modifiersToInt(parentMethod.getModifiers());
         if(parentModifier == 0) {
             // no private methods override
@@ -96,7 +95,7 @@ class MethodInjectingProvider<T> extends MemberInjectingProvider<T> {
      * @param methodModifiers all method modifiers
      * @return 0 - private, 1 - package private, 2 - protected, 3 - public
      */
-    static int modifiersToInt(int methodModifiers) {
+    private static int modifiersToInt(int methodModifiers) {
         if(Modifier.isPrivate(methodModifiers) || Modifier.isStatic(methodModifiers)) {
             return 0;
         }
@@ -139,14 +138,14 @@ class MethodInjectingProvider<T> extends MemberInjectingProvider<T> {
 
         Object[] values = arguments(method);
 
+        injector.trace("Injecting method '%s()' of class %s"
+                , method.getName(), method.getDeclaringClass().getName());
         method.setAccessible(true);
         try {
             method.invoke(object, values);
         } catch (Exception e) {
-            String message = String.format("Error injecting into method '%s.%s()'"
-                    , method.getDeclaringClass().getName()
-                    , method.getName());
-            throw new DIRuntimeException(message, e);
+            injector.throwException("Error injecting into method '%s()' of class '%s'"
+                    , e, method.getName(), method.getDeclaringClass().getName());
         }
     }
 
@@ -167,10 +166,13 @@ class MethodInjectingProvider<T> extends MemberInjectingProvider<T> {
             Type parameterType = parameterTypes[i];
             Annotation bindingAnnotation = getQualifier(parameterAnnotations[i], method);
 
+            injector.trace("Get argument %d for method '%s()' of class '%s'"
+                    , i, method.getName(), method.getDeclaringClass().getName());
+
             if (injector.getPredicates().isProviderType(parameterClasses[i])) {
                 parameterType = DIUtil.getGenericParameterType(parameterType);
                 if (parameterType == null) {
-                    throw new DIRuntimeException("Parameter of method '%s.%s()' of 'Provider' type must be "
+                    injector.throwException("Parameter of method '%s.%s()' of 'Provider' type must be "
                             + "parameterized to be usable for injection"
                             , method.getDeclaringClass().getName()
                             , method.getName());
@@ -189,5 +191,10 @@ class MethodInjectingProvider<T> extends MemberInjectingProvider<T> {
         }
 
         return result;
+    }
+
+    @Override
+    public String getName() {
+        return "method injecting provider";
     }
 }

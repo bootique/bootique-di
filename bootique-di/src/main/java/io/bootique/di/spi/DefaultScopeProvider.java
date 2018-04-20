@@ -31,9 +31,9 @@ public class DefaultScopeProvider<T> implements Provider<T> {
                 if (localInstance == null) {
                     localInstance = instance = delegate.get();
                     if (localInstance == null) {
-                        throw new DIRuntimeException(
-                                "Underlying provider (%s) returned NULL instance",
-                                delegate.getClass().getName());
+                        // TODO: can we use injector.throwException() here?
+                        throw new DIRuntimeException("Underlying provider (%s) returned NULL instance"
+                                , DIUtil.getProviderName(delegate));
                     }
 
                     scope.addScopeEventListener(localInstance);

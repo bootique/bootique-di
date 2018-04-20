@@ -104,11 +104,11 @@ public class DefaultInjector implements Injector {
     }
 
     <T> void putBinding(Key<T> bindingKey, Provider<T> provider) {
-        putBinding(bindingKey, new Binding<>(wrapProvider(bindingKey, provider), defaultScope, false));
+        putBinding(bindingKey, new Binding<>(bindingKey, wrapProvider(bindingKey, provider), defaultScope, false));
     }
 
     <T> void putOptionalBinding(Key<T> bindingKey, Provider<T> provider) {
-        putBinding(bindingKey, new Binding<>(wrapProvider(bindingKey, provider), defaultScope, true));
+        putBinding(bindingKey, new Binding<>(bindingKey, wrapProvider(bindingKey, provider), defaultScope, true));
     }
 
     <T> void putBinding(Key<T> bindingKey, Binding<T> binding) {
@@ -260,7 +260,7 @@ public class DefaultInjector implements Injector {
                 continue;
             }
 
-            b.decorate(e.getValue());
+            b.decorate(this, e.getValue());
         }
     }
 

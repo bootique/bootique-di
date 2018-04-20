@@ -1,5 +1,6 @@
 package io.bootique.di.spi;
 
+import io.bootique.di.Key;
 import io.bootique.di.Scope;
 
 import javax.inject.Provider;
@@ -11,13 +12,15 @@ import java.util.List;
  */
 class Binding<T> {
 
+    private Key<T> key;
     private Provider<T> original;
     private Provider<T> decorated;
     private Provider<T> scoped;
     private Scope scope;
     private boolean optional;
 
-    Binding(Provider<T> provider, Scope initialScope, boolean optional) {
+    Binding(Key<T> key, Provider<T> provider, Scope initialScope, boolean optional) {
+        this.key = key;
         this.original = provider;
         this.decorated = provider;
         this.optional = optional;
@@ -40,7 +43,7 @@ class Binding<T> {
         this.scope = scope;
     }
 
-    void decorate(Decoration<T> decoration) {
+    void decorate(DefaultInjector injector, Decoration<T> decoration) {
 
         List<DecoratorProvider<T>> decorators = decoration.decorators();
         if (decorators.isEmpty()) {
@@ -52,7 +55,7 @@ class Binding<T> {
             provider = decoratorProvider.get(provider);
         }
 
-        this.decorated = provider;
+        this.decorated = injector.wrapProvider(key, provider);
 
         // TODO: what happens to the old scoped value? Seems like this leaks
         // scope event listeners and may cause unexpected events...
@@ -72,11 +75,15 @@ class Binding<T> {
         return scope;
     }
 
-    public void setOptional(boolean optional) {
+    void setOptional(boolean optional) {
         this.optional = optional;
     }
 
     boolean isOptional() {
         return optional;
+    }
+
+    Key<T> getKey() {
+        return key;
     }
 }

@@ -96,7 +96,7 @@ class ProvidesHandler {
     }
 
     private <T> Binding<T> createBinding(Key<T> key, Object module, Method method) {
-        return new Binding<>(createProvider(key, module, method), createScope(method), false);
+        return new Binding<>(key, createProvider(key, module, method), createScope(method), false);
     }
 
     private <T> Provider<T> createProvider(Key<T> key, Object module, Method method) {

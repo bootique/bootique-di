@@ -47,7 +47,7 @@ public class DIErrorsIT {
         // check that trace is clean for second exception
         try {
             injector.getInstance(Qux.class);
-            fail("Should throw DIRuntimeExceptio");
+            fail("Should throw DIRuntimeException");
         } catch (DIRuntimeException ex) {
             String message = ex.getOriginalMessage();
             String fullMessage = ex.getMessage();
@@ -75,7 +75,7 @@ public class DIErrorsIT {
 
         try {
             injector.getInstance(Bar.class);
-            fail("Should throw DIRuntimeExceptio");
+            fail("Should throw DIRuntimeException");
         } catch (DIRuntimeException ex) {
             String message = ex.getOriginalMessage();
             String fullMessage = ex.getMessage();
@@ -90,6 +90,28 @@ public class DIErrorsIT {
         }
 
     }
+
+    @Test
+    public void testDecorationFailure() {
+        Injector injector = DIBootstrap.createInjector(binder -> {
+            binder.bind(Bar.class).to(BarImpl2.class);
+            binder.bind(Baz.class).to(BazImpl2.class);
+            binder.bind(Foo.class).to(FooImpl5.class);
+            binder.decorate(Foo.class).before(DecoratedFoo.class);
+        });
+
+        try {
+            injector.getInstance(Foo.class);
+            fail("Should throw DIRuntimeException");
+        } catch (DIRuntimeException ex) {
+            InjectionTraceElement[] traceElements = ex.getInjectionTrace();
+            assertEquals(3, traceElements.length);
+            assertEquals(Key.get(Bar.class), traceElements[0].getBindingKey());
+            assertEquals(Key.get(Baz.class), traceElements[1].getBindingKey());
+            assertEquals(Key.get(Foo.class), traceElements[2].getBindingKey());
+        }
+    }
+
 
     private static class TestModule extends BaseModule {
         @Override
@@ -150,12 +172,38 @@ public class DIErrorsIT {
         Baz baz;
     }
 
+    private static class DecoratedFoo implements Foo {
+
+        Provider<Foo> foo;
+
+        @Inject
+        Baz baz;
+
+        @Inject
+        DecoratedFoo(Provider<Foo> foo) {
+            this.foo = foo;
+        }
+
+        public String doIt() {
+            return "decorated " + foo.get().doIt();
+        }
+    }
+
     private static class BarImpl2 implements Bar {
         @Inject
         List<Foo> fooList;
     }
 
-    interface Foo  {}
+    private static class BazImpl2 implements Baz {
+        @Inject
+        Bar bar;
+    }
+
+    interface Foo  {
+        default String doIt() {
+            return "foo";
+        };
+    }
     interface Bar  {}
     interface Baz  {}
     interface Qux  {}

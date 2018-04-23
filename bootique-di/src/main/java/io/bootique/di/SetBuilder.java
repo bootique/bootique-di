@@ -2,7 +2,12 @@ package io.bootique.di;
 
 import java.util.Collection;
 
-public interface SetBuilder<T> {
+/**
+ * A binding builder for set configurations.
+ *
+ * @param <T> A type of set elements
+ */
+public interface SetBuilder<T> extends ScopeBuilder {
 
     SetBuilder<T> add(Class<? extends T> interfaceType) throws DIRuntimeException;
 
@@ -12,9 +17,4 @@ public interface SetBuilder<T> {
 
     SetBuilder<T> addAll(Collection<T> values) throws DIRuntimeException;
 
-    void in(Scope scope);
-
-    void inSingleton();
-
-    void withoutScope();
 }

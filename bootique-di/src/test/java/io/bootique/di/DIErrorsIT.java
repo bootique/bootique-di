@@ -113,13 +113,6 @@ public class DIErrorsIT {
         }
     }
 
-    @Test
-    public void testMultipleBindings() {
-        Injector injector = DIBootstrap
-                .createInjector(b -> b.bind(Foo.class).to(FooImpl.class).to(FooImpl2.class));
-        assertThat(injector.getInstance(Foo.class), instanceOf(FooImpl2.class));
-    }
-
     private static class TestModule extends BaseModule {
         @Override
         public void configure(Binder binder) {

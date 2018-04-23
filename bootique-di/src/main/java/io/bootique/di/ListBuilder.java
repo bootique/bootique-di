@@ -4,10 +4,11 @@ import java.util.Collection;
 
 /**
  * A binding builder for list configurations.
+ * This builder supports explicit order of elements.
  *
  * @param <T> A type of list values.
  */
-public interface ListBuilder<T> {
+public interface ListBuilder<T> extends ScopeBuilder {
 
     ListBuilder<T> add(Class<? extends T> interfaceType) throws DIRuntimeException;
 
@@ -32,11 +33,5 @@ public interface ListBuilder<T> {
     ListBuilder<T> insertBefore(Key<? extends T> valueKey, Class<? extends T> beforeType) throws DIRuntimeException;
 
     ListBuilder<T> insertAllBefore(Collection<T> values, Class<? extends T> afterType) throws DIRuntimeException;
-
-    void in(Scope scope);
-
-    void inSingleton();
-
-    void withoutScope();
 
 }

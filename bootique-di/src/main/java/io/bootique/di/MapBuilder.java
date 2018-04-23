@@ -8,7 +8,7 @@ import java.util.Map;
  * @param <K> A type of the map keys.
  * @param <V> A type of the map values.
  */
-public interface MapBuilder<K, V> {
+public interface MapBuilder<K, V> extends ScopeBuilder {
 
     MapBuilder<K, V> put(K key, Class<? extends V> interfaceType) throws DIRuntimeException;
 
@@ -18,9 +18,4 @@ public interface MapBuilder<K, V> {
 
     MapBuilder<K, V> putAll(Map<K, V> map) throws DIRuntimeException;
 
-    void in(Scope scope);
-
-    void inSingleton();
-
-    void withoutScope();
 }

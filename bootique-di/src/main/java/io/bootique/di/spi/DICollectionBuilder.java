@@ -13,8 +13,8 @@ import javax.inject.Provider;
  */
 public abstract class DICollectionBuilder<K, E> {
 
-    protected DefaultInjector injector;
-    protected Key<K> bindingKey;
+    protected final DefaultInjector injector;
+    protected final Key<K> bindingKey;
 
     public DICollectionBuilder(Key<K> bindingKey, DefaultInjector injector) {
         this.injector = injector;
@@ -68,5 +68,9 @@ public abstract class DICollectionBuilder<K, E> {
 
     public void inSingleton() {
         in(injector.getSingletonScope());
+    }
+
+    public void withoutScope() {
+        in(injector.getNoScope());
     }
 }

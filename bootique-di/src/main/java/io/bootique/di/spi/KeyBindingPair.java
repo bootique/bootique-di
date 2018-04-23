@@ -4,8 +4,8 @@ import io.bootique.di.Key;
 
 class KeyBindingPair<T> {
 
-    private Key<T> key;
-    private Binding<T> binding;
+    private final Key<T> key;
+    private final Binding<T> binding;
 
     KeyBindingPair(Key<T> key, Binding<T> binding) {
         this.key = key;

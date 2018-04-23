@@ -6,8 +6,8 @@ import java.lang.reflect.Type;
 
 class ConstructorInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
 
-    private Class<? extends T> implementation;
-    private DefaultInjector injector;
+    private final Class<? extends T> implementation;
+    private final DefaultInjector injector;
 
     ConstructorInjectingDecoratorProvider(Class<? extends T> implementation, DefaultInjector injector) {
         this.implementation = implementation;

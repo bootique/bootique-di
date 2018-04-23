@@ -8,8 +8,8 @@ import javax.inject.Provider;
 
 class DefaultBindingBuilder<T> implements BindingBuilder<T> {
 
-    protected DefaultInjector injector;
-    protected Key<T> bindingKey;
+    protected final DefaultInjector injector;
+    protected final Key<T> bindingKey;
 
     DefaultBindingBuilder(Key<T> bindingKey, DefaultInjector injector) {
         this.injector = injector;

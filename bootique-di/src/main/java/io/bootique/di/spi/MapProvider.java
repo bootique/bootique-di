@@ -4,6 +4,7 @@ import javax.inject.Provider;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 class MapProvider<K, V> implements Provider<Map<K, V>> {
 
@@ -11,7 +12,7 @@ class MapProvider<K, V> implements Provider<Map<K, V>> {
     private final DefaultInjector injector;
 
     MapProvider(DefaultInjector injector) {
-        this.providers = new HashMap<>();
+        this.providers = new ConcurrentHashMap<>();
         this.injector = injector;
     }
 

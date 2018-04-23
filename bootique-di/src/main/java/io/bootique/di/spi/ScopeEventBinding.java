@@ -10,9 +10,9 @@ import java.lang.reflect.Method;
  */
 public class ScopeEventBinding {
 
-    private WeakReference<Object> objectReference;
-    private Method eventHandlerMethod;
-    private int argWidth;
+    private final WeakReference<Object> objectReference;
+    private final Method eventHandlerMethod;
+    private final int argWidth;
 
     public ScopeEventBinding(Object object, Method eventHandlerMethod) {
 

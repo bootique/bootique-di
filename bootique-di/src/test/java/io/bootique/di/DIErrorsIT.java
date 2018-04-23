@@ -7,6 +7,7 @@ import javax.inject.Provider;
 
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.*;
 
 public class DIErrorsIT {
@@ -34,7 +35,7 @@ public class DIErrorsIT {
             String fullMessage = ex.getMessage();
             assertTrue(message, message.contains("returned NULL instance"));
             assertTrue(fullMessage, fullMessage.contains("returned NULL instance"));
-            assertTrue(fullMessage, fullMessage.contains("Invoking provider method 'createQux()' on module 'io.bootique.di.DIErrorsIT$TestModule'"));
+            assertTrue(fullMessage, fullMessage.contains("Invoking provider method 'createQux()' of module 'io.bootique.di.DIErrorsIT$TestModule'"));
             assertTrue(fullMessage, fullMessage.contains("Injecting field 'bar' of class io.bootique.di.DIErrorsIT$FooImpl"));
 
             InjectionTraceElement[] traceElements = ex.getInjectionTrace();
@@ -53,7 +54,7 @@ public class DIErrorsIT {
             String fullMessage = ex.getMessage();
             assertTrue(message, message.contains("returned NULL instance"));
             assertTrue(fullMessage, fullMessage.contains("returned NULL instance"));
-            assertTrue(fullMessage, fullMessage.contains("Invoking provider method 'createQux()' on module 'io.bootique.di.DIErrorsIT$TestModule'"));
+            assertTrue(fullMessage, fullMessage.contains("Invoking provider method 'createQux()' of module 'io.bootique.di.DIErrorsIT$TestModule'"));
 
             InjectionTraceElement[] traceElements = ex.getInjectionTrace();
             assertEquals(1, traceElements.length);
@@ -112,6 +113,12 @@ public class DIErrorsIT {
         }
     }
 
+    @Test
+    public void testMultipleBindings() {
+        Injector injector = DIBootstrap
+                .createInjector(b -> b.bind(Foo.class).to(FooImpl.class).to(FooImpl2.class));
+        assertThat(injector.getInstance(Foo.class), instanceOf(FooImpl2.class));
+    }
 
     private static class TestModule extends BaseModule {
         @Override

@@ -1,9 +1,9 @@
 package io.bootique.di.spi;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.inject.Provider;
 
 import io.bootique.di.Key;
@@ -11,12 +11,12 @@ import io.bootique.di.Key;
 class SetProvider<T> implements Provider<Set<T>> {
 
     private final DefaultInjector injector;
-    private final List<Provider<? extends T>> providers;
+    private final Collection<Provider<? extends T>> providers;
     private final Key<Set<T>> bindingKey;
 
     SetProvider(DefaultInjector injector, Key<Set<T>> bindingKey) {
         this.injector = injector;
-        this.providers = new ArrayList<>();
+        this.providers = new ConcurrentLinkedQueue<>();
         this.bindingKey = bindingKey;
     }
 

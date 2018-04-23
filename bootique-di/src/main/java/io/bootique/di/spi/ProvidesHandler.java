@@ -34,6 +34,8 @@ class ProvidesHandler {
             if (injector.getPredicates().isProviderMethod(m)) {
                 validateProvidesMethod(module, m);
 
+                m.setAccessible(true);
+
                 // change to mutable array on first match
                 if (bindings.isEmpty()) {
                     bindings = new ArrayList<>();
@@ -147,7 +149,7 @@ class ProvidesHandler {
         private final Method method;
         private final Object module;
 
-        public ProvidesMethodProvider(DefaultInjector injector, Provider<?>[] argumentProviders, Method method, Object module) {
+        private ProvidesMethodProvider(DefaultInjector injector, Provider<?>[] argumentProviders, Method method, Object module) {
             this.injector = injector;
             this.argumentProviders = argumentProviders;
             this.method = method;
@@ -160,22 +162,17 @@ class ProvidesHandler {
             Object[] arguments = new Object[len];
 
             for (int i = 0; i < len; i++) {
-                injector.trace("Get argument %d for provider method '%s()' of module '%s'"
-                        , i, method.getName(), module.getClass().getName());
+                injector.trace("Get argument %d for %s", i, getName());
                 arguments[i] = argumentProviders[i].get();
             }
 
-            injector.trace("Invoking provider method '%s()' on module '%s'"
-                    , method.getName(), module.getClass().getName());
-
-            method.setAccessible(true);
-
+            injector.trace("Invoking %s", getName());
             try {
                 @SuppressWarnings("unchecked")
                 T result = (T) method.invoke(module, arguments);
                 return result;
             } catch (Exception e) {
-                injector.throwException("Error invoking provider %s", e, getName());
+                injector.throwException("Error invoking %s", e, getName());
                 return null;
             }
         }

@@ -42,7 +42,7 @@ class DIUtil {
         return typeToClass(parameterType);
     }
 
-    private static Class<?> typeToClass(Type type) {
+    static Class<?> typeToClass(Type type) {
         if(type instanceof Class) {
             return  (Class<?>) type;
         } else if(type instanceof ParameterizedType){

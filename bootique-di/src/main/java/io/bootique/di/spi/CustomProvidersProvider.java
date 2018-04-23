@@ -7,9 +7,9 @@ import javax.inject.Provider;
  */
 class CustomProvidersProvider<T> implements NamedProvider<T> {
 
-    private DefaultInjector injector;
-    private Class<? extends Provider<? extends T>> providerType;
-    private Provider<Provider<? extends T>> providerOfProviders;
+    private final DefaultInjector injector;
+    private final Class<? extends Provider<? extends T>> providerType;
+    private final Provider<Provider<? extends T>> providerOfProviders;
 
     CustomProvidersProvider(DefaultInjector injector, Class<? extends Provider<? extends T>> providerType, Provider<Provider<? extends T>> providerOfProviders) {
         this.injector = injector;

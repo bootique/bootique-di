@@ -5,8 +5,8 @@ import io.bootique.di.Key;
 
 class DefaultDecoratorBuilder<T> implements DecoratorBuilder<T> {
 
-    private Key<T> bindingKey;
-    private DefaultInjector injector;
+    private final Key<T> bindingKey;
+    private final DefaultInjector injector;
 
     DefaultDecoratorBuilder(Key<T> bindingKey, DefaultInjector injector) {
         this.bindingKey = bindingKey;

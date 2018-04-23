@@ -8,11 +8,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * An implementation of a DI scopes with support scope events.
@@ -22,12 +21,12 @@ public class DefaultScope implements Scope {
     private static final String SPECIAL_EVENT = AfterScopeEnd.class.getName();
 
     protected final Collection<Class<? extends Annotation>> eventTypes;
-    protected final ConcurrentMap<String, Collection<ScopeEventBinding>> listeners;
+    protected final Map<String, Collection<ScopeEventBinding>> listeners;
 
     @SafeVarargs
     public DefaultScope(Class<? extends Annotation>... customEventTypes) {
         this.listeners = new ConcurrentHashMap<>();
-        this.eventTypes = new HashSet<>();
+        this.eventTypes = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
         // initialize the event listener data structures in constructor to avoid
         // synchronization concerns on everything but per-event lists.

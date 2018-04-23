@@ -37,4 +37,6 @@ public interface ListBuilder<T> {
 
     void inSingleton();
 
+    void withoutScope();
+
 }

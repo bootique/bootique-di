@@ -15,6 +15,8 @@ import java.util.Set;
  * The implementation here is basically an adjacency list, but a {@link Map} is
  * used to map each vertex to its list of adjacent vertices.
  *
+ * This object is not thread safe.
+ *
  * @param <V> A type of a vertex.
  */
 class DIGraph<V> {

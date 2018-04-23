@@ -6,9 +6,9 @@ import java.lang.reflect.Field;
 
 class FieldInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
 
-    private Class<? extends T> implementation;
-    private DefaultInjector injector;
-    private DecoratorProvider<T> delegate;
+    private final Class<? extends T> implementation;
+    private final DefaultInjector injector;
+    private final DecoratorProvider<T> delegate;
 
     FieldInjectingDecoratorProvider(Class<? extends T> implementation, DecoratorProvider<T> delegate,
             DefaultInjector injector) {

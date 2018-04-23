@@ -9,17 +9,18 @@ import java.lang.reflect.Type;
 
 class ConstructorInjectingProvider<T> implements NamedProvider<T> {
 
-    private Constructor<? extends T> constructor;
-    private DefaultInjector injector;
-    private Annotation[] bindingAnnotations;
+    private final Constructor<? extends T> constructor;
+    private final DefaultInjector injector;
+    private final Annotation[] bindingAnnotations;
 
     ConstructorInjectingProvider(Class<? extends T> implementation, DefaultInjector injector) {
         this.injector = injector;
-        initConstructor(implementation);
+        this.constructor = findConstructor(implementation);
+        this.bindingAnnotations = collectParametersQualifiers(constructor);
     }
 
     @SuppressWarnings("unchecked")
-    private void initConstructor(Class<? extends T> implementation) {
+    private Constructor<? extends T> findConstructor(Class<? extends T> implementation) {
 
         Constructor<?>[] constructors = implementation.getDeclaredConstructors();
         Constructor<?> lastMatch = null;
@@ -46,26 +47,27 @@ class ConstructorInjectingProvider<T> implements NamedProvider<T> {
         }
 
         if (lastMatch == null) {
-            injector.throwException(
+            return injector.throwException(
                     "No applicable constructor is found for constructor injection in class '%s'",
                     implementation.getName());
         }
 
-        this.constructor = (Constructor<? extends T>) lastMatch;
-        collectParametersQualifiers();
+        lastMatch.setAccessible(true);
+        return (Constructor<? extends T>) lastMatch;
     }
 
-    private void collectParametersQualifiers() {
-        this.bindingAnnotations = new Annotation[constructor.getParameterCount()];
+    private Annotation[] collectParametersQualifiers(Constructor<? extends T> constructor) {
+        Annotation[] result = new Annotation[constructor.getParameterCount()];
         Annotation[][] annotations = constructor.getParameterAnnotations();
         for (int i = 0; i < annotations.length; i++) {
             Annotation[] parameterAnnotations = annotations[i];
             for (Annotation annotation : parameterAnnotations) {
                 if(injector.getPredicates().isQualifierAnnotation(annotation)) {
-                    bindingAnnotations[i] = annotation;
+                    result[i] = annotation;
                 }
             }
         }
+        return result;
     }
 
     @Override
@@ -83,7 +85,6 @@ class ConstructorInjectingProvider<T> implements NamedProvider<T> {
 
         try {
             injector.trace("Invoking %s", getName());
-            this.constructor.setAccessible(true);
             return constructor.newInstance(args);
         } catch (Exception e) {
             return injector.throwException("Error invoking %s", e, getName());

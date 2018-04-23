@@ -1,6 +1,5 @@
 package io.bootique.di.spi;
 
-import io.bootique.di.BindingBuilder;
 import io.bootique.di.DIRuntimeException;
 import io.bootique.di.InjectionTraceElement;
 import io.bootique.di.Injector;
@@ -21,6 +20,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * A default implementations of a DI injector.
  */
 public class DefaultInjector implements Injector {
+
+    public enum Options {
+        NO_SCOPE_BY_DEFAULT,
+        DECLARED_OVERRIDE_ONLY,
+        ENABLE_DYNAMIC_BINDINGS,
+        ENABLE_METHOD_INJECTION,
+        DISABLE_TRACE
+    }
 
     private final DefaultScope singletonScope;
     private final Scope noScope;
@@ -193,36 +200,52 @@ public class DefaultInjector implements Injector {
     public <T> Provider<T> getProvider(Key<T> key) {
         Binding<T> binding = getBinding(key);
         if (binding == null || binding.getOriginal() == null) {
-            binding = createDynamicBinding(key, binding);
+            binding = createDynamicBinding(key);
         }
 
         return predicates.wrapProvider(binding.getScoped());
     }
 
     @SuppressWarnings("unchecked")
-    private <T> Binding<T> createDynamicBinding(Key<T> key, Binding<T> binding) {
-        if(binding == null && !allowDynamicBinding) {
-            throwException("DI container has no binding for key %s and dynamic bindings are disabled.", key);
+    private <T> Binding<T> createDynamicBinding(Key<T> key) {
+        // Compute new bindings for given key
+        return (Binding<T>) bindings.compute(key, (k, oldBinding) -> {
+            if(oldBinding == null && !allowDynamicBinding) {
+                throwException("DI container has no binding for key %s and dynamic bindings are disabled.", key);
+            }
+
+            if(oldBinding != null && oldBinding.getOriginal() != null) {
+                return oldBinding;
+            }
+
+            Class<T> implementation = (Class<T>)key.getType().getRawType();
+            Provider<T> provider = new ConstructorInjectingProvider<>(implementation, this);
+
+            Scope scope = defaultScope;
+            if(oldBinding != null && oldBinding.getScope() != defaultScope) {
+                scope = oldBinding.getScope();
+            } else if(getPredicates().isSingleton(implementation)) {
+                scope = singletonScope;
+            }
+
+            return new Binding<>(key, wrapInMemberInjectionProviders(key, provider), scope, false);
+        });
+    }
+
+    private <T> Provider<T> wrapInMemberInjectionProviders(Key<T> key, Provider<T> provider) {
+        Provider<T> provider1 = new FieldInjectingProvider<>(provider, this);
+        if(isMethodInjectionEnabled()) {
+            provider1 = new MethodInjectingProvider<>(provider1, this);
         }
-        // create new binding
-        BindingBuilder<T> builder = binder.bind(key).to((Class)key.getType().getRawType());
-        // if binding was already declared use it's scope
-        if(binding != null) {
-            builder.in(binding.getScope());
-        }
-        return getBinding(key);
+
+        return wrapProvider(key, provider1);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void injectMembers(Object object) {
-        Provider<Object> provider = new InstanceProvider<>(object);
-        provider = new FieldInjectingProvider<>(provider, this);
-        if(allowMethodInjection) {
-            provider = new MethodInjectingProvider<>(provider, this);
-        }
-        @SuppressWarnings("unchecked")
-        Class<Object> objectClass = (Class<Object>)object.getClass();
-        wrapProvider(Key.get(objectClass), provider).get();
+        Key<Object> key = Key.get((Class<Object>)object.getClass());
+        wrapInMemberInjectionProviders(key, new InstanceProvider<>(object)).get();
     }
 
     @Override
@@ -269,14 +292,6 @@ public class DefaultInjector implements Injector {
 
             b.decorate(this, e.getValue());
         }
-    }
-
-    public enum Options {
-        NO_SCOPE_BY_DEFAULT,
-        DECLARED_OVERRIDE_ONLY,
-        ENABLE_DYNAMIC_BINDINGS,
-        ENABLE_METHOD_INJECTION,
-        DISABLE_TRACE
     }
 
     /**

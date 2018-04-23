@@ -20,8 +20,9 @@ import java.util.concurrent.ConcurrentMap;
 public class DefaultScope implements Scope {
 
     private static final String SPECIAL_EVENT = AfterScopeEnd.class.getName();
-    protected Collection<Class<? extends Annotation>> eventTypes;
-    protected ConcurrentMap<String, Collection<ScopeEventBinding>> listeners;
+
+    protected final Collection<Class<? extends Annotation>> eventTypes;
+    protected final ConcurrentMap<String, Collection<ScopeEventBinding>> listeners;
 
     @SafeVarargs
     public DefaultScope(Class<? extends Annotation>... customEventTypes) {

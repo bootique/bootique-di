@@ -9,10 +9,9 @@ import javax.inject.Provider;
  */
 public class DefaultScopeProvider<T> implements Provider<T> {
 
-    private Provider<T> delegate;
-    private DefaultScope scope;
+    private final Provider<T> delegate;
+    private final DefaultScope scope;
 
-    // presumably "volatile" works in Java 5 and newer to prevent double-checked locking
     private volatile T instance;
 
     public DefaultScopeProvider(DefaultScope scope, Provider<T> delegate) {

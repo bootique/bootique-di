@@ -12,8 +12,9 @@ import java.util.List;
  */
 class Binding<T> {
 
-    private Key<T> key;
-    private Provider<T> original;
+    private final Key<T> key;
+    private final Provider<T> original;
+
     private Provider<T> decorated;
     private Provider<T> scoped;
     private Scope scope;

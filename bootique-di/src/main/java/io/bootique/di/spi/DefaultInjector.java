@@ -11,11 +11,11 @@ import io.bootique.di.Scope;
 import javax.inject.Provider;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A default implementations of a DI injector.
@@ -32,13 +32,14 @@ public class DefaultInjector implements Injector {
     private final InjectionStack injectionStack;
     private final InjectionTrace injectionTrace;
     private final Scope defaultScope;
-
-    private boolean allowDynamicBinding;
-    private boolean allowOverride;
-    private boolean allowMethodInjection;
-    private boolean injectionTraceEnabled;
-
     private final InjectorPredicates predicates;
+
+    private final boolean allowDynamicBinding;
+    private final boolean allowOverride;
+    private final boolean allowMethodInjection;
+    private final boolean injectionTraceEnabled;
+
+    private volatile boolean isShutdown;
 
     DefaultInjector(Module... modules) {
         this(Collections.emptySet(), new InjectorPredicates(), modules);
@@ -60,8 +61,8 @@ public class DefaultInjector implements Injector {
         this.allowMethodInjection = options.contains(Options.ENABLE_METHOD_INJECTION);
         this.injectionTraceEnabled = !options.contains(Options.DISABLE_TRACE);
 
-        this.bindings = new HashMap<>();
-        this.decorations = new HashMap<>();
+        this.bindings = new ConcurrentHashMap<>();
+        this.decorations = new ConcurrentHashMap<>();
         this.injectionStack = new InjectionStack(this);
         this.injectionTrace = injectionTraceEnabled ? new InjectionTrace() : null;
         this.providesHandler = new ProvidesHandler(this);
@@ -99,6 +100,9 @@ public class DefaultInjector implements Injector {
 
     @SuppressWarnings("unchecked")
     <T> Binding<T> getBinding(Key<T> key) {
+        if(isShutdown) {
+            throwException("Injector is shutdown");
+        }
         // may return null - this is intentionally allowed in this non-public method
         return (Binding<T>) bindings.get(Objects.requireNonNull(key, "Null key"));
     }
@@ -112,6 +116,9 @@ public class DefaultInjector implements Injector {
     }
 
     <T> void putBinding(Key<T> bindingKey, Binding<T> binding) {
+        if(isShutdown) {
+            throwException("Injector is shutdown");
+        }
         Binding<?> oldBinding = bindings.put(bindingKey, binding);
         if(!canOverride(oldBinding, binding)) {
             throwException("Unable to override key %s. It is final and override is disabled.", bindingKey);
@@ -137,28 +144,20 @@ public class DefaultInjector implements Injector {
                 || allowOverride;
     }
 
-    <T> void putDecorationAfter(Key<T> bindingKey, DecoratorProvider<T> decoratorProvider) {
-
-        @SuppressWarnings("unchecked")
-        Decoration<T> decoration = (Decoration<T>) decorations.get(bindingKey);
-        if (decoration == null) {
-            decoration = new Decoration<>();
-            decorations.put(bindingKey, decoration);
+    @SuppressWarnings("unchecked")
+    private <T> Decoration<T> getDecoration(Key<T> bindingKey) {
+        if(isShutdown) {
+            throwException("Injector is shutdown");
         }
+        return (Decoration<T>)decorations.computeIfAbsent(bindingKey, bk -> new Decoration<>());
+    }
 
-        decoration.after(decoratorProvider);
+    <T> void putDecorationAfter(Key<T> bindingKey, DecoratorProvider<T> decoratorProvider) {
+        getDecoration(bindingKey).after(decoratorProvider);
     }
 
     <T> void putDecorationBefore(Key<T> bindingKey, DecoratorProvider<T> decoratorProvider) {
-
-        @SuppressWarnings("unchecked")
-        Decoration<T> decoration = (Decoration<T>) decorations.get(bindingKey);
-        if (decoration == null) {
-            decoration = new Decoration<>();
-            decorations.put(bindingKey, decoration);
-        }
-
-        decoration.before(decoratorProvider);
+        getDecoration(bindingKey).before(decoratorProvider);
     }
 
     <T> void changeBindingScope(Key<T> bindingKey, Scope scope) {
@@ -169,6 +168,7 @@ public class DefaultInjector implements Injector {
         Binding<?> binding = bindings.get(bindingKey);
         if (binding == null) {
             throwException("No existing binding for key " + bindingKey);
+            return;
         }
 
         binding.changeScope(scope);
@@ -226,8 +226,15 @@ public class DefaultInjector implements Injector {
     }
 
     @Override
-    public void shutdown() {
+    public synchronized void shutdown() {
+        if(isShutdown) {
+            return;
+        }
+        isShutdown = true;
         singletonScope.shutdown();
+        bindings.clear();
+        decorations.clear();
+        injectionStack.reset();
     }
 
     DefaultScope getSingletonScope() {
@@ -246,12 +253,12 @@ public class DefaultInjector implements Injector {
         return allowMethodInjection;
     }
 
-    public boolean isInjectionTraceEnabled() {
+    boolean isInjectionTraceEnabled() {
         return injectionTraceEnabled;
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    void applyDecorators() {
+    private void applyDecorators() {
         for (Entry<Key<?>, Decoration<?>> e : decorations.entrySet()) {
 
             Binding b = bindings.get(e.getKey());
@@ -343,10 +350,10 @@ public class DefaultInjector implements Injector {
      * @param cause underlying cause of this exception
      * @param args message format arguments
      * @param <T> generic type to return
-     * @return nothing, alwasy throws
+     * @return nothing, always throws
      * @throws DIRuntimeException throws DI exception always
      */
-    <T> T  throwException(String message, Throwable cause, Object... args) throws DIRuntimeException {
+    <T> T throwException(String message, Throwable cause, Object... args) throws DIRuntimeException {
         if (cause instanceof InvocationTargetException && cause.getCause() != null) {
             // if reflection method call thrown an exception unwrap and use it as a cause
             cause = cause.getCause();

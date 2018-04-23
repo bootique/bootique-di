@@ -21,4 +21,6 @@ public interface MapBuilder<K, V> {
     void in(Scope scope);
 
     void inSingleton();
+
+    void withoutScope();
 }

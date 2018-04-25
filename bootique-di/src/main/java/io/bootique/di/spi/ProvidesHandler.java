@@ -132,7 +132,15 @@ class ProvidesHandler {
                 providers[i] = () -> injector.getProvider(key);
             } else {
                 // resolve the actual provider lazily
-                providers[i] = () -> injector.getProvider(key).get();
+                providers[i] = () -> {
+                    // cycle guard
+                    injector.getInjectionStack().push(key);
+                    try {
+                        return injector.getProvider(key).get();
+                    } finally {
+                        injector.getInjectionStack().pop();
+                    }
+                };
             }
         }
 

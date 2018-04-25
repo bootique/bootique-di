@@ -83,6 +83,12 @@ public class ProvidesIT {
     }
 
     @Test(expected = DIRuntimeException.class)
+    public void testProvidesCycle() {
+        Injector injector = DIBootstrap.createInjector(new TestModule_CircularDependency());
+        injector.getInstance(Service1.class);
+    }
+
+    @Test(expected = DIRuntimeException.class)
     public void testProvides_Invalid() {
         DIBootstrap.createInjector(new TestModule_InvalidProvider());
     }
@@ -203,6 +209,18 @@ public class ProvidesIT {
         @Provides
         public Service2 provideService2(@TestQualifier Provider<Service1> s1) {
             return () -> "provideService2_" + s1.get().doIt();
+        }
+    }
+
+    private static class TestModule_CircularDependency extends BaseModule {
+        @Provides
+        Service1 createService1(Service2 service2) {
+            return () -> "service1" + service2.doIt();
+        }
+
+        @Provides
+        Service2 createService2(Service1 service1) {
+            return () -> "service2" + service1.doIt();
         }
     }
 

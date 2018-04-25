@@ -122,12 +122,26 @@ public class DefaultInjector implements Injector {
         putBinding(bindingKey, new Binding<>(bindingKey, wrapProvider(bindingKey, provider), defaultScope, true));
     }
 
+    /**
+     * Override existing binding, will throw if no binding exists for given key.
+     */
+    <T> void overrideBinding(Key<T> bindingKey, Provider<T> provider) {
+        if(isShutdown) {
+            throwException("Injector is shutdown");
+        }
+        Binding<T> binding = new Binding<>(bindingKey, wrapProvider(bindingKey, provider), defaultScope, false);
+        Binding<?> oldBinding = bindings.put(bindingKey, binding);
+        if(oldBinding == null) {
+            throwException("No binding to override for key %s", bindingKey);
+        }
+    }
+
     <T> void putBinding(Key<T> bindingKey, Binding<T> binding) {
         if(isShutdown) {
             throwException("Injector is shutdown");
         }
         Binding<?> oldBinding = bindings.put(bindingKey, binding);
-        if(!canOverride(oldBinding, binding)) {
+        if(!canOverride(oldBinding)) {
             throwException("Unable to override key %s. It is final and override is disabled.", bindingKey);
         }
     }
@@ -140,13 +154,13 @@ public class DefaultInjector implements Injector {
      * </ul>
      *
      * @param oldBinding existing binding (or null if absent) to override
-     * @param withBinding new binding that wants to override existing one
      *
      * @return can binding be overridden with new one
      */
-    private boolean canOverride(Binding<?> oldBinding, Binding<?> withBinding) {
+    private boolean canOverride(Binding<?> oldBinding) {
         // binding provider can be null if it is incomplete (e.g. binder.bind(MyClass.class);)
-        return oldBinding == null || oldBinding.getOriginal() == null
+        return oldBinding == null
+                || oldBinding.getOriginal() == null
                 || oldBinding.isOptional()
                 || allowOverride;
     }

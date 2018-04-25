@@ -48,6 +48,30 @@ public interface Binder {
     <T> BindingBuilder<T> bindOptional(Key<T> key);
 
     //----------------------
+    //   Bindings override
+    //----------------------
+
+    /**
+     *
+     * Start override binding of a specific interface.
+     *
+     * @param interfaceType to override
+     * @param <T> binding type
+     * @return binding builder to continue override
+     */
+    <T> BindingBuilder<T> override(Class<T> interfaceType);
+
+    /**
+     *
+     * Start override binding of a specific interface based on a provided binding key.
+     *
+     * @param key to override
+     * @param <T> binding type
+     * @return binding builder to continue override
+     */
+    <T> BindingBuilder<T> override(Key<T> key);
+
+    //----------------------
     //  Map<K,V> bindings
     //----------------------
 

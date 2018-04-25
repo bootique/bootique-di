@@ -23,6 +23,10 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
         injector.putBinding(bindingKey, (Provider<T>) null);
     }
 
+    protected void addBinding(Provider<T> provider) {
+        injector.putBinding(bindingKey, provider);
+    }
+
     @Override
     public BindingBuilder<T> to(Class<? extends T> implementation) {
         Provider<T> provider0 = new ConstructorInjectingProvider<>(implementation, injector);
@@ -31,9 +35,9 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
             provider1 = new MethodInjectingProvider<>(provider1, injector);
         }
 
-        injector.putBinding(bindingKey, provider1);
+        addBinding(provider1);
         if(injector.getPredicates().isSingleton(implementation)) {
-            injector.changeBindingScope(bindingKey, injector.getSingletonScope());
+            inSingletonScope();
         }
 
         return this;
@@ -52,7 +56,7 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
             provider1 = new MethodInjectingProvider<>(provider1, injector);
         }
 
-        injector.putBinding(bindingKey, provider1);
+        addBinding(provider1);
 
         return this;
     }
@@ -71,7 +75,7 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
             provider4 = new MethodInjectingProvider<>(provider4, injector);
         }
 
-        injector.putBinding(bindingKey, provider4);
+        addBinding(provider4);
         return this;
     }
 
@@ -91,7 +95,7 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
             provider4 = new MethodInjectingProvider<>(provider4, injector);
         }
 
-        injector.putBinding(bindingKey, provider4);
+        addBinding(provider4);
         return this;
     }
 

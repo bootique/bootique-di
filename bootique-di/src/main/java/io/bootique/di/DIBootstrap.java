@@ -9,8 +9,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -72,7 +71,7 @@ public class DIBootstrap {
         private Module[] modules;
 
         private InjectorBuilder(Module... modules) {
-            this.options = Collections.newSetFromMap(new EnumMap<>(DefaultInjector.Options.class));
+            this.options = EnumSet.noneOf(DefaultInjector.Options.class);
             this.modules = modules;
             this.annotationPredicates = new InjectorPredicates();
         }

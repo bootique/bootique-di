@@ -62,7 +62,7 @@ public class SetBinderAdapter<T> {
             @Override
             public void in(Class<? extends Annotation> scopeAnnotation) {
                 if(scopeAnnotation == Singleton.class) {
-                    bootiqueSetBuilder.inSingleton();
+                    bootiqueSetBuilder.inSingletonScope();
                 } else {
                     throw new UnsupportedOperationException();
                 }

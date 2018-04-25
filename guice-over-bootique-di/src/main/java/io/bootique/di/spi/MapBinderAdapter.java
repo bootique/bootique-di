@@ -64,7 +64,7 @@ public class MapBinderAdapter<K, V> {
             @Override
             public void in(Class<? extends Annotation> scopeAnnotation) {
                 if(scopeAnnotation == Singleton.class) {
-                    bootiqueMapBuilder.inSingleton();
+                    bootiqueMapBuilder.inSingletonScope();
                 } else {
                     throw new UnsupportedOperationException();
                 }

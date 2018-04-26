@@ -89,7 +89,7 @@ import com.google.inject.binder.LinkedBindingBuilder;
  * their own custom scopes for use here as well.
  *
  * <pre>
- *     bind(new TypeLiteral&lt;PaymentService&lt;CreditCard>>() {})
+ *     bind(new TypeLiteral&lt;PaymentService&lt;CreditCard&gt;&gt;() {})
  *         .to(CreditCardPaymentService.class);</pre>
  * <p>
  * This admittedly odd construct is the way to bind a parameterized type. It tells Guice how to
@@ -140,7 +140,7 @@ import com.google.inject.binder.LinkedBindingBuilder;
  * application.
  *
  * <pre>
- *     Constructor<T> loneCtor = getLoneCtorFromServiceImplViaReflection();
+ *     Constructor&lt;T&gt; loneCtor = getLoneCtorFromServiceImplViaReflection();
  *     bind(ServiceImpl.class)
  *         .toConstructor(loneCtor);</pre>
  * <p>

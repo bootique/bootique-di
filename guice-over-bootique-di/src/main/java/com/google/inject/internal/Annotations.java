@@ -76,7 +76,7 @@ public class Annotations {
     /**
      * Returns the binding annotation on {@code member}, or null if there isn't one.
      */
-    public static Annotation findBindingAnnotation(Errors errors, Member member, Annotation[] annotations) {
+    private static Annotation findBindingAnnotation(Errors errors, Member member, Annotation[] annotations) {
         Annotation found = null;
         for (Annotation annotation : annotations) {
             Class<? extends Annotation> annotationType = annotation.annotationType();

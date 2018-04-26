@@ -10,20 +10,21 @@ import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.binder.ScopedBindingBuilder;
-import io.bootique.di.Binder;
 import io.bootique.di.MapBuilder;
 
 public class MapBinderAdapter<K, V> {
 
-    private MapBuilder<K, V> bootiqueMapBuilder;
+    private final BinderAdapter guiceBinderAdapter;
+    private final MapBuilder<K, V> bootiqueMapBuilder;
 
     public MapBinderAdapter(com.google.inject.Binder guiceBinder, TypeLiteral<K> keyType, TypeLiteral<V> valueType,
                             Class<? extends Annotation> annotatedWith) {
         if(!(guiceBinder instanceof BinderAdapter)) {
             throw new IllegalArgumentException("Unexpected binder implementation: " + guiceBinder.getClass().getName());
         }
-        Binder bootiqueBinder = ((BinderAdapter) guiceBinder).getBootiqueBinder();
-        this.bootiqueMapBuilder = bootiqueBinder.bindMap(ConversionUtils.toTypeLiteral(keyType), ConversionUtils.toTypeLiteral(valueType), annotatedWith);
+        this.guiceBinderAdapter = (BinderAdapter) guiceBinder;
+        this.bootiqueMapBuilder = guiceBinderAdapter.getBootiqueBinder()
+                .bindMap(ConversionUtils.toTypeLiteral(keyType), ConversionUtils.toTypeLiteral(valueType), annotatedWith);
     }
 
     public LinkedBindingBuilder<V> addBinding(K key) {

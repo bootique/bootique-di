@@ -64,7 +64,6 @@ public class InjectorAdapter implements com.google.inject.Injector {
         bootiqueInjector.injectMembers(instance);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> Provider<T> getProvider(Key<T> key) {
         return () -> (T)bootiqueInjector.getProvider(ConversionUtils.toBootiqueKey(key)).get();
@@ -75,7 +74,6 @@ public class InjectorAdapter implements com.google.inject.Injector {
         return () -> (T)bootiqueInjector.getProvider(type).get();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <T> T getInstance(Key<T> key) {
         return bootiqueInjector.getInstance(ConversionUtils.toBootiqueKey(key));

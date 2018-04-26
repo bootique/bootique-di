@@ -1,8 +1,11 @@
 Bootique
 
-This product includes software developed at
+* This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/). 
 Namely it is heavily altered port of Apache Cayenne DI technology.
 
 * This product includes JSR-330 TCK test suite code
 developed by The JSR-330 Expert Group (https://github.com/javax-inject/javax-inject)
+
+* This product includes Guice dependency injection code
+developed by Google (https://github.com/google/guice)

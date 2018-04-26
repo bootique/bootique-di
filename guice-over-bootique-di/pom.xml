@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>guice-over-bootique-di</artifactId>
+    <name>guice-over-bootique-di: Subset of Guice API implemented over Bootique DI</name>
 
     <dependencies>
         <dependency>

@@ -56,7 +56,7 @@ public class InjectorAdapter implements com.google.inject.Injector {
 
     public void installModule(Module module) {
         module.configure(adapter);
-        bootiqueInjector.getProvidesHandler().bindingsFromAnnotatedMethods(module).forEach(p -> p.bind(bootiqueInjector));
+        bootiqueInjector.getProvidesHandler().bindingsFromAnnotatedMethods(module);
     }
 
     @Override

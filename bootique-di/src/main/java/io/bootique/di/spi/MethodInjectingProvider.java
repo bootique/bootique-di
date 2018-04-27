@@ -138,8 +138,7 @@ class MethodInjectingProvider<T> extends MemberInjectingProvider<T> {
 
         Object[] values = arguments(method);
 
-        injector.trace("Injecting method '%s()' of class %s"
-                , method.getName(), method.getDeclaringClass().getName());
+        injector.trace(() -> "Injecting method '" + method.getName() + "()' of class " + method.getDeclaringClass().getName());
         method.setAccessible(true);
         try {
             method.invoke(object, values);
@@ -166,8 +165,9 @@ class MethodInjectingProvider<T> extends MemberInjectingProvider<T> {
             Type parameterType = parameterTypes[i];
             Annotation bindingAnnotation = getQualifier(parameterAnnotations[i], method);
 
-            injector.trace("Get argument %d for method '%s()' of class '%s'"
-                    , i, method.getName(), method.getDeclaringClass().getName());
+            int idx = i;
+            injector.trace(() -> "Get argument " + idx + " for method '" + method.getName() + "()'" +
+                    " of class '" + method.getDeclaringClass().getName() + "'");
 
             if (injector.getPredicates().isProviderType(parameterClasses[i])) {
                 parameterType = DIUtil.getGenericParameterType(parameterType);

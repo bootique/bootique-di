@@ -9,9 +9,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.function.Predicate;
 
 /**
  * Resolves provider methods to a set of bindings. Provider methods are a part of a module class, each annotated
@@ -25,50 +23,40 @@ class ProvidesHandler {
         this.injector = injector;
     }
 
-    Collection<KeyBindingPair<?>> bindingsFromAnnotatedMethods(Object module) {
-
-        Collection<KeyBindingPair<?>> bindings = Collections.emptyList();
+    void bindingsFromAnnotatedMethods(Object module) {
+        Predicate<Method> providesMethodPredicate = injector.getPredicates().getProvidesMethodPredicate();
 
         // consider annotated methods in the module class
         for (Method m : module.getClass().getDeclaredMethods()) {
-            if (injector.getPredicates().isProviderMethod(m)) {
+            if (providesMethodPredicate.test(m)) {
                 validateProvidesMethod(module, m);
-
                 m.setAccessible(true);
-
                 // change to mutable array on first match
-                if (bindings.isEmpty()) {
-                    bindings = new ArrayList<>();
-                }
-
-                bindings.add(createBindingPair(module, m));
+                createBinding(module, m);
             }
         }
-
-        return bindings;
     }
 
     private void validateProvidesMethod(Object module, Method method) {
-
-        if (method.getReturnType().equals(Void.TYPE)) {
+        if (void.class.equals(method.getReturnType())) {
             injector.throwException(
                     "Provider method '%s()' on module '%s' is void. To be a proper provider method, it must return a value",
                     method.getName(), module.getClass().getName());
         }
     }
 
-    private <T> KeyBindingPair<T> createBindingPair(Object module, Method method) {
-
+    private <T> void createBinding(Object module, Method method) {
         Key<T> key = createKey(method.getGenericReturnType(), extractQualifier(method, method.getDeclaredAnnotations()));
         Binding<T> binding = createBinding(key, module, method);
 
-        return new KeyBindingPair<>(key, binding);
+        injector.putBinding(key, binding);
     }
 
     private Annotation extractQualifier(Method method, Annotation[] annotations) {
         Annotation found = null;
+        Predicate<Class<? extends Annotation>> qualifierPredicate = injector.getPredicates().getQualifierPredicate();
         for (Annotation a : annotations) {
-            if (injector.getPredicates().isQualifierAnnotation(a)) {
+            if (qualifierPredicate.test(a.annotationType())) {
                 if (found != null) {
                     injector.throwException("Multiple qualifying annotations found for method '%s()' or its parameter on module '%s'"
                             , method.getName()
@@ -170,11 +158,12 @@ class ProvidesHandler {
             Object[] arguments = new Object[len];
 
             for (int i = 0; i < len; i++) {
-                injector.trace("Get argument %d for %s", i, getName());
+                final int idx = i;
+                injector.trace(() -> "Get argument " + idx + " for " + getName());
                 arguments[i] = argumentProviders[i].get();
             }
 
-            injector.trace("Invoking %s", getName());
+            injector.trace(() -> "Invoking " + getName());
             try {
                 @SuppressWarnings("unchecked")
                 T result = (T) method.invoke(module, arguments);

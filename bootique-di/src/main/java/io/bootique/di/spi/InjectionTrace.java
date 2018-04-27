@@ -1,6 +1,7 @@
 package io.bootique.di.spi;
 
 import java.util.LinkedList;
+import java.util.function.Supplier;
 
 import io.bootique.di.InjectionTraceElement;
 import io.bootique.di.Key;
@@ -21,10 +22,10 @@ class InjectionTrace {
         getStack().push(new InjectionTraceElement(key));
     }
 
-    void updateMessage(String message) {
+    void updateMessage(Supplier<String> messageSupplier) {
         InjectionTraceElement element = getStack().peekFirst();
         if(element != null) {
-            element.setMessage(message);
+            element.setMessage(messageSupplier);
         }
     }
 

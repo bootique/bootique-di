@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 /**
  * A default implementations of a DI injector.
@@ -82,7 +83,7 @@ public class DefaultInjector implements Injector {
         if (modules != null && modules.length > 0) {
             for (Module module : modules) {
                 module.configure(binder);
-                providesHandler.bindingsFromAnnotatedMethods(module).forEach(p -> p.bind(this));
+                providesHandler.bindingsFromAnnotatedMethods(module);
             }
         }
 
@@ -324,12 +325,11 @@ public class DefaultInjector implements Injector {
     }
 
     /**
-     * @param message trace message format
-     * @param args for message formatting
+     * @param messageSupplier trace message supplier
      */
-    void trace(String message, Object... args) {
+    void trace(Supplier<String> messageSupplier) {
         if (injectionTraceEnabled) {
-            injectionTrace.updateMessage(String.format(message, args));
+            injectionTrace.updateMessage(messageSupplier);
         }
     }
 

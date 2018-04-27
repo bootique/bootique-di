@@ -32,7 +32,7 @@ class ListProvider<T> implements Provider<List<T>> {
         Collection<Key<? extends T>> insertOrder = getKeysInInsertOrder();
         List<T> list = new ArrayList<>(insertOrder.size());
         for (Key<? extends T> key : insertOrder) {
-            injector.trace("Resolving list element %s", key);
+            injector.trace(() -> "Resolving list element " + key);
             list.add(providers.get(key).get());
         }
 
@@ -50,7 +50,7 @@ class ListProvider<T> implements Provider<List<T>> {
                 }
 
                 // need to resort keys
-                injector.trace("Sorting list elements");
+                injector.trace(() -> "Sorting list elements");
                 try {
                     // use CopyOnWriteArrayList as an additional protection,
                     // there should be no modifications of it's values

@@ -20,7 +20,7 @@ class CustomProvidersProvider<T> implements NamedProvider<T> {
     @Override
     public T get() {
         Provider<? extends T> customProvider = providerOfProviders.get();
-        injector.trace("Invoking " + getName());
+        injector.trace(() -> "Invoking " + getName());
         return customProvider.get();
     }
 

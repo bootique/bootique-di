@@ -5,9 +5,11 @@ import io.bootique.di.TypeLiteral;
 
 import javax.inject.Provider;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.function.Predicate;
 
 class FieldInjectingProvider<T> extends MemberInjectingProvider<T> {
 
@@ -25,13 +27,15 @@ class FieldInjectingProvider<T> extends MemberInjectingProvider<T> {
 
         injectMembers(object, type.getSuperclass());
 
+        Predicate<AccessibleObject> injectPredicate = injector.getPredicates().getInjectPredicate();
+
         for (Field field : type.getDeclaredFields()) {
             if(Modifier.isStatic(field.getModifiers())) {
                 // skip static fields completely
                 continue;
             }
 
-            if (injector.getPredicates().haveInjectAnnotation(field)) {
+            if (injectPredicate.test(field)) {
                 injectMember(object, field, getQualifier(field));
             }
         }
@@ -39,8 +43,7 @@ class FieldInjectingProvider<T> extends MemberInjectingProvider<T> {
 
     private void injectMember(Object object, Field field, Annotation bindingAnnotation) {
 
-        injector.trace("Injecting field '%s' of class %s"
-                , field.getName(), field.getDeclaringClass().getName());
+        injector.trace(() -> "Injecting field '" + field.getName() + "' of class " + field.getDeclaringClass().getName());
         Object value = value(field, bindingAnnotation);
 
         field.setAccessible(true);
@@ -55,19 +58,18 @@ class FieldInjectingProvider<T> extends MemberInjectingProvider<T> {
     protected Object value(Field field, Annotation bindingAnnotation) {
 
         Class<?> fieldType = field.getType();
-        InjectionStack stack = injector.getInjectionStack();
-
         if (injector.getPredicates().isProviderType(fieldType)) {
             Type parameterType = DIUtil.getGenericParameterType(field.getGenericType());
 
             if (parameterType == null) {
-                injector.throwException("Provider field %s.%s of type %s must be parameterized to be usable for injection"
-                        , field.getDeclaringClass().getName(), field.getName(), fieldType.getName());
+                injector.throwException("Provider field %s.%s must be parameterized to be usable for injection"
+                        , field.getDeclaringClass().getName(), field.getName());
             }
 
             return injector.getProvider(Key.get(TypeLiteral.of(parameterType), bindingAnnotation));
         } else {
             Key<?> key = Key.get(TypeLiteral.of(field.getGenericType()), bindingAnnotation);
+            InjectionStack stack = injector.getInjectionStack();
             stack.push(key);
             try {
                 return injector.getInstance(key);

@@ -83,4 +83,16 @@ public class InjectorPredicates {
     <T> Provider<T> wrapProvider(Provider<T> provider) {
         return (Provider<T>)providerFunction.apply(provider);
     }
+
+    Predicate<Method> getProvidesMethodPredicate() {
+        return providesMethodPredicate;
+    }
+
+    Predicate<AccessibleObject> getInjectPredicate() {
+        return injectPredicate;
+    }
+
+    Predicate<Class<? extends Annotation>> getQualifierPredicate() {
+        return qualifierPredicate;
+    }
 }

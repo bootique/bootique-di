@@ -79,12 +79,13 @@ class ConstructorInjectingProvider<T> implements NamedProvider<T> {
         InjectionStack stack = injector.getInjectionStack();
 
         for (int i = 0; i < constructorParameters.length; i++) {
-            injector.trace("Get argument %d for %s", i, getName());
+            final int idx = i;
+            injector.trace(() -> "Get argument " + idx + " for %s" + getName());
             args[i] = value(constructorParameters[i], genericTypes[i], bindingAnnotations[i], stack);
         }
 
         try {
-            injector.trace("Invoking %s", getName());
+            injector.trace(() -> "Invoking " + getName());
             return constructor.newInstance(args);
         } catch (Exception e) {
             return injector.throwException("Error invoking %s", e, getName());

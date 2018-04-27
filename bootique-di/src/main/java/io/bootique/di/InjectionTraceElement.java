@@ -1,5 +1,6 @@
 package io.bootique.di;
 
+import java.util.function.Supplier;
 
 /**
  * Injection stack trace element.
@@ -14,18 +15,18 @@ public class InjectionTraceElement {
     /**
      * Last human readable message for binding key.
      */
-    private String message;
+    private Supplier<String> message;
 
     public InjectionTraceElement(Key<?> bindingKey) {
         this.bindingKey = bindingKey;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMessage(Supplier<String> messageSupplier) {
+        this.message = messageSupplier;
     }
 
     public String getMessage() {
-        return message;
+        return message.get();
     }
 
     public Key<?> getBindingKey() {
@@ -37,6 +38,6 @@ public class InjectionTraceElement {
             return bindingKey.toString();
         }
 
-        return bindingKey + " -> " + message;
+        return bindingKey + " -> " + message.get();
     }
 }

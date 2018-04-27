@@ -25,7 +25,8 @@ class SetProvider<T> implements Provider<Set<T>> {
         Set<T> set = new HashSet<>(providers.size());
         int i = 0;
         for (Provider<? extends T> provider : providers) {
-            injector.trace("Resolving set element %d", i++);
+            int idx = i++;
+            injector.trace(() -> "Resolving set element " + idx);
             T value = provider.get();
             if (!set.add(value)) {
                 injector.throwException("Found duplicated value '%s' in set %s.", value, bindingKey);

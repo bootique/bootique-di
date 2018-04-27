@@ -21,7 +21,7 @@ class MapProvider<K, V> implements Provider<Map<K, V>> {
         Map<K, V> map = new HashMap<>();
 
         for (Entry<K, Provider<? extends V>> entry : providers.entrySet()) {
-            injector.trace("Resolve map key '%s'", entry.getKey());
+            injector.trace(() -> "Resolve map key '" + entry.getKey() + "'");
             map.put(entry.getKey(), entry.getValue().get());
         }
 

@@ -2,7 +2,9 @@ package io.bootique.di.spi;
 
 import java.lang.annotation.Annotation;
 
+import com.google.inject.name.Named;
 import com.google.inject.name.Names;
+import io.bootique.di.TypeLiteral;
 
 /**
  * Guice &lt;-&gt; Bootique DI conversion utils
@@ -13,7 +15,18 @@ public final class ConversionUtils {
     }
 
     public static <T> io.bootique.di.Key<T> toBootiqueKey(com.google.inject.Key<T> key) {
-        return io.bootique.di.Key.get(toTypeLiteral(key.getTypeLiteral()), key.getAnnotationType());
+        TypeLiteral<T> typeLiteral = toTypeLiteral(key.getTypeLiteral());
+        if(key.getAnnotationType() != null) {
+            if (key.getAnnotationType().equals(Named.class)) {
+                String name = ((Named) key.getAnnotation()).value();
+                return io.bootique.di.Key.get(typeLiteral, name);
+            }
+            if (key.getAnnotationType().equals(javax.inject.Named.class)) {
+                String name = ((javax.inject.Named) key.getAnnotation()).value();
+                return io.bootique.di.Key.get(typeLiteral, name);
+            }
+        }
+        return io.bootique.di.Key.get(typeLiteral, key.getAnnotationType());
     }
 
     public static <T> io.bootique.di.Key<T> toBootiqueKey(com.google.inject.TypeLiteral<T> typeLiteral) {

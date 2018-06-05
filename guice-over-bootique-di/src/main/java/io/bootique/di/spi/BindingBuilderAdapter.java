@@ -89,7 +89,7 @@ public class BindingBuilderAdapter<T> implements AnnotatedBindingBuilder<T> {
         binderAdapter.getInjectorAdapter().markAsEagerSingleton(bootiqueKey);
     }
 
-    private BindingBuilder<T> getBinding() {
+    BindingBuilder<T> getBinding() {
         if(bindingBuilder == null) {
             bindingBuilder = binderAdapter.getBootiqueBinder().bind(bootiqueKey);
         }

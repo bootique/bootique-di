@@ -31,7 +31,9 @@ public class InjectorAdapter implements com.google.inject.Injector {
 
         // Create customized injector
         eagerSingletons = new ArrayList<>();
-        bootiqueInjector = (DefaultInjector) DIBootstrap.injectorBuilder(b -> b.bind(Injector.class).toInstance(this))
+        //noinspection RedundantCast - it is not reduntant in provider wrapper
+        bootiqueInjector = (DefaultInjector) DIBootstrap
+                .injectorBuilder(b -> b.bind(Injector.class).toInstance(this))
                 .defaultNoScope()
                 .enableDynamicBindings()
                 .withProvidesMethodPredicate(m -> m.isAnnotationPresent(Provides.class))
@@ -50,6 +52,9 @@ public class InjectorAdapter implements com.google.inject.Injector {
         adapter = new BinderAdapter(bootiqueInjector.getBinder(), this);
         // Configure all modules manually
         modules.forEach(this::installModule);
+
+        adapter.finalizeBind();
+
         // Create eager singletons
         eagerSingletons.forEach(bootiqueInjector::getInstance);
     }

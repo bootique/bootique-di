@@ -1,5 +1,6 @@
 package io.bootique.di;
 
+import java.util.Optional;
 import javax.inject.Inject;
 
 import org.junit.Test;
@@ -28,6 +29,7 @@ public class OptionalBindingIT {
 
         Consumer1 consumer1 = injector.getInstance(Consumer1.class);
         assertNull(consumer1.service);
+        assertEquals(Optional.empty(), consumer1.optionalService);
     }
 
     @Test
@@ -39,6 +41,9 @@ public class OptionalBindingIT {
 
         Consumer1 consumer1 = injector.getInstance(Consumer1.class);
         assertThat(consumer1.service, instanceOf(Service_Impl1.class));
+        assertNotNull(consumer1.optionalService);
+        assertTrue(consumer1.optionalService.isPresent());
+        assertThat(consumer1.optionalService.get(), instanceOf(Service_Impl1.class));
     }
 
     @Test
@@ -53,6 +58,9 @@ public class OptionalBindingIT {
 
         Consumer1 consumer1 = injector.getInstance(Consumer1.class);
         assertThat(consumer1.service, instanceOf(Service_Impl1.class));
+        assertNotNull(consumer1.optionalService);
+        assertTrue(consumer1.optionalService.isPresent());
+        assertThat(consumer1.optionalService.get(), instanceOf(Service_Impl1.class));
     }
 
     @Test
@@ -67,6 +75,9 @@ public class OptionalBindingIT {
 
         Consumer1 consumer1 = injector.getInstance(Consumer1.class);
         assertThat(consumer1.service, instanceOf(Service_Impl1.class));
+        assertNotNull(consumer1.optionalService);
+        assertTrue(consumer1.optionalService.isPresent());
+        assertThat(consumer1.optionalService.get(), instanceOf(Service_Impl1.class));
     }
 
     @Test
@@ -81,6 +92,9 @@ public class OptionalBindingIT {
 
         Consumer1 consumer1 = injector.getInstance(Consumer1.class);
         assertThat(consumer1.service, instanceOf(Service_Impl1.class));
+        assertNotNull(consumer1.optionalService);
+        assertTrue(consumer1.optionalService.isPresent());
+        assertThat(consumer1.optionalService.get(), instanceOf(Service_Impl1.class));
     }
 
     interface Service {
@@ -91,7 +105,10 @@ public class OptionalBindingIT {
 
     private static class Consumer1 {
         @Inject
-        Service service;
+        private Service service;
+
+        @Inject
+        private Optional<Service> optionalService;
     }
 
 }

@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import javax.inject.Named;
 
@@ -112,6 +113,23 @@ public class Key<T> {
         return get(TypeLiteral.mapOf(keyType, valueType));
     }
 
+    public static <T> Key<Optional<T>> getOptionalOf(Class<? extends T> type) {
+        return get(TypeLiteral.optionalOf(type));
+    }
+
+    /**
+     * Creates Optional&lt;T&gt; version of given key
+     */
+    public static <T> Key<Optional<T>> getOptionalOf(Key<T> key) {
+        TypeLiteral<Optional<T>> type = TypeLiteral.optionalOf(key.getType());
+        if(key.getBindingName() != null) {
+            return get(type, key.getBindingName());
+        }
+        if(key.getBindingAnnotation() != null) {
+            return get(type, key.getBindingAnnotation());
+        }
+        return get(type);
+    }
 
     private final TypeLiteral<T> type;
     private final KeyQualifier qualifier;

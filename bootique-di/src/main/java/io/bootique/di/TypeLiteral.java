@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -80,6 +81,20 @@ public class TypeLiteral<T> {
      */
     public static <K, V> TypeLiteral<Map<K, V>> mapOf(TypeLiteral<? extends K> keyType, TypeLiteral<? extends V> valueType) {
         return new TypeLiteral<>(Map.class, keyType.toString(), valueType.toString());
+    }
+
+    /**
+     * Creates TypeLiteral that represents Optional&lt;T&lt; type.
+     */
+    public static <T> TypeLiteral<Optional<T>> optionalOf(Class<? extends T> type) {
+        return new TypeLiteral<>(Optional.class, type);
+    }
+
+    /**
+     * Creates TypeLiteral that represents Optional&lt;T&lt; type.
+     */
+    public static <T> TypeLiteral<Optional<T>> optionalOf(TypeLiteral<? extends T> type) {
+        return new TypeLiteral<>(Optional.class, type.toString());
     }
 
     /**

@@ -14,9 +14,9 @@ import io.bootique.di.BindingBuilder;
 
 public class BindingBuilderAdapter<T> implements AnnotatedBindingBuilder<T> {
 
-    private final BinderAdapter binderAdapter;
-    private BindingBuilder<T> bindingBuilder;
-    private io.bootique.di.Key<T> bootiqueKey;
+    final BinderAdapter binderAdapter;
+    BindingBuilder<T> bindingBuilder;
+    io.bootique.di.Key<T> bootiqueKey;
 
     BindingBuilderAdapter(BinderAdapter binderAdapter, io.bootique.di.Key<T> bootiqueKey) {
         this.binderAdapter = binderAdapter;

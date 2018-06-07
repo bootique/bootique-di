@@ -48,7 +48,7 @@ public class BinderAdapter implements Binder {
 
     <T> BindingBuilderAdapter<T> createAdapter(io.bootique.di.Key<T> bootiqueKey) {
         BindingBuilderAdapter<T> adapter = new BindingBuilderAdapter<>(this, bootiqueKey);
-        partialAdapters.add(adapter);
+        injectorAdapter.registerBindingBuilder(adapter);
         return adapter;
     }
 

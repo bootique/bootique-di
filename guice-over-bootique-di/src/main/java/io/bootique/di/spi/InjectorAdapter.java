@@ -26,11 +26,13 @@ public class InjectorAdapter implements com.google.inject.Injector {
     private final DefaultInjector bootiqueInjector;
     private final BinderAdapter adapter;
     private final List<io.bootique.di.Key<?>> eagerSingletons;
+    private final List<BindingBuilderAdapter<?>> bindingBuilders;
 
     public InjectorAdapter(Iterable<? extends Module> modules) {
 
         // Create customized injector
         eagerSingletons = new ArrayList<>();
+        bindingBuilders = new ArrayList<>();
         //noinspection RedundantCast - it is not reduntant in provider wrapper
         bootiqueInjector = (DefaultInjector) DIBootstrap
                 .injectorBuilder(b -> b.bind(Injector.class).toInstance(this))
@@ -53,8 +55,8 @@ public class InjectorAdapter implements com.google.inject.Injector {
         // Configure all modules manually
         modules.forEach(this::installModule);
 
-        adapter.finalizeBind();
-
+        // Create binding if it wasn't complete (i.e. binder.bind(Service.class);)
+        bindingBuilders.forEach(BindingBuilderAdapter::getBinding);
         // Create eager singletons
         eagerSingletons.forEach(bootiqueInjector::getInstance);
     }
@@ -99,6 +101,10 @@ public class InjectorAdapter implements com.google.inject.Injector {
         return toGuiceBinding(key, bootiqueBinding);
     }
 
+    void registerBindingBuilder(BindingBuilderAdapter<?> adapter) {
+        this.bindingBuilders.add(adapter);
+    }
+
     private <T> Binding<T> toGuiceBinding(Key<T> key, io.bootique.di.spi.Binding<T> bootiqueBinding) {
         return new Binding<T>() {
             @Override
@@ -108,7 +114,12 @@ public class InjectorAdapter implements com.google.inject.Injector {
 
             @Override
             public Provider<T> getProvider() {
-                return () -> bootiqueBinding.getScoped().get();
+                return () -> {
+                    if(bootiqueBinding.getOriginal() == null) {
+                        return bootiqueInjector.getProvider(bootiqueBinding.getKey()).get();
+                    }
+                    return bootiqueBinding.getScoped().get();
+                };
             }
         };
     }

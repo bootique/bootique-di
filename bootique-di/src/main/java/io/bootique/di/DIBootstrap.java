@@ -67,13 +67,13 @@ public class DIBootstrap {
      */
     public static class InjectorBuilder {
         private Set<DefaultInjector.Options> options;
-        private InjectorPredicates annotationPredicates;
+        private InjectorPredicates injectorPredicates;
         private Module[] modules;
 
         private InjectorBuilder(Module... modules) {
             this.options = EnumSet.noneOf(DefaultInjector.Options.class);
             this.modules = modules;
-            this.annotationPredicates = new InjectorPredicates();
+            this.injectorPredicates = new InjectorPredicates();
         }
 
         /**
@@ -139,7 +139,7 @@ public class DIBootstrap {
          * @return this
          */
         public InjectorBuilder withProvidesMethodPredicate(Predicate<Method> providesMethodPredicate) {
-            annotationPredicates.setProvidesMethodPredicate(providesMethodPredicate);
+            injectorPredicates.setProvidesMethodPredicate(providesMethodPredicate);
             return this;
         }
 
@@ -151,7 +151,7 @@ public class DIBootstrap {
          * @return this
          */
         public InjectorBuilder withInjectAnnotationPredicate(Predicate<AccessibleObject> injectPredicate) {
-            annotationPredicates.setInjectPredicate(injectPredicate);
+            injectorPredicates.setInjectPredicate(injectPredicate);
             return this;
         }
 
@@ -163,7 +163,7 @@ public class DIBootstrap {
          * @return this
          */
         public InjectorBuilder withProviderPredicate(Predicate<Type> providerPredicate) {
-            annotationPredicates.setProviderPredicate(providerPredicate);
+            injectorPredicates.setProviderPredicate(providerPredicate);
             return this;
         }
 
@@ -175,7 +175,7 @@ public class DIBootstrap {
          * @return this
          */
         public InjectorBuilder withQualifierPredicate(Predicate<Class<? extends Annotation>> qualifierPredicate) {
-            annotationPredicates.setQualifierPredicate(qualifierPredicate);
+            injectorPredicates.setQualifierPredicate(qualifierPredicate);
             return this;
         }
 
@@ -187,7 +187,7 @@ public class DIBootstrap {
          * @return this
          */
         public InjectorBuilder withSingletonPredicate(Predicate<AnnotatedElement> singletonPredicate) {
-            annotationPredicates.setSingletonPredicate(singletonPredicate);
+            injectorPredicates.setSingletonPredicate(singletonPredicate);
             return this;
         }
 
@@ -199,7 +199,19 @@ public class DIBootstrap {
          * @return this
          */
         public <T> InjectorBuilder withProviderWrapper(Function<Provider<T>, Provider<T>> providerFunction) {
-            annotationPredicates.setProviderFunction(providerFunction);
+            injectorPredicates.setProviderFunction(providerFunction);
+            return this;
+        }
+
+        /**
+         * Set custom exception provider.
+         * By default {@link DIRuntimeException#DIRuntimeException(String, Throwable, Object...)} is used.
+         *
+         * @param provider exception provider
+         * @return this
+         */
+        public InjectorBuilder withExceptionProvider(InjectorPredicates.ExceptionProvider<?> provider) {
+            injectorPredicates.setExceptionProvider(provider);
             return this;
         }
 
@@ -209,7 +221,7 @@ public class DIBootstrap {
          * @return injector
          */
         public Injector build() {
-            return new DefaultInjector(options, annotationPredicates, modules);
+            return new DefaultInjector(options, injectorPredicates, modules);
         }
     }
 

@@ -13,6 +13,7 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
+import com.google.inject.ProvisionException;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import io.bootique.di.DIBootstrap;
@@ -48,6 +49,7 @@ public class InjectorAdapter implements com.google.inject.Injector {
                 .withProviderPredicate(t -> Provider.class.equals(t)
                         || javax.inject.Provider.class.equals(t))
                 .withProviderWrapper(p -> (Provider<Object>) p::get)
+                .withExceptionProvider(ProvisionException::new)
                 .build();
 
         // Guice -> Bootique adapters

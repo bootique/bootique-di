@@ -364,7 +364,7 @@ public class DefaultInjector implements Injector {
      * @throws DIRuntimeException throws DI exception always
      */
     <T> T throwException(String message, Object... args) throws DIRuntimeException {
-        throw setTrace(new DIRuntimeException(message, args));
+        throw setTrace(predicates.createException(message, args));
     }
 
     /**
@@ -398,7 +398,7 @@ public class DefaultInjector implements Injector {
             throw (DIRuntimeException) cause;
         }
 
-        throw setTrace(new DIRuntimeException(message, cause, args));
+        throw setTrace(predicates.createException(message, cause, args));
     }
 
 

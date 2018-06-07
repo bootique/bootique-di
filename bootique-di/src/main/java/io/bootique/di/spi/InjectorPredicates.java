@@ -13,6 +13,7 @@ import javax.inject.Qualifier;
 import javax.inject.Singleton;
 
 import io.bootique.di.DIBootstrap;
+import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Provides;
 
 /**
@@ -30,6 +31,7 @@ public class InjectorPredicates {
     private Predicate<Type> providerPredicate = Provider.class::equals;
 
     private Function<Provider<?>, Provider<?>> providerFunction = Function.identity();
+    private ExceptionProvider<?> exceptionProvider = DIRuntimeException::new;
 
     public InjectorPredicates() {
     }
@@ -57,6 +59,10 @@ public class InjectorPredicates {
     @SuppressWarnings("unchecked")
     public <T> void setProviderFunction(Function<Provider<T>, Provider<T>> providerFunction) {
         this.providerFunction = (Function)providerFunction;
+    }
+
+    public void setExceptionProvider(ExceptionProvider<?> exceptionProvider) {
+        this.exceptionProvider = exceptionProvider;
     }
 
     boolean isSingleton(AnnotatedElement object) {
@@ -94,5 +100,20 @@ public class InjectorPredicates {
 
     Predicate<Class<? extends Annotation>> getQualifierPredicate() {
         return qualifierPredicate;
+    }
+
+    DIRuntimeException createException(String message, Object... args) {
+        return createException(message, null, args);
+    }
+
+    DIRuntimeException createException(String message, Throwable cause, Object... args) {
+        return exceptionProvider.newException(message, cause, args);
+    }
+
+    @FunctionalInterface
+    public interface ExceptionProvider<T extends DIRuntimeException> {
+
+        T newException(String message, Throwable cause, Object... args);
+
     }
 }

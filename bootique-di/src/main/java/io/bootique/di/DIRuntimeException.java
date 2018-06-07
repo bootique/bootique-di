@@ -10,7 +10,7 @@ public class DIRuntimeException extends RuntimeException {
     private InjectionTraceElement[] injectionTrace = {};
 
     /**
-     * Creates new <code>ConfigurationException</code> without detail message.
+     * Creates new <code>DIRuntimeException</code> without detail message.
      */
     public DIRuntimeException() {
     }

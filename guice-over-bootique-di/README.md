@@ -10,20 +10,19 @@ core and modules.
 * Guice annotations (including `@Provides`) and interfaces (`Provider`, `Module`, etc.)
 * General binding (`com.google.inject.Injector` and `com.google.inject.Binder` interfaces)
 * Multi bindings: `Multibinder` and `MapBinder`
+* `OptionalBinder`
 * Eager singletons (_note_ this feature is emulated, as it is not supported by Bootique DI itself)
 
 ## Limitations:
 
-* Limited scope support: only no-scope and singleton scope supported
+* Limited scope support: only no-scope and singleton scope are supported
 * Limited Map and Set bindings: no per-element scopes, no provider bindings for elements
 * Limited `Injector` API (e.g. no nested injectors, no module install after injector creation, etc.)
 * No extensions are supported
-* No module checked overrides, all overrides enabled
-* No support for custom annotation instances, only `Names.named("myName")` supported
+* No module checked overrides, all overrides are enabled
+* No support for custom annotation instances, only `Names.named("myName")` is supported
 * Many of utility classes are missing
 
 ## TODO:
 
 * Cleanup exception handling 
-* Implementation binding (`binder.bind(ServiceImpl.class);`) is broken for now
-* No optional binding support (it is not complete in Bootique DI, see #11)

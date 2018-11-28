@@ -48,7 +48,7 @@ abstract class MemberInjectingProvider<T> implements NamedProvider<T> {
             return injector.throwException("Underlying provider (%s) thrown exception", ex, DIUtil.getProviderName(delegate));
         }
         if(result == null) {
-            injector.throwException("Underlying provider (%s) returned NULL instance", DIUtil.getProviderName(delegate));
+            return injector.throwException("Underlying provider (%s) returned NULL instance", DIUtil.getProviderName(delegate));
         }
         injectMembers(result, result.getClass());
         return result;

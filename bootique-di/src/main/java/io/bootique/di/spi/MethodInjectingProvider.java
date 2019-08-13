@@ -40,6 +40,11 @@ import io.bootique.di.TypeLiteral;
  */
 class MethodInjectingProvider<T> extends MemberInjectingProvider<T> {
 
+    private static final int PRIVATE = 0;
+    private static final int PACKAGE = 1;
+    private static final int PROTECTED = 2;
+    private static final int PUBLIC = 3;
+
     MethodInjectingProvider(Provider<T> delegate, DefaultInjector injector) {
         super(delegate, injector);
     }
@@ -94,13 +99,13 @@ class MethodInjectingProvider<T> extends MemberInjectingProvider<T> {
      */
     private static boolean isMethodOverride(Method parentMethod, Method method) {
         int parentModifier = modifiersToInt(parentMethod.getModifiers());
-        if(parentModifier == 0) {
+        if(parentModifier == PRIVATE) {
             // no private methods override
             return false;
         }
 
         // check class package for package private methods
-        if(parentModifier == 1) {
+        if(parentModifier == PACKAGE) {
             return method.getDeclaringClass().getPackage().equals(parentMethod.getDeclaringClass().getPackage());
         }
 
@@ -116,17 +121,17 @@ class MethodInjectingProvider<T> extends MemberInjectingProvider<T> {
      */
     private static int modifiersToInt(int methodModifiers) {
         if(Modifier.isPrivate(methodModifiers) || Modifier.isStatic(methodModifiers)) {
-            return 0;
+            return PRIVATE;
         }
         if(Modifier.isProtected(methodModifiers)) {
-            return 2;
+            return PROTECTED;
         }
         if(Modifier.isPublic(methodModifiers)) {
-            return 3;
+            return PUBLIC;
         }
 
         // package private
-        return 1;
+        return PACKAGE;
     }
 
     /**

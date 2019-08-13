@@ -49,7 +49,7 @@ class MethodInjectingProvider<T> extends MemberInjectingProvider<T> {
         Map<String, List<Method>> methods = collectMethods(type, new LinkedHashMap<>());
         for (List<Method> methodList : methods.values()){
             methodList.forEach(method -> {
-                if (injector.getPredicates().haveInjectAnnotation(method)) {
+                if (injector.getPredicates().hasInjectAnnotation(method)) {
                     injectMember(object, method);
                 }
             });

@@ -59,7 +59,7 @@ class ConstructorInjectingProvider<T> implements NamedProvider<T> {
                 continue;
             }
 
-            if (injector.getPredicates().haveInjectAnnotation(constructor)) {
+            if (injector.getPredicates().hasInjectAnnotation(constructor)) {
                 lastSize = size;
                 lastMatch = constructor;
             }

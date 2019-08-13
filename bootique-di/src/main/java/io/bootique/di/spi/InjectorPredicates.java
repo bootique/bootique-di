@@ -88,7 +88,7 @@ public class InjectorPredicates {
         return singletonPredicate.test(object);
     }
 
-    boolean haveInjectAnnotation(AccessibleObject object) {
+    boolean hasInjectAnnotation(AccessibleObject object) {
         return injectPredicate.test(object);
     }
 

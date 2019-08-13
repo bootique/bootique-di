@@ -41,7 +41,7 @@ class ConstructorInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
             protected Object value(Class<?> parameter, Type genericType, Annotation bindingAnnotation, InjectionStack stack) {
 
                 // delegate (possibly) injected as Provider
-                if (Provider.class.equals(parameter)) {
+                if (injector.getPredicates().isProviderType(parameter)) {
 
                     Class<?> objectClass = DIUtil.parameterClass(genericType);
 

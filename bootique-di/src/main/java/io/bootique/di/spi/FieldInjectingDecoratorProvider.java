@@ -45,7 +45,7 @@ class FieldInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
                 Class<?> fieldType = field.getType();
 
                 // delegate (possibly) injected as Provider
-                if (Provider.class.equals(fieldType)) {
+                if (injector.getPredicates().isProviderType(fieldType)) {
 
                     Class<?> objectClass = DIUtil.parameterClass(field.getGenericType());
 

@@ -82,13 +82,24 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
 
     @Override
     public BindingBuilder<T> toProvider(Class<? extends Provider<? extends T>> providerType) {
-        Provider<Provider<? extends T>> provider0 = new ConstructorInjectingProvider<>(providerType, injector);
-        Provider<Provider<? extends T>> provider1 = new FieldInjectingProvider<>(provider0, injector);
-        if(injector.isMethodInjectionEnabled()) {
-            provider1 = new MethodInjectingProvider<>(provider1, injector);
-        }
+        Provider<Provider<? extends T>> providerProvider = () -> {
+            injector.trace(() -> "Resolving custom provider of type " + providerType);
+            Binding<? extends Provider<? extends T>> binding = injector.getBinding(Key.get(providerType));
+            if(binding != null) {
+                // get existing provider
+                return binding.getScoped().get();
+            } else {
+                // create new provider
+                Provider<Provider<? extends T>> provider0 = new ConstructorInjectingProvider<>(providerType, injector);
+                Provider<Provider<? extends T>> provider1 = new FieldInjectingProvider<>(provider0, injector);
+                if(injector.isMethodInjectionEnabled()) {
+                    provider1 = new MethodInjectingProvider<>(provider1, injector);
+                }
+                return provider1.get();
+            }
+        };
 
-        Provider<T> provider3 = new CustomProvidersProvider<>(injector, providerType, provider1);
+        Provider<T> provider3 = new CustomProvidersProvider<>(injector, providerType, providerProvider);
         Provider<T> provider4 = new FieldInjectingProvider<>(provider3, injector);
         if(injector.isMethodInjectionEnabled()) {
             provider4 = new MethodInjectingProvider<>(provider4, injector);

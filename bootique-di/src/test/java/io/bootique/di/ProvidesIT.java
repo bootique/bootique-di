@@ -117,6 +117,14 @@ public class ProvidesIT {
         DIBootstrap.createInjector(new TestModule_InvalidQualifier());
     }
 
+    @Test
+    public void testProvides_CustomProvider() {
+        Injector injector = DIBootstrap.createInjector(new TestModule_ProvidesProvider());
+
+        Service2 s2 = injector.getInstance(Service2.class);
+        assertEquals("service2 provider", s2.doIt());
+    }
+
     interface Service1 {
         String doIt();
     }
@@ -240,6 +248,33 @@ public class ProvidesIT {
         @Provides
         Service2 createService2(Service1 service1) {
             return () -> "service2" + service1.doIt();
+        }
+    }
+
+    private static class TestModule_ProvidesProvider implements Module {
+
+        @Override
+        public void configure(Binder binder) {
+            binder.bind(Service2.class).toProvider(CustomService2Provider.class);
+        }
+
+        @Provides
+        CustomService2Provider createService2Provider() {
+            return new CustomService2Provider("provider");
+        }
+    }
+
+    private static class CustomService2Provider implements Provider<Service2> {
+
+        private final String name;
+
+        private CustomService2Provider(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public Service2 get() {
+            return () -> "service2 " + name;
         }
     }
 

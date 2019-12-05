@@ -243,6 +243,16 @@ public class DefaultInjector implements Injector {
         return predicates.wrapProvider(binding.getScoped());
     }
 
+    @Override
+    public boolean hasProvider(Class<?> type) {
+        return hasProvider(Key.get(type));
+    }
+
+    @Override
+    public boolean hasProvider(Key<?> key) {
+        return getBinding(key) != null;
+    }
+
     @SuppressWarnings("unchecked")
     private <T> Binding<T> createDynamicBinding(Key<T> key) {
         // Compute new bindings for given key

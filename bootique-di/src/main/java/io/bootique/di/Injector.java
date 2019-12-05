@@ -45,6 +45,19 @@ public interface Injector {
     <T> Provider<T> getProvider(Key<T> key) throws DIRuntimeException;
 
     /**
+     * @param type binding type to check
+     * @return is provider for given type registered
+     */
+    boolean hasProvider(Class<?> type) throws DIRuntimeException;
+
+
+    /**
+     * @param key binding key to check
+     * @return is provider for given key registered
+     */
+    boolean hasProvider(Key<?> key) throws DIRuntimeException;
+
+    /**
      * Performs field injection on a given object, ignoring constructor injection. Since
      * Injector returns fully injected objects, this method is rarely used directly.
      * <p>

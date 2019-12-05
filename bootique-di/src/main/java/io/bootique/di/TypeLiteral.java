@@ -41,7 +41,7 @@ import java.util.Set;
  */
 public class TypeLiteral<T> {
 
-    private static final Class WILDCARD_MARKER = WildcardMarker.class;
+    private static final Class<?> WILDCARD_MARKER = WildcardMarker.class;
 
     private final Class<? super T> type;
     private final String typeName;
@@ -51,7 +51,6 @@ public class TypeLiteral<T> {
         return new TypeLiteral<>(type);
     }
 
-    @SuppressWarnings("unchecked")
     public static <T> TypeLiteral<T> of(Type type) {
         return new TypeLiteral<>(type);
     }
@@ -239,18 +238,18 @@ public class TypeLiteral<T> {
         }
     }
 
-    private static Class getRawType(Type type) {
+    private static Class<?> getRawType(Type type) {
         if (type instanceof Class) {
-            return (Class) type;
+            return (Class<?>) type;
         } else if (type instanceof ParameterizedType) {
-            return (Class) ((ParameterizedType) type).getRawType();
+            return (Class<?>) ((ParameterizedType) type).getRawType();
         } else if (type instanceof GenericArrayType) {
             GenericArrayType genericArrayType = (GenericArrayType) type;
             Type componentType = genericArrayType.getGenericComponentType();
             if (!(componentType instanceof ParameterizedType)) {
                 throw new IllegalArgumentException("Expected ParameterizedType, got " + componentType.toString());
             }
-            Class rawType = (Class) ((ParameterizedType) componentType).getRawType();
+            Class<?> rawType = (Class<?>) ((ParameterizedType) componentType).getRawType();
             return Array.newInstance(rawType, 0).getClass();
         } else if (type instanceof WildcardType) {
             return WILDCARD_MARKER;

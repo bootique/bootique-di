@@ -35,7 +35,7 @@ public class MethodInjectIT {
     public void testMethodInjectDisabledByDefault() {
         Injector injector = DIBootstrap.injectorBuilder(binder -> {
             binder.bind(Service.class).to(Service_Impl1.class);
-            binder.bind(Consumer_Impl.class).to(Consumer_Impl.class);
+            binder.bind(Consumer_Impl.class);
         }).build();
 
         Consumer_Impl consumer = injector.getInstance(Consumer_Impl.class);
@@ -46,7 +46,7 @@ public class MethodInjectIT {
     public void testMethodInject() {
         Injector injector = DIBootstrap.injectorBuilder(binder -> {
             binder.bind(Service.class).to(Service_Impl1.class);
-            binder.bind(Consumer_Impl.class).to(Consumer_Impl.class);
+            binder.bind(Consumer_Impl.class);
         }).enableMethodInjection().build();
 
         Consumer_Impl consumer = injector.getInstance(Consumer_Impl.class);
@@ -57,7 +57,7 @@ public class MethodInjectIT {
     public void testInjectMembers() {
         Injector injector = DIBootstrap.injectorBuilder(binder -> {
             binder.bind(Service.class).to(Service_Impl1.class);
-            binder.bind(Consumer_Impl.class).to(Consumer_Impl.class);
+            binder.bind(Consumer_Impl.class);
         }).enableMethodInjection().build();
 
         Consumer_Impl consumer = new Consumer_Impl();
@@ -69,7 +69,7 @@ public class MethodInjectIT {
     public void testInjectMethod_QualifiedParameter() {
         Injector injector = DIBootstrap.injectorBuilder(binder -> {
             binder.bind(Key.get(Service.class, CustomQualifier.class)).to(Service_Impl1.class);
-            binder.bind(Consumer_Impl2.class).to(Consumer_Impl2.class);
+            binder.bind(Consumer_Impl2.class);
         }).enableMethodInjection().build();
 
         Consumer_Impl2 consumer = injector.getInstance(Consumer_Impl2.class);

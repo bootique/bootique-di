@@ -43,7 +43,7 @@ class DIGraph<V> {
     /**
      * {@link LinkedHashMap} is used for supporting insertion order.
      */
-    private Map<V, List<V>> neighbors = new LinkedHashMap<>();
+    private final Map<V, List<V>> neighbors = new LinkedHashMap<>();
 
     DIGraph() {
     }
@@ -52,11 +52,7 @@ class DIGraph<V> {
      * Add a vertex to the graph. Nothing happens if vertex is already in graph.
      */
     void add(V vertex) {
-        if (neighbors.containsKey(vertex)) {
-            return;
-        }
-
-        neighbors.put(vertex, new ArrayList<V>());
+        neighbors.putIfAbsent(vertex, new ArrayList<>());
     }
 
     /**
@@ -73,59 +69,25 @@ class DIGraph<V> {
      * This implementation allows the creation of multi-edges and self-loops.
      */
     void add(V from, V to) {
-        this.add(from);
+        neighbors.computeIfAbsent(from, k -> new ArrayList<>()).add(to);
         this.add(to);
-        neighbors.get(from).add(to);
-    }
-
-    /**
-     * True iff graph contains vertex.
-     */
-    private boolean contains(V vertex) {
-        return neighbors.containsKey(vertex);
-    }
-
-    /**
-     * Remove an edge from the graph. Nothing happens if no such edge.
-     *
-     * @throws IllegalArgumentException if either vertex doesn't exist.
-     */
-    void remove(V from, V to) {
-        if (!(this.contains(from) && this.contains(to))) {
-            throw new IllegalArgumentException("Nonexistent vertex");
-        }
-
-        neighbors.get(from).remove(to);
-    }
-
-    /**
-     * Return (as a Map) the out-degree of each vertex.
-     */
-    Map<V, Integer> outDegree() {
-        Map<V, Integer> result = new LinkedHashMap<>();
-
-        for (Map.Entry<V, List<V>> entry : neighbors.entrySet()) {
-            result.put(entry.getKey(), entry.getValue().size());
-        }
-
-        return result;
     }
 
     /**
      * Return (as a Map) the in-degree of each vertex.
      */
-    Map<V, Integer> inDegree() {
+    private Map<V, Integer> inDegree() {
         Map<V, Integer> result = new LinkedHashMap<>();
 
-        for (V v : neighbors.keySet()) {
-            result.put(v, 0);
-        }
-
-        for (V from : neighbors.keySet()) {
-            for (V to : neighbors.get(from)) {
-                result.put(to, result.get(to) + 1);
-            }
-        }
+        neighbors.forEach((from, neighbors) -> {
+            neighbors.forEach(to -> result.compute(to, (k, old) -> {
+                if(old == null) {
+                    return 1;
+                }
+                return old + 1;
+            }));
+            result.putIfAbsent(from, 0);
+        });
 
         return result;
     }
@@ -138,22 +100,25 @@ class DIGraph<V> {
         Deque<V> zeroDegree = new ArrayDeque<>();
         LinkedList<V> result = new LinkedList<>();
 
-        for (Map.Entry<V, Integer> entry : degree.entrySet()) {
-            if (entry.getValue() == 0) {
-                zeroDegree.push(entry.getKey());
+        degree.forEach((k, v) -> {
+            if(v == 0) {
+                zeroDegree.push(k);
             }
-        }
+        });
 
         while (!zeroDegree.isEmpty()) {
             V v = zeroDegree.pop();
             result.push(v);
 
-            for (V neighbor : neighbors.get(v)) {
-                degree.put(neighbor, degree.get(neighbor) - 1);
-                if (degree.get(neighbor) == 0) {
-                    zeroDegree.push(neighbor);
-                }
-            }
+            neighbors.get(v).forEach(neighbor ->
+                degree.compute(neighbor, (k, oldValue) -> {
+                    int newValue = --oldValue;
+                    if(newValue == 0) {
+                        zeroDegree.push(k);
+                    }
+                    return newValue;
+                })
+            );
         }
 
         // Check that we have used the entire graph (if not, there was a cycle)

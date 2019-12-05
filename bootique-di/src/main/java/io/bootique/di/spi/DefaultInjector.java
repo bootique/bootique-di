@@ -60,6 +60,7 @@ public class DefaultInjector implements Injector {
     private final InjectionTrace injectionTrace;
     private final Scope defaultScope;
     private final InjectorPredicates predicates;
+    private final Set<Key<?>> earlySetupSet;
 
     private final boolean allowDynamicBinding;
     private final boolean allowOverride;
@@ -94,6 +95,7 @@ public class DefaultInjector implements Injector {
         this.injectionTrace = injectionTraceEnabled ? new InjectionTrace() : null;
         this.providesHandler = new ProvidesHandler(this);
         this.binder = new DefaultBinder(this);
+        this.earlySetupSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
         // bind self for injector injection...
         binder.bind(Injector.class).toInstance(this);
@@ -107,6 +109,7 @@ public class DefaultInjector implements Injector {
         }
 
         applyDecorators();
+        earlySetup();
     }
 
     InjectionStack getInjectionStack() {
@@ -330,6 +333,18 @@ public class DefaultInjector implements Injector {
 
             b.decorate(this, e.getValue());
         }
+    }
+
+    void markForEarlySetup(Key<?> key) {
+        changeBindingScope(key, getSingletonScope());
+        earlySetupSet.add(key);
+    }
+
+    /**
+     * Init all services that a marked for early setup
+     */
+    private void earlySetup() {
+        earlySetupSet.forEach(this::getInstance);
     }
 
     /**

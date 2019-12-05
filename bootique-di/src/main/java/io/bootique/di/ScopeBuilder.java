@@ -39,4 +39,12 @@ public interface ScopeBuilder {
      */
     void withoutScope();
 
+    /**
+     * Marks this injection point to be triggered early without explicit call to {@link Injector#getInstance(Class)}.
+     * Such service will be created right after {@link Injector} is fully setup.
+     *
+     * NOTE: use with caution, as this will effectively create all graph of services that this service depends on.
+     */
+    void initOnStartup();
+
 }

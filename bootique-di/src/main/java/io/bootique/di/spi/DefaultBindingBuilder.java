@@ -133,4 +133,9 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
         in(injector.getSingletonScope());
     }
 
+    @Override
+    public void initOnStartup() {
+        injector.markForEarlySetup(bindingKey);
+    }
+
 }

@@ -21,6 +21,7 @@ package io.bootique.di.spi;
 
 import io.bootique.di.Key;
 import io.bootique.di.Scope;
+import io.bootique.di.ScopeBuilder;
 
 import javax.inject.Provider;
 
@@ -30,7 +31,7 @@ import javax.inject.Provider;
  * @param <K> DI key type.
  * @param <E> Collection element type.
  */
-public abstract class DICollectionBuilder<K, E> {
+public abstract class DICollectionBuilder<K, E> implements ScopeBuilder {
 
     protected final DefaultInjector injector;
     protected final Key<K> bindingKey;
@@ -42,7 +43,7 @@ public abstract class DICollectionBuilder<K, E> {
 
     protected Provider<E> createInstanceProvider(E value) {
         Provider<E> provider0 = new InstanceProvider<>(value);
-        Provider<E> provider1 =  new FieldInjectingProvider<>(provider0, injector);
+        Provider<E> provider1 = new FieldInjectingProvider<>(provider0, injector);
         if(!injector.isMethodInjectionEnabled()) {
             return provider1;
         }
@@ -81,15 +82,23 @@ public abstract class DICollectionBuilder<K, E> {
         return binding;
     }
 
+    @Override
     public void in(Scope scope) {
         injector.changeBindingScope(bindingKey, scope);
     }
 
+    @Override
     public void inSingletonScope() {
         in(injector.getSingletonScope());
     }
 
+    @Override
     public void withoutScope() {
         in(injector.getNoScope());
+    }
+
+    @Override
+    public void initOnStartup() {
+        injector.markForEarlySetup(bindingKey);
     }
 }

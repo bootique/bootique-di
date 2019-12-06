@@ -20,6 +20,7 @@
 package io.bootique.di;
 
 import java.util.Map;
+import javax.inject.Provider;
 
 /**
  * A binding builder for map configurations. Creates a parameterized map of type &lt;K, V&gt;.
@@ -34,6 +35,10 @@ public interface MapBuilder<K, V> extends ScopeBuilder {
     MapBuilder<K, V> put(K key, V value) throws DIRuntimeException;
 
     MapBuilder<K, V> put(K key, Key<? extends V> valueKey) throws DIRuntimeException;
+
+    MapBuilder<K, V> putProvider(K key, Provider<? extends V> value) throws DIRuntimeException;
+
+    MapBuilder<K, V> putProvider(K key, Class<? extends Provider<? extends V>> value) throws DIRuntimeException;
 
     MapBuilder<K, V> putAll(Map<K, V> map) throws DIRuntimeException;
 

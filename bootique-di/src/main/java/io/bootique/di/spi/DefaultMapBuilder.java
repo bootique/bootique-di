@@ -19,6 +19,7 @@
 
 package io.bootique.di.spi;
 
+import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Key;
 import io.bootique.di.MapBuilder;
 
@@ -53,6 +54,18 @@ class DefaultMapBuilder<K, V> extends DICollectionBuilder<Map<K, V>, V> implemen
     @Override
     public MapBuilder<K, V> put(K key, Key<? extends V> valueKey) {
         findOrCreateMapProvider().put(key, getByKeyProvider(valueKey));
+        return this;
+    }
+
+    @Override
+    public MapBuilder<K, V> putProvider(K key, Provider<? extends V> value) throws DIRuntimeException {
+        findOrCreateMapProvider().put(key, value);
+        return this;
+    }
+
+    @Override
+    public MapBuilder<K, V> putProvider(K key, Class<? extends Provider<? extends V>> value) throws DIRuntimeException {
+        findOrCreateMapProvider().put(key, createProviderProvider(value));
         return this;
     }
 

@@ -20,6 +20,7 @@
 package io.bootique.di;
 
 import java.util.Collection;
+import javax.inject.Provider;
 
 /**
  * A binding builder for set configurations.
@@ -33,6 +34,10 @@ public interface SetBuilder<T> extends ScopeBuilder {
     SetBuilder<T> add(T value) throws DIRuntimeException;
 
     SetBuilder<T> add(Key<? extends T> valueKey) throws DIRuntimeException;
+
+    SetBuilder<T> addProvider(Provider<? extends T> value) throws DIRuntimeException;
+
+    SetBuilder<T> addProvider(Class<? extends Provider<? extends T>> value) throws DIRuntimeException;
 
     SetBuilder<T> addAll(Collection<T> values) throws DIRuntimeException;
 

@@ -20,7 +20,7 @@
 package io.bootique.di.spi;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.inject.Provider;
@@ -41,7 +41,7 @@ class SetProvider<T> implements Provider<Set<T>> {
 
     @Override
     public Set<T> get() {
-        Set<T> set = new HashSet<>(providers.size());
+        Set<T> set = new LinkedHashSet<>(providers.size());
         int i = 0;
         for (Provider<? extends T> provider : providers) {
             int idx = i++;

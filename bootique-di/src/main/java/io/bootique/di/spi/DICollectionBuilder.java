@@ -50,6 +50,32 @@ public abstract class DICollectionBuilder<K, E> implements ScopeBuilder {
         return new MethodInjectingProvider<>(provider1, injector);
     }
 
+    protected Provider<E> createProviderProvider(Class<? extends Provider<? extends E>> providerType) {
+        Provider<Provider<? extends E>> providerProvider = () -> {
+            injector.trace(() -> "Resolving custom provider of type " + providerType);
+            Binding<? extends Provider<? extends E>> binding = injector.getBinding(Key.get(providerType));
+            if(binding != null) {
+                // get existing provider
+                return binding.getScoped().get();
+            } else {
+                // create new provider
+                Provider<Provider<? extends E>> provider0 = new ConstructorInjectingProvider<>(providerType, injector);
+                Provider<Provider<? extends E>> provider1 = new FieldInjectingProvider<>(provider0, injector);
+                if(injector.isMethodInjectionEnabled()) {
+                    provider1 = new MethodInjectingProvider<>(provider1, injector);
+                }
+                return provider1.get();
+            }
+        };
+
+        Provider<E> provider3 = new CustomProvidersProvider<>(injector, providerType, providerProvider);
+        Provider<E> provider4 = new FieldInjectingProvider<>(provider3, injector);
+        if(injector.isMethodInjectionEnabled()) {
+            provider4 = new MethodInjectingProvider<>(provider4, injector);
+        }
+        return provider4;
+    }
+
     protected <SubT extends E> Provider<SubT> createTypeProvider(final Class<SubT> interfaceType) {
 
         // Create deferred provider to prevent caching the intermediate provider from the Injector.

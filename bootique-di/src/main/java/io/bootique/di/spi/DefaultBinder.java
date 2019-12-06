@@ -20,7 +20,6 @@
 package io.bootique.di.spi;
 
 import java.lang.annotation.Annotation;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,7 +27,6 @@ import io.bootique.di.Binder;
 import io.bootique.di.BindingBuilder;
 import io.bootique.di.DecoratorBuilder;
 import io.bootique.di.Key;
-import io.bootique.di.ListBuilder;
 import io.bootique.di.MapBuilder;
 import io.bootique.di.SetBuilder;
 import io.bootique.di.TypeLiteral;
@@ -70,37 +68,6 @@ class DefaultBinder implements Binder {
     public <T> BindingBuilder<T> override(Key<T> key) {
         return new OverrideBindingBuilder<>(key, injector);
     }
-
-    @Override
-    public <T> ListBuilder<T> bindList(Class<T> valueType, Class<? extends Annotation> qualifier) {
-        return bindList(Key.getListOf(valueType, qualifier));
-    }
-
-    @Override
-    public <T> ListBuilder<T> bindList(Class<T> valueType, String bindingName) {
-        return bindList(Key.getListOf(valueType, bindingName));
-    }
-
-    @Override
-    public <T> ListBuilder<T> bindList(Class<T> valueType) {
-        return bindList(Key.getListOf(valueType));
-    }
-
-    @Override
-    public <T> ListBuilder<T> bindList(TypeLiteral<T> valueType, Class<? extends Annotation> qualifier) {
-        return bindList(Key.get(TypeLiteral.listOf(valueType), qualifier));
-    }
-
-    @Override
-    public <T> ListBuilder<T> bindList(TypeLiteral<T> valueType, String bindingName) {
-        return bindList(Key.get(TypeLiteral.listOf(valueType), bindingName));
-    }
-
-    @Override
-    public <T> ListBuilder<T> bindList(TypeLiteral<T> valueType) {
-        return bindList(Key.get(TypeLiteral.listOf(valueType)));
-    }
-
 
 
     @Override
@@ -176,10 +143,6 @@ class DefaultBinder implements Binder {
         return new DefaultDecoratorBuilder<>(key, injector);
     }
 
-
-    private <T> ListBuilder<T> bindList(Key<List<T>> listKey) {
-        return new DefaultListBuilder<>(listKey, injector);
-    }
 
     private <T> SetBuilder<T> bindSet(Key<Set<T>> setKey) {
         return new DefaultSetBuilder<>(setKey, injector);

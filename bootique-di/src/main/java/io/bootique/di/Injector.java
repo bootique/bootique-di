@@ -19,6 +19,7 @@
 
 package io.bootique.di;
 
+import java.util.Collection;
 import javax.inject.Provider;
 
 /**
@@ -74,4 +75,14 @@ public interface Injector {
      * injector's one and only singleton scope.
      */
     void shutdown();
+
+    /**
+     * Returns collection of {@link Key} bound to given type, regardless of additional qualifiers
+     * (annotations and/or names).
+     *
+     * @param type interested class object
+     * @param <T> type
+     * @return collection of keys bound to given type
+     */
+    <T> Collection<Key<T>> getKeysByType(Class<T> type);
 }

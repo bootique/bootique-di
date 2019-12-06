@@ -28,7 +28,10 @@ import io.bootique.di.Scope;
 
 import javax.inject.Provider;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -61,6 +64,7 @@ public class DefaultInjector implements Injector {
     private final Scope defaultScope;
     private final InjectorPredicates predicates;
     private final Set<Key<?>> earlySetupSet;
+    private final Map<Class<?>, List<Key<?>>> keysByRawType;
 
     private final boolean allowDynamicBinding;
     private final boolean allowOverride;
@@ -96,6 +100,7 @@ public class DefaultInjector implements Injector {
         this.providesHandler = new ProvidesHandler(this);
         this.binder = new DefaultBinder(this);
         this.earlySetupSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
+        this.keysByRawType = new ConcurrentHashMap<>();
 
         // bind self for injector injection...
         binder.bind(Injector.class).toInstance(this);
@@ -164,6 +169,10 @@ public class DefaultInjector implements Injector {
             throwException("Injector is shutdown");
         }
         Binding<?> oldBinding = bindings.put(bindingKey, binding);
+        if(oldBinding == null) {
+            keysByRawType.computeIfAbsent(bindingKey.getType().getRawType(), type -> new ArrayList<>(1))
+                    .add(bindingKey);
+        }
         if(!canOverride(oldBinding)) {
             throwException("Unable to override key %s. It is final and override is disabled.", bindingKey);
         }
@@ -305,6 +314,12 @@ public class DefaultInjector implements Injector {
         bindings.clear();
         decorations.clear();
         injectionStack.reset();
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Override
+    public <T> Collection<Key<T>> getKeysByType(Class<T> type) {
+        return (List)keysByRawType.getOrDefault(type, Collections.emptyList());
     }
 
     DefaultScope getSingletonScope() {

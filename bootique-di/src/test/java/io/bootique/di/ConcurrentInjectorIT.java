@@ -19,7 +19,7 @@
 
 package io.bootique.di;
 
-import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,17 +36,17 @@ public class ConcurrentInjectorIT {
     @Test
     public void testListProvider_NoScope() throws Exception {
         Injector injector = DIBootstrap.createInjector(binder -> {
-            binder.bindList(String.class).add("1").add("2").add("3").withoutScope();
+            binder.bindSet(String.class).add("1").add("2").add("3").withoutScope();
         });
 
         parallelTest(10000, () ->
-                assertEquals(3, injector.getInstance(Key.getListOf(String.class)).size()));
+                assertEquals(3, injector.getInstance(Key.getSetOf(String.class)).size()));
     }
 
     @Test
     public void testConstructorProvider_NoScope() throws Exception {
         Injector injector = DIBootstrap.createInjector(binder -> {
-            binder.bindList(String.class).add("1").add("2").add("3").withoutScope();
+            binder.bindSet(String.class).add("1").add("2").add("3").withoutScope();
             binder.bind(Foo.class).to(FooImpl.class).withoutScope();
         });
 
@@ -57,7 +57,7 @@ public class ConcurrentInjectorIT {
     @Test
     public void testConstructorProvider_SingletonScope() throws Exception {
         Injector injector = DIBootstrap.createInjector(binder -> {
-            binder.bindList(String.class).add("1").add("2").add("3");
+            binder.bindSet(String.class).add("1").add("2").add("3");
             binder.bind(Foo.class).to(FooImplSleep.class);
         });
 
@@ -68,7 +68,7 @@ public class ConcurrentInjectorIT {
     @Test
     public void testImplementationBinding() throws Exception {
         Injector injector = DIBootstrap.createInjector(binder -> {
-            binder.bindList(String.class).add("1").add("2").add("3");
+            binder.bindSet(String.class).add("1").add("2").add("3");
             binder.bind(FooImplSleep.class);
         });
 
@@ -79,7 +79,7 @@ public class ConcurrentInjectorIT {
     @Test
     public void testDynamicBinding() throws Exception {
         Injector injector = DIBootstrap.injectorBuilder(binder -> {
-            binder.bindList(String.class).add("1").add("2").add("3");
+            binder.bindSet(String.class).add("1").add("2").add("3");
         }).enableDynamicBindings().build();
 
         parallelTest(1000, () ->
@@ -88,36 +88,36 @@ public class ConcurrentInjectorIT {
 
 
     interface Foo {
-        List<String> getStrings();
+        Set<String> getStrings();
     }
 
     static class FooImpl implements Foo {
 
-        List<String> strings;
+        Set<String> strings;
 
         @Inject
-        FooImpl(List<String> strings) {
+        FooImpl(Set<String> strings) {
             strings.add("4");
             this.strings = strings;
         }
 
-        public List<String> getStrings() {
+        public Set<String> getStrings() {
             return strings;
         }
     }
 
     static class FooImplSleep implements Foo {
 
-        List<String> strings;
+        Set<String> strings;
 
         @Inject
-        FooImplSleep(List<String> strings) throws InterruptedException {
+        FooImplSleep(Set<String> strings) throws InterruptedException {
             strings.add("4");
             this.strings = strings;
             Thread.sleep(100);
         }
 
-        public List<String> getStrings() {
+        public Set<String> getStrings() {
             return strings;
         }
     }

@@ -141,58 +141,6 @@ public interface Binder {
     <K, V> MapBuilder<K, V> bindMap(TypeLiteral<K> keyType, TypeLiteral<V> valueType);
 
     //----------------------
-    //   List<T> bindings
-    //----------------------
-
-    /**
-     * Starts a binding of a java.util.List&lt;T&gt; distinguished by its values type and qualifier annotation.
-     * List binding should continue using returned ListBuilder. This is somewhat equivalent of
-     * using "bind(List.class, qualifier)", however returned ListBuilder provides extra
-     * DI capabilities.
-     */
-    <T> ListBuilder<T> bindList(Class<T> valueType, Class<? extends Annotation> qualifier);
-
-    /**
-     * Starts a binding of a java.util.List&lt;T&gt; distinguished by its values type and binding name.
-     * List binding should continue using returned ListBuilder. This is somewhat equivalent of
-     * using "bind(List.class, bindingName)", however returned ListBuilder provides extra
-     * DI capabilities.
-     */
-    <T> ListBuilder<T> bindList(Class<T> valueType, String bindingName);
-
-    /**
-     * Starts a binding of a java.util.List&lt;T&gt; distinguished by its values type.
-     * List binding should continue using returned ListBuilder.
-     * This is somewhat equivalent of using "bind(List.class, bindingName)",
-     * however returned ListBuilder provides extra DI capabilities.
-     */
-    <T> ListBuilder<T> bindList(Class<T> valueType);
-
-    /**
-     * Starts a binding of a java.util.List&lt;T&gt; distinguished by its values type and qualifier annotation.
-     * List binding should continue using returned ListBuilder. This is somewhat equivalent of
-     * using "bind(List.class, qualifier)", however returned ListBuilder provides extra
-     * DI capabilities.
-     */
-    <T> ListBuilder<T> bindList(TypeLiteral<T> valueType, Class<? extends Annotation> qualifier);
-
-    /**
-     * Starts a binding of a java.util.List&lt;T&gt; distinguished by its values type and binding name.
-     * List binding should continue using returned ListBuilder. This is somewhat equivalent of
-     * using "bind(List.class, bindingName)", however returned ListBuilder provides extra
-     * DI capabilities.
-     */
-    <T> ListBuilder<T> bindList(TypeLiteral<T> valueType, String bindingName);
-
-    /**
-     * Starts a binding of a java.util.List&lt;T&gt; distinguished by its values type.
-     * List binding should continue using returned ListBuilder.
-     * This is somewhat equivalent of using "bind(List.class, bindingName)",
-     * however returned ListBuilder provides extra DI capabilities.
-     */
-    <T> ListBuilder<T> bindList(TypeLiteral<T> valueType);
-
-    //----------------------
     //   Set<T> bindings
     //----------------------
 

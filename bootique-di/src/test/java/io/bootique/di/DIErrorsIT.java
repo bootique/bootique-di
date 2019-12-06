@@ -26,7 +26,6 @@ import javax.inject.Provider;
 
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.*;
 
 public class DIErrorsIT {
@@ -79,36 +78,6 @@ public class DIErrorsIT {
             assertEquals(1, traceElements.length);
             assertEquals(Key.get(Qux.class), traceElements[0].getBindingKey());
         }
-    }
-
-    @Test
-    public void testListCycleError() {
-
-        Injector injector = DIBootstrap.createInjector(binder -> {
-            binder.bind(Bar.class).to(BarImpl2.class);
-            binder.bindList(Foo.class).add(FooImpl2.class)
-                    .addAfter(FooImpl3.class, FooImpl2.class)
-                    .addAfter(FooImpl4.class, FooImpl3.class)
-                    .insertBefore(FooImpl4.class, FooImpl2.class)
-                    .addAfter(FooImpl5.class, FooImpl4.class);
-        });
-
-        try {
-            injector.getInstance(Bar.class);
-            fail("Should throw DIRuntimeException");
-        } catch (DIRuntimeException ex) {
-            String message = ex.getOriginalMessage();
-            String fullMessage = ex.getMessage();
-            assertTrue(message, message.contains("Cycle detected in list"));
-            assertTrue(fullMessage, fullMessage.contains("Cycle detected in list"));
-            assertTrue(fullMessage, fullMessage.contains("Sorting list elements"));
-
-            InjectionTraceElement[] traceElements = ex.getInjectionTrace();
-            assertEquals(2, traceElements.length);
-            assertEquals(Key.getListOf(Foo.class), traceElements[0].getBindingKey());
-            assertEquals(Key.get(Bar.class), traceElements[1].getBindingKey());
-        }
-
     }
 
     @Test

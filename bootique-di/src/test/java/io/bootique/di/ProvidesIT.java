@@ -251,7 +251,7 @@ public class ProvidesIT {
         }
     }
 
-    private static class TestModule_ProvidesProvider implements Module {
+    private static class TestModule_ProvidesProvider implements DIModule {
 
         @Override
         public void configure(Binder binder) {

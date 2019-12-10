@@ -21,20 +21,17 @@
 package io.bootique.di.spi;
 
 import io.bootique.di.Key;
-import io.bootique.di.Module;
+import io.bootique.di.DIModule;
 import io.bootique.di.TypeLiteral;
 import io.bootique.di.mock.MockImplementation1;
 import io.bootique.di.mock.MockImplementation1Alt;
 import io.bootique.di.mock.MockImplementation1Alt2;
-import io.bootique.di.mock.MockImplementation1_ListConfiguration;
-import io.bootique.di.mock.MockImplementation1_ListConfigurationMock5;
 import io.bootique.di.mock.MockImplementation1_MapConfiguration;
 import io.bootique.di.mock.MockImplementation1_MapWithWildcards;
 import io.bootique.di.mock.MockImplementation1_WithInjector;
 import io.bootique.di.mock.MockImplementation2;
 import io.bootique.di.mock.MockImplementation2Sub1;
 import io.bootique.di.mock.MockImplementation2_ConstructorProvider;
-import io.bootique.di.mock.MockImplementation2_ListConfiguration;
 import io.bootique.di.mock.MockImplementation2_Named;
 import io.bootique.di.mock.MockImplementation3;
 import io.bootique.di.mock.MockImplementation4;
@@ -48,8 +45,6 @@ import io.bootique.di.mock.MockInterface4;
 import io.bootique.di.mock.MockInterface5;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -59,7 +54,7 @@ public class DefaultInjectorInjectionTest {
     @Test
     public void testFieldInjection() {
 
-        Module module = binder -> {
+        DIModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
             binder.bind(MockInterface2.class).to(MockImplementation2.class);
         };
@@ -74,7 +69,7 @@ public class DefaultInjectorInjectionTest {
     @Test
     public void testFieldInjection_Named() {
 
-        Module module = binder -> {
+        DIModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
             binder.bind(Key.get(MockInterface1.class, "one")).to(MockImplementation1Alt.class);
             binder.bind(Key.get(MockInterface1.class, "two")).to(MockImplementation1Alt2.class);
@@ -91,7 +86,7 @@ public class DefaultInjectorInjectionTest {
     @Test
     public void testFieldInjectionSuperclass() {
 
-        Module module = binder -> {
+        DIModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
             binder.bind(MockInterface2.class).to(MockImplementation2Sub1.class);
             binder.bind(MockInterface3.class).to(MockImplementation3.class);
@@ -107,7 +102,7 @@ public class DefaultInjectorInjectionTest {
     @Test
     public void testConstructorInjection() {
 
-        Module module = binder -> {
+        DIModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
             binder.bind(MockInterface4.class).to(MockImplementation4.class);
         };
@@ -122,7 +117,7 @@ public class DefaultInjectorInjectionTest {
     @Test
     public void testConstructorInjection_Named() {
 
-        Module module = binder -> {
+        DIModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
             binder.bind(Key.get(MockInterface1.class, "one")).to(MockImplementation1Alt.class);
             binder.bind(Key.get(MockInterface1.class, "two")).to(MockImplementation1Alt2.class);
@@ -139,7 +134,7 @@ public class DefaultInjectorInjectionTest {
     @Test
     public void testConstructorInjection_Named_Mixed() {
 
-        Module module = binder -> {
+        DIModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
             binder.bind(Key.get(MockInterface1.class, "one")).to(MockImplementation1Alt.class);
             binder.bind(Key.get(MockInterface1.class, "two")).to(MockImplementation1Alt2.class);
@@ -157,7 +152,7 @@ public class DefaultInjectorInjectionTest {
     @Test
     public void testProviderInjection_Constructor() {
 
-        Module module = binder -> {
+        DIModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
             binder.bind(MockInterface2.class).to(MockImplementation2_ConstructorProvider.class);
         };
@@ -170,7 +165,7 @@ public class DefaultInjectorInjectionTest {
 
     @Test
     public void testMapInjection_Empty() {
-        Module module = binder -> {
+        DIModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1_MapConfiguration.class);
 
             // empty map must be still bound
@@ -186,7 +181,7 @@ public class DefaultInjectorInjectionTest {
 
     @Test
     public void testMapInjection() {
-        Module module = binder -> {
+        DIModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1_MapConfiguration.class);
             binder.bindMap(String.class, Object.class,"xyz")
                     .put("x", "xvalue").put("y", "yvalue").put("x", "xvalue1");
@@ -201,7 +196,7 @@ public class DefaultInjectorInjectionTest {
 
     @Test
     public void mapWithWildcardInjection() {
-        Module module = binder -> {
+        DIModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1_MapWithWildcards.class);
             binder.bindMap(new TypeLiteral<String>(){}, new TypeLiteral<Class<?>>(){})
                     .put("x", String.class).put("y", Integer.class).put("z", Object.class);
@@ -222,7 +217,7 @@ public class DefaultInjectorInjectionTest {
 
     @Test
     public void testMapInjection_Resumed() {
-        Module module = binder -> {
+        DIModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1_MapConfiguration.class);
             // bind 1
             binder.bindMap(String.class, Object.class,"xyz").put("x", "xvalue").put("y", "yvalue");
@@ -239,14 +234,14 @@ public class DefaultInjectorInjectionTest {
 
     @Test
     public void testMapInjection_OverrideExplicitlyBoundType() {
-        Module m1 = binder -> {
+        DIModule m1 = binder -> {
             binder.bind(MockInterface5.class).to(MockImplementation5.class);
             binder.bind(MockInterface1.class).to(MockImplementation1_MapConfiguration.class);
 
             binder.bindMap(String.class, Object.class, "xyz").put("a", MockInterface5.class);
         };
 
-        Module m2 = binder -> binder.bind(MockInterface5.class).toInstance(new MockInterface5() {
+        DIModule m2 = binder -> binder.bind(MockInterface5.class).toInstance(new MockInterface5() {
 
             @Override
             public String toString() {
@@ -260,12 +255,12 @@ public class DefaultInjectorInjectionTest {
 
     @Test
     public void testMapInjection_OverrideImplicitlyBoundType() {
-        Module m1 = binder -> {
+        DIModule m1 = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1_MapConfiguration.class);
             binder.bindMap(String.class, Object.class, "xyz").put("a", MockImplementation5.class);
         };
 
-        Module m2 = binder -> binder.bind(MockImplementation5.class).toInstance(new MockImplementation5() {
+        DIModule m2 = binder -> binder.bind(MockImplementation5.class).toInstance(new MockImplementation5() {
 
             @Override
             public String toString() {
@@ -280,7 +275,7 @@ public class DefaultInjectorInjectionTest {
 
     @Test
     public void testInjectorInjection() {
-        Module module = binder -> binder.bind(MockInterface1.class).to(
+        DIModule module = binder -> binder.bind(MockInterface1.class).to(
                 MockImplementation1_WithInjector.class);
 
         DefaultInjector injector = new DefaultInjector(module);

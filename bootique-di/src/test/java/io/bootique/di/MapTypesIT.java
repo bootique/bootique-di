@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.inject.Inject;
 
 import org.junit.Test;
@@ -135,7 +134,7 @@ public class MapTypesIT {
         assertEquals("4", impl.getMapByString().get("4"));
     }
 
-    private static final Module serviceModule1 = b -> b.bind(Service.class).to(Service_Impl1.class);
+    private static final DIModule serviceModule1 = b -> b.bind(Service.class).to(Service_Impl1.class);
 
     interface Service {}
 

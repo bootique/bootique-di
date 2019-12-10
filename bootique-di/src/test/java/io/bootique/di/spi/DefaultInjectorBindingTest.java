@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import io.bootique.di.DIBootstrap;
 import io.bootique.di.Injector;
 import io.bootique.di.Key;
-import io.bootique.di.Module;
+import io.bootique.di.DIModule;
 import io.bootique.di.mock.MockImplementation1;
 import io.bootique.di.mock.MockImplementation1Alt;
 import io.bootique.di.mock.MockImplementation1Alt2;
@@ -40,7 +40,7 @@ public class DefaultInjectorBindingTest {
     @Test
     public void testClassBinding() {
 
-        Module module = binder -> binder.bind(MockInterface1.class).to(MockImplementation1.class);
+        DIModule module = binder -> binder.bind(MockInterface1.class).to(MockImplementation1.class);
 
         DefaultInjector injector = new DefaultInjector(module);
 
@@ -52,7 +52,7 @@ public class DefaultInjectorBindingTest {
     @Test
     public void testClassNamedBinding() {
 
-        Module module = binder -> {
+        DIModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
             binder.bind(Key.get(MockInterface1.class, "abc")).to(
                     MockImplementation1Alt.class);
@@ -81,7 +81,7 @@ public class DefaultInjectorBindingTest {
 
     @Test
     public void testProviderBinding() {
-        Module module = binder -> binder
+        DIModule module = binder -> binder
                 .bind(MockInterface1.class)
                 .toProvider(MockInterface1Provider.class);
 
@@ -97,7 +97,7 @@ public class DefaultInjectorBindingTest {
 
         final MockImplementation1 instance = new MockImplementation1();
 
-        Module module = binder -> binder.bind(MockInterface1.class).toInstance(instance);
+        DIModule module = binder -> binder.bind(MockInterface1.class).toInstance(instance);
 
         DefaultInjector injector = new DefaultInjector(module);
 
@@ -108,7 +108,7 @@ public class DefaultInjectorBindingTest {
 
     @Test
     public void testKeyBinding() {
-        Module module = binder -> {
+        DIModule module = binder -> {
             binder.bind(MockInterface1.class).to(Key.get(MockImplementation1.class));
             binder.bind(MockImplementation1.class).to(MockImplementation1.class);
         };
@@ -123,7 +123,7 @@ public class DefaultInjectorBindingTest {
     @Test
     public void testClassReBinding() {
 
-        Module module = binder -> {
+        DIModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
             binder.bind(MockInterface1.class).to(MockImplementation1Alt.class);
         };
@@ -137,7 +137,7 @@ public class DefaultInjectorBindingTest {
 
     @Test
     public void testDirectImplementationBinding() {
-        Module module = binder -> {
+        DIModule module = binder -> {
             binder.bind(Implementation1.class).withoutScope();
             binder.bind(Implementation2.class).inSingletonScope();
         };

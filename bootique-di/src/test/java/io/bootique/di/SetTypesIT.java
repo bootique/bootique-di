@@ -173,7 +173,7 @@ public class SetTypesIT {
         assertThat(impl.getStringSet(), hasItems("3", "4"));
     }
 
-    private static final Module serviceModule1 = b -> b.bind(Service.class).to(Service_Impl1.class);
+    private static final DIModule serviceModule1 = b -> b.bind(Service.class).to(Service_Impl1.class);
 
     interface Service {
     }

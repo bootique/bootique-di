@@ -23,7 +23,7 @@ import io.bootique.di.DIRuntimeException;
 import io.bootique.di.InjectionTraceElement;
 import io.bootique.di.Injector;
 import io.bootique.di.Key;
-import io.bootique.di.Module;
+import io.bootique.di.DIModule;
 import io.bootique.di.Scope;
 
 import javax.inject.Provider;
@@ -73,11 +73,11 @@ public class DefaultInjector implements Injector {
 
     private volatile boolean isShutdown;
 
-    DefaultInjector(Module... modules) {
+    DefaultInjector(DIModule... modules) {
         this(Collections.emptySet(), new InjectorPredicates(), modules);
     }
 
-    public DefaultInjector(Set<Options> options, InjectorPredicates predicates, Module... modules) {
+    public DefaultInjector(Set<Options> options, InjectorPredicates predicates, DIModule... modules) {
         this.predicates = predicates;
 
         this.singletonScope = new DefaultScope();
@@ -107,7 +107,7 @@ public class DefaultInjector implements Injector {
 
         // bind modules
         if (modules != null && modules.length > 0) {
-            for (Module module : modules) {
+            for (DIModule module : modules) {
                 module.configure(binder);
                 providesHandler.bindingsFromAnnotatedMethods(module);
             }

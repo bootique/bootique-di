@@ -51,7 +51,7 @@ public class DIBootstrap {
      * Creates injector builder.
      * @return builder
      */
-    public static InjectorBuilder injectorBuilder(Module... modules) {
+    public static InjectorBuilder injectorBuilder(DIModule... modules) {
         return new InjectorBuilder(modules);
     }
 
@@ -59,8 +59,8 @@ public class DIBootstrap {
      * Creates injector builder.
      * @return builder
      */
-    public static InjectorBuilder injectorBuilder(Collection<Module> modules) {
-        return injectorBuilder(modules.toArray(new Module[0]));
+    public static InjectorBuilder injectorBuilder(Collection<DIModule> modules) {
+        return injectorBuilder(modules.toArray(new DIModule[0]));
     }
 
     /**
@@ -68,7 +68,7 @@ public class DIBootstrap {
      * Shortcut for injectorBuilder(modules).build()
      * @return injector with default configuration
      */
-    public static Injector createInjector(Module... modules) throws DIRuntimeException {
+    public static Injector createInjector(DIModule... modules) throws DIRuntimeException {
         return injectorBuilder(modules).build();
     }
 
@@ -77,7 +77,7 @@ public class DIBootstrap {
      * Shortcut for injectorBuilder(modules).build()
      * @return injector with default configuration
      */
-    public static Injector createInjector(Collection<Module> modules) {
+    public static Injector createInjector(Collection<DIModule> modules) {
         return injectorBuilder(modules).build();
     }
 
@@ -87,9 +87,9 @@ public class DIBootstrap {
     public static class InjectorBuilder {
         private Set<DefaultInjector.Options> options;
         private InjectorPredicates injectorPredicates;
-        private Module[] modules;
+        private DIModule[] modules;
 
-        private InjectorBuilder(Module... modules) {
+        private InjectorBuilder(DIModule... modules) {
             this.options = EnumSet.noneOf(DefaultInjector.Options.class);
             this.modules = modules;
             this.injectorPredicates = new InjectorPredicates();

@@ -22,7 +22,7 @@ package io.bootique.di;
 import java.lang.annotation.Annotation;
 
 /**
- * An object passed to a {@link Module} by the DI container during initialization, that
+ * An object passed to a {@link DIModule} by the DI container during initialization, that
  * provides the API for the module to bind its services to the container. Note that the
  * default {@link Scope} of the bound objects is normally "singleton" and can be changed
  * to "no scope" or a custom scope via a corresponding method of a binding builder. E.g.

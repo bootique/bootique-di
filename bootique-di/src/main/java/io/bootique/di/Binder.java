@@ -41,6 +41,18 @@ public interface Binder {
     <T> BindingBuilder<T> bind(Class<T> interfaceType);
 
     /**
+     * Starts a binding of a specific interface denoted by specified annotation.
+     * Binding should continue using returned BindingBuilder.
+     */
+    <T> BindingBuilder<T> bind(Class<T> interfaceType, Class<? extends Annotation> annotationType);
+
+    /**
+     * Starts a named binding of a specific interface. Binding should continue using
+     * returned BindingBuilder.
+     */
+    <T> BindingBuilder<T> bind(Class<T> interfaceType, String bindingName);
+
+    /**
      * Starts a binding of a specific interface based on a provided binding key. This
      * method is more generic than {@link #bind(Class)} and allows to create named
      * bindings in addition to default ones. Binding should continue using returned

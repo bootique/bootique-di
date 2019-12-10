@@ -41,7 +41,17 @@ class DefaultBinder implements Binder {
 
     @Override
     public <T> BindingBuilder<T> bind(Class<T> interfaceType) {
-        return new DefaultBindingBuilder<>(Key.get(interfaceType), injector);
+        return bind(Key.get(interfaceType));
+    }
+
+    @Override
+    public <T> BindingBuilder<T> bind(Class<T> interfaceType, Class<? extends Annotation> annotationType) {
+        return bind(Key.get(interfaceType, annotationType));
+    }
+
+    @Override
+    public <T> BindingBuilder<T> bind(Class<T> interfaceType, String bindingName) {
+        return bind(Key.get(interfaceType, bindingName));
     }
 
     @Override
@@ -51,7 +61,7 @@ class DefaultBinder implements Binder {
 
     @Override
     public <T> BindingBuilder<T> bindOptional(Class<T> interfaceType) {
-        return new OptionalBindingBuilder<>(Key.get(interfaceType), injector);
+        return bindOptional(Key.get(interfaceType));
     }
 
     @Override
@@ -61,7 +71,7 @@ class DefaultBinder implements Binder {
 
     @Override
     public <T> BindingBuilder<T> override(Class<T> interfaceType) {
-        return new OverrideBindingBuilder<>(Key.get(interfaceType), injector);
+        return override(Key.get(interfaceType));
     }
 
     @Override

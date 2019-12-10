@@ -45,7 +45,7 @@ public class BootiqueTestSuite {
     }
     
     private static Injector createInjector() {
-        DIModule module = binder -> {
+        BQModule module = binder -> {
             binder.bind(Car.class).to(Convertible.class);
             binder.bind(Seat.class, Drivers.class).to(DriversSeat.class);
             binder.bind(Tire.class, "spare").to(SpareTire.class);

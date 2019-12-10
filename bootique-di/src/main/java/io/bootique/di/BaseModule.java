@@ -24,7 +24,7 @@ package io.bootique.di;
  * may bind services declaratively by creating methods annotated by {@link Provides @Provides} and don't need to
  * implement 'configure'.
  */
-public abstract class BaseModule implements DIModule {
+public abstract class BaseModule implements BQModule {
 
     /**
      * An empty implementation of the Module contract.

@@ -104,21 +104,21 @@ public class GenericTypesIT {
         assertEquals(Integer.valueOf(42), optionalInteger.orElseThrow(NullPointerException::new));
     }
 
-    static class TestService1Module implements DIModule {
+    static class TestService1Module implements BQModule {
         @Override
         public void configure(Binder binder) {
             binder.bind(Service1.class).to(Service1_Impl1.class);
         }
     }
 
-    static class TestService2Module implements DIModule {
+    static class TestService2Module implements BQModule {
         @Override
         public void configure(Binder binder) {
             binder.bind(Service1.class).to(Service1_Impl2.class);
         }
     }
 
-    static class TestModule1 implements DIModule {
+    static class TestModule1 implements BQModule {
         @Override
         public void configure(Binder binder) {
             binder.bind(Key.get(new TypeLiteral<List<? extends Integer>>(){})).toInstance(Arrays.asList(1,2,3));

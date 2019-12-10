@@ -21,7 +21,7 @@
 package io.bootique.di.spi;
 
 import io.bootique.di.BeforeScopeEnd;
-import io.bootique.di.DIModule;
+import io.bootique.di.BQModule;
 import io.bootique.di.mock.MockImplementation1;
 import io.bootique.di.mock.MockImplementation1_EventAnnotations;
 import io.bootique.di.mock.MockImplementation1_Provider;
@@ -35,7 +35,7 @@ public class DefaultInjectorScopeTest {
     @Test
     public void testDefaultScope_IsSingleton() {
 
-        DIModule module = binder -> binder.bind(MockInterface1.class).to(MockImplementation1.class);
+        BQModule module = binder -> binder.bind(MockInterface1.class).to(MockImplementation1.class);
 
         DefaultInjector injector = new DefaultInjector(module);
 
@@ -54,7 +54,7 @@ public class DefaultInjectorScopeTest {
     @Test
     public void testNoScope() {
 
-        DIModule module = binder -> binder
+        BQModule module = binder -> binder
                 .bind(MockInterface1.class)
                 .to(MockImplementation1.class)
                 .withoutScope();
@@ -77,7 +77,7 @@ public class DefaultInjectorScopeTest {
     @Test
     public void testSingletonScope() {
 
-        DIModule module = binder -> binder
+        BQModule module = binder -> binder
                 .bind(MockInterface1.class)
                 .to(MockImplementation1.class)
                 .inSingletonScope();
@@ -101,7 +101,7 @@ public class DefaultInjectorScopeTest {
 
         MockImplementation1_EventAnnotations.reset();
 
-        DIModule module = binder -> binder.bind(MockInterface1.class).to(
+        BQModule module = binder -> binder.bind(MockInterface1.class).to(
                 MockImplementation1_EventAnnotations.class).inSingletonScope();
 
         DefaultInjector injector = new DefaultInjector(module);
@@ -123,7 +123,7 @@ public class DefaultInjectorScopeTest {
     @Test
     public void testSingletonScope_WithProvider() {
 
-        DIModule module = binder -> binder
+        BQModule module = binder -> binder
                 .bind(MockInterface1.class)
                 .toProvider(MockImplementation1_Provider.class)
                 .inSingletonScope();
@@ -145,7 +145,7 @@ public class DefaultInjectorScopeTest {
     @Test
     public void testNoScope_WithProvider() {
 
-        DIModule module = binder -> binder
+        BQModule module = binder -> binder
                 .bind(MockInterface1.class)
                 .toProvider(MockImplementation1_Provider.class).withoutScope();
 

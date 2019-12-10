@@ -51,7 +51,7 @@ public class DIBootstrap {
      * Creates injector builder.
      * @return builder
      */
-    public static InjectorBuilder injectorBuilder(DIModule... modules) {
+    public static InjectorBuilder injectorBuilder(BQModule... modules) {
         return new InjectorBuilder(modules);
     }
 
@@ -59,8 +59,8 @@ public class DIBootstrap {
      * Creates injector builder.
      * @return builder
      */
-    public static InjectorBuilder injectorBuilder(Collection<DIModule> modules) {
-        return injectorBuilder(modules.toArray(new DIModule[0]));
+    public static InjectorBuilder injectorBuilder(Collection<BQModule> modules) {
+        return injectorBuilder(modules.toArray(new BQModule[0]));
     }
 
     /**
@@ -68,7 +68,7 @@ public class DIBootstrap {
      * Shortcut for injectorBuilder(modules).build()
      * @return injector with default configuration
      */
-    public static Injector createInjector(DIModule... modules) throws DIRuntimeException {
+    public static Injector createInjector(BQModule... modules) throws DIRuntimeException {
         return injectorBuilder(modules).build();
     }
 
@@ -77,7 +77,7 @@ public class DIBootstrap {
      * Shortcut for injectorBuilder(modules).build()
      * @return injector with default configuration
      */
-    public static Injector createInjector(Collection<DIModule> modules) {
+    public static Injector createInjector(Collection<BQModule> modules) {
         return injectorBuilder(modules).build();
     }
 
@@ -87,9 +87,9 @@ public class DIBootstrap {
     public static class InjectorBuilder {
         private Set<DefaultInjector.Options> options;
         private InjectorPredicates injectorPredicates;
-        private DIModule[] modules;
+        private BQModule[] modules;
 
-        private InjectorBuilder(DIModule... modules) {
+        private InjectorBuilder(BQModule... modules) {
             this.options = EnumSet.noneOf(DefaultInjector.Options.class);
             this.modules = modules;
             this.injectorPredicates = new InjectorPredicates();

@@ -79,7 +79,7 @@ public class InjectorBuilderIT {
 
     @Test
     public void testCustomProvidesMethodPredicate() {
-        DIModule module = new BaseModule() {
+        BQModule module = new BaseModule() {
             // should be found by name prefix
             Service providesService() {
                 return new Service_Impl1();

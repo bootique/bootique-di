@@ -40,7 +40,7 @@ public class DIBootstrapTest {
     public void testCreateInjector_SingleModule() {
         final boolean[] configureCalled = new boolean[1];
 
-        DIModule module = binder -> configureCalled[0] = true;
+        BQModule module = binder -> configureCalled[0] = true;
 
         Injector injector = DIBootstrap.injectorBuilder(module).build();
         assertNotNull(injector);
@@ -53,9 +53,9 @@ public class DIBootstrapTest {
 
         final boolean[] configureCalled = new boolean[2];
 
-        DIModule module1 = binder -> configureCalled[0] = true;
+        BQModule module1 = binder -> configureCalled[0] = true;
 
-        DIModule module2 = binder -> configureCalled[1] = true;
+        BQModule module2 = binder -> configureCalled[1] = true;
 
         Injector injector = DIBootstrap.injectorBuilder(module1, module2).build();
         assertNotNull(injector);
@@ -69,9 +69,9 @@ public class DIBootstrapTest {
 
         final boolean[] configureCalled = new boolean[2];
 
-        DIModule module1 = binder -> configureCalled[0] = true;
+        BQModule module1 = binder -> configureCalled[0] = true;
 
-        DIModule module2 = binder -> configureCalled[1] = true;
+        BQModule module2 = binder -> configureCalled[1] = true;
 
         Injector injector = DIBootstrap.injectorBuilder(Arrays.asList(module1, module2)).build();
         assertNotNull(injector);

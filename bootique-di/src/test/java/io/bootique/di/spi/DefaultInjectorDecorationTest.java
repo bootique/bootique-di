@@ -20,7 +20,7 @@
 
 package io.bootique.di.spi;
 
-import io.bootique.di.DIModule;
+import io.bootique.di.BQModule;
 import io.bootique.di.mock.MockImplementation1;
 import io.bootique.di.mock.MockInterface1;
 import io.bootique.di.mock.MockInterface1_Decorator1;
@@ -38,7 +38,7 @@ public class DefaultInjectorDecorationTest {
     @Test
     public void testSingleDecorator_After() {
 
-        DIModule module = binder -> {
+        BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
             binder.decorate(MockInterface1.class).after(MockInterface1_Decorator1.class);
         };
@@ -53,7 +53,7 @@ public class DefaultInjectorDecorationTest {
     @Test
     public void testSingleDecorator_Before() {
 
-        DIModule module = binder -> {
+        BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
             binder.decorate(MockInterface1.class).before(MockInterface1_Decorator1.class);
         };
@@ -68,7 +68,7 @@ public class DefaultInjectorDecorationTest {
     @Test
     public void testDecoratorChain() {
 
-        DIModule module = binder -> {
+        BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
             binder.decorate(MockInterface1.class).before(MockInterface1_Decorator1.class);
             binder.decorate(MockInterface1.class).before(MockInterface1_Decorator2.class);
@@ -86,7 +86,7 @@ public class DefaultInjectorDecorationTest {
     @Test
     public void testSingleDecorator_Provider_ConstructorInjection() {
 
-        DIModule module = binder -> {
+        BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
             binder.decorate(MockInterface1.class).before(MockInterface1_Decorator4.class);
         };
@@ -101,7 +101,7 @@ public class DefaultInjectorDecorationTest {
     @Test
     public void testSingleDecorator_Provider_FieldInjection() {
 
-        DIModule module = binder -> {
+        BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
             binder.decorate(MockInterface1.class).before(MockInterface1_Decorator5.class);
         };

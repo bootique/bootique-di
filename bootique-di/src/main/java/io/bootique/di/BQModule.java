@@ -23,7 +23,7 @@ package io.bootique.di;
  * Represents a unit of configuration of the Bootique DI container.
  */
 @FunctionalInterface
-public interface DIModule {
+public interface BQModule {
 
     /**
      * A callback method invoked during injector assembly that allows the module to load its services.

@@ -20,7 +20,7 @@
 
 package io.bootique.di.spi;
 
-import io.bootique.di.DIModule;
+import io.bootique.di.BQModule;
 import io.bootique.di.mock.MockImplementation1_EventAnnotations;
 import io.bootique.di.mock.MockInterface1;
 import org.junit.Test;
@@ -39,7 +39,7 @@ public class DefaultInjectorTest {
     public void testConstructor_SingleModule() {
         final boolean[] configureCalled = new boolean[1];
 
-        DIModule module = binder -> configureCalled[0] = true;
+        BQModule module = binder -> configureCalled[0] = true;
 
         new DefaultInjector(module);
         assertTrue(configureCalled[0]);
@@ -50,9 +50,9 @@ public class DefaultInjectorTest {
 
         final boolean[] configureCalled = new boolean[2];
 
-        DIModule module1 = binder -> configureCalled[0] = true;
+        BQModule module1 = binder -> configureCalled[0] = true;
 
-        DIModule module2 = binder -> configureCalled[1] = true;
+        BQModule module2 = binder -> configureCalled[1] = true;
 
         new DefaultInjector(module1, module2);
         assertTrue(configureCalled[0]);
@@ -64,7 +64,7 @@ public class DefaultInjectorTest {
 
         MockImplementation1_EventAnnotations.reset();
 
-        DIModule module = binder -> binder
+        BQModule module = binder -> binder
                 .bind(MockInterface1.class)
                 .to(MockImplementation1_EventAnnotations.class)
                 .inSingletonScope();

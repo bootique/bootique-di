@@ -21,7 +21,7 @@
 package io.bootique.di.spi;
 
 import io.bootique.di.DIRuntimeException;
-import io.bootique.di.DIModule;
+import io.bootique.di.BQModule;
 import io.bootique.di.mock.MockImplementation1_DepOn2;
 import io.bootique.di.mock.MockImplementation1_DepOn2Constructor;
 import io.bootique.di.mock.MockImplementation1_DepOn2Provider;
@@ -42,7 +42,7 @@ public class DefaultInjectorCircularInjectionTest {
     @Test
     public void testFieldInjection_CircularDependency() {
 
-        DIModule module = binder -> {
+        BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1_DepOn2.class);
             binder.bind(MockInterface2.class).to(MockImplementation2.class);
         };
@@ -64,7 +64,7 @@ public class DefaultInjectorCircularInjectionTest {
     @Test
     public void testProviderInjection_CircularDependency() {
 
-        DIModule module = binder -> {
+        BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(
                     MockImplementation1_DepOn2Provider.class);
             binder.bind(MockInterface2.class).to(MockImplementation2.class);
@@ -79,7 +79,7 @@ public class DefaultInjectorCircularInjectionTest {
     @Test
     public void testConstructorInjection_CircularDependency() {
 
-        DIModule module = binder -> {
+        BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(
                     MockImplementation1_DepOn2Constructor.class);
             binder.bind(MockInterface2.class).to(
@@ -103,7 +103,7 @@ public class DefaultInjectorCircularInjectionTest {
     @Test
     public void testConstructorInjection_WithFieldInjectionDeps() {
 
-        DIModule module = binder -> {
+        BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(
                     MockImplementation1_DepOn2Constructor.class);
             binder.bind(MockInterface2.class).to(

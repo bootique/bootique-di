@@ -1,0 +1,178 @@
+
+==== Binder
+
+Binder provides the API for the module to bind its services to the DI container.
+Every binding is defined by its key. In a simple case key based on just a java class.
+
+===== Service binding
+
+[source,java]
+----
+binder.bind(Service.class).to(MyService.class);
+----
+
+In this case `MyService` will be created by the container. As an alternative
+you can provide a manually initialized instance of the `MyService`.
+
+[source,java]
+----
+binder.bind(Service.class).toInstance(new MyService());
+----
+
+Or you can use a custom factory for that:
+
+[source,java]
+----
+binder.bind(Service.class).toProvider(MyServiceProvider.class);
+----
+
+Note that `MyServiceProvider` can use injection as any other service managed
+by the DI container:
+
+.MyServiceProvider
+[source,java]
+----
+class MyServiceProvider implements Provider<Service> {
+
+    private SomeOtherService otherService;
+
+    @Inject
+    public MyServiceProvider(SomeOtherService otherService) {
+        this.otherService = otherService;
+    }
+
+    @Override
+    public Service get() {
+        return new MyService(otherService.getSomething());
+    }
+}
+----
+
+Moreover, `MyServiceProvider` can be configured as a binding itself:
+
+[source,java]
+----
+binder.bind(Service.class).toProvider(MyServiceProvider.class);
+binder.bind(MyServiceProvider.class).to(MyServiceProviderImpl.class);
+----
+
+Final option of how you can bind service is via a concrete `Provider` implementation:
+
+[source,java]
+----
+binder.bind(Service.class).toProviderInstance(new MyServiceProvider());
+----
+
+===== Qualifiers
+
+Sometimes it's required to provide several variants of same service, in that case
+you need to distinguish them at the injection point. For that you can use qualifiers.
+A simple qualifier is a service name:
+
+[source,java]
+----
+binder.bind(Service.class, "internal").to(MyInternalService.class);
+binder.bind(Service.class, "public").to(MyPublicService.class);
+----
+
+To use this service you need to use `javax.inject.Named` annotation at the injection point:
+
+[source,java]
+----
+class MyWorker {
+    @Inject
+    public MyWorker(@Named("public") Service service) {
+    }
+}
+----
+
+Additionally, you can use custom annotation to achieve this:
+
+[source,java]
+----
+@Target({ ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+@Qualifier
+public @interface Marker {
+}
+----
+
+[source,java]
+----
+binder.bind(String.class, Marker.class).toInstance("My string");
+----
+
+[source,java]
+----
+class MyWorker {
+    @Inject
+    public MyWorker(@Marker String arg) {
+    }
+}
+----
+
+===== Generics
+
+Due to generics implementation in Java you can't directly use something like `Service<String>.class` to bind generic classes.
+For these cases Bootique DI provides helper class `TypeLiteral`.
+
+[source,java]
+----
+binder.bind(Key.get(new TypeLiteral<Service<String>>{})).to(MyStringService.class);
+binder.bind(Key.get(new TypeLiteral<Service<Integer>>{})).to(MyIntegerService.class);
+----
+
+NOTE: you don't need additional qualifiers to inject different versions of generic class.
+
+===== Collections
+
+Collections can be injected as any other generic class mentioned above. However, there is special support for `Set`
+and `Map` injection offered by Binder API.
+
+[source,java]
+----
+class MyModule implements BQModule {
+
+    @Override
+    public void configure(Binder binder) {
+        binder.bindSet(Service.class)
+            .add(DefaultService.class)
+            .add(Key.get(Service.class, "internal"))
+            .addProvider(ServiceProvider.class);
+    }
+
+    @Provides
+    @Singleton
+    @Named("internal")
+    Service createInternalService() {
+        return new InternalService();
+    }
+
+    @Provides
+    @Singleton
+    Worker createWorker(Set<Service> services) {
+        return new MyWorker(services);
+    }
+}
+----
+
+===== Optional binding
+
+In normal case Bootique DI will throw exception if injected service is missing. If you want make some service
+optional you can create optional binding for it.
+
+[source,java]
+----
+class MyModule implements BQModule {
+
+    @Override
+    public void configure(Binder binder) {
+        binder.bindOptional(Service.class);
+    }
+
+    @Provides
+    Worker createWorker(Optional<Service> service) {
+        return new MyWorker(service.orElse(new DefaultService()));
+    }
+}
+----

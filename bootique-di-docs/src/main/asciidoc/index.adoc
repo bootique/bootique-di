@@ -1,0 +1,31 @@
+// Licensed to ObjectStyle LLC under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ObjectStyle LLC licenses
+// this file to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+:bq-header:
+
+== Bootique DI framework
+
+*Bootique DI* is a *JSR330* (Dependency Injection for Java) compatible implementation.
+It is a lightweight DI engine used to power *Bootique* application framework.
+
+include::_bootique_di/1-core.adoc[]
+include::_bootique_di/2-module.adoc[]
+include::_bootique_di/3-binder.adoc[]
+//include::_bootique_di/4-injector.adoc[]
+//include::_bootique_di/5-scopes.adoc[]
+//include::_bootique_di/6-qualifiers.adoc[]
+//include::_bootique_di/7-migration.adoc[]

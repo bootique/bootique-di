@@ -1,0 +1,63 @@
+
+=== Core concepts
+
+The central source of all configuration in Bootique DI is an instance of `Injector`.
+It represents a registry which provides access to configured services.
+Each injected service is called *binding* in terms of Bootique DI.
+To create an `Injector` you need to provide a set of configuration units (`BQModule`)
+that define services available for injection.
+
+Here is a simple example of Bootique DI usage:
+
+[source,java,subs="verbatim,attributes"]
+----
+import javax.inject.Inject;
+
+import io.bootique.di.DIBootstrap;
+import io.bootique.di.Injector;
+
+public class Application {
+    public static void main(String[] args) {
+        Injector injector = DIBootstrap
+                .injectorBuilder(
+                        binder -> binder.bind(Service.class)
+                                    .to(MyService.class) // <!--1-->
+                                    .inSingletonScope(),
+                        binder -> binder.bind(Worker.class).to(MyWorker.class)
+                )
+                .build();
+        Worker worker = injector.getInstance(Worker.class);
+        worker.doWork();
+    }
+}
+
+interface Worker {
+    void doWork();
+}
+
+interface Service {
+    String getInfo();
+}
+
+class MyService implements Service {
+
+    @Override
+    public String getInfo() {
+        return "Hello world!";
+    }
+}
+
+class MyWorker implements Worker {
+    private Service service;
+
+    @Inject
+    MyWorker(Service service) {
+        this.service = service;
+    }
+
+    public void doWork() {
+        System.out.println(service.getInfo());
+    }
+}
+----
+<1> here we bind a `Service` interface to a concrete implementation.

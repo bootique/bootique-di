@@ -38,6 +38,7 @@
         <module>bootique-di</module>
         <module>bootique-di-jsr330-tck</module>
         <module>guice-over-bootique-di</module>
+        <module>bootique-di-docs</module>
     </modules>
 
     <scm>

@@ -129,7 +129,7 @@ public class GenericTypesIT {
         }
     }
 
-    public static class TestModule2 extends BaseModule {
+    public static class TestModule2 extends BaseBQModule {
 
         @Provides
         public List<? extends Integer> createIntegerList() {

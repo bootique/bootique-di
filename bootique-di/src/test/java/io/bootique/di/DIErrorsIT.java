@@ -101,7 +101,7 @@ public class DIErrorsIT {
         }
     }
 
-    private static class TestModule extends BaseModule {
+    private static class TestModule extends BaseBQModule {
         @Override
         public void configure(Binder binder) {
             binder.bind(Foo.class).to(FooImpl.class);

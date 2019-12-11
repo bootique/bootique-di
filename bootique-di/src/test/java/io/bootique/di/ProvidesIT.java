@@ -50,7 +50,7 @@ public class ProvidesIT {
 
     @Test
     public void testProvides_Standalone_AnonymousClass() {
-        Injector injector = DIBootstrap.createInjector(new BaseModule() {
+        Injector injector = DIBootstrap.createInjector(new BaseBQModule() {
             @Provides
             Service1 createService() {
                 return () -> "provideService1";
@@ -133,7 +133,7 @@ public class ProvidesIT {
         String doIt();
     }
 
-    public static class TestModule_StandaloneService_Static extends BaseModule {
+    public static class TestModule_StandaloneService_Static extends BaseBQModule {
 
         @Provides
         public static Service1 provideService1() {
@@ -141,7 +141,7 @@ public class ProvidesIT {
         }
     }
 
-    public static class TestModule_StandaloneService_Instance extends BaseModule {
+    public static class TestModule_StandaloneService_Instance extends BaseBQModule {
 
         @Provides
         public Service1 provideService1() {
@@ -149,7 +149,7 @@ public class ProvidesIT {
         }
     }
 
-    public static class TestModule_ServiceChain extends BaseModule {
+    public static class TestModule_ServiceChain extends BaseBQModule {
 
         @Provides
         public static Service1 provideService1() {
@@ -162,7 +162,7 @@ public class ProvidesIT {
         }
     }
 
-    public static class TestModule_ServiceChain_ProviderParameter extends BaseModule {
+    public static class TestModule_ServiceChain_ProviderParameter extends BaseBQModule {
 
         @Provides
         public static Service1 provideService1() {
@@ -175,14 +175,14 @@ public class ProvidesIT {
         }
     }
 
-    public static class TestModule_InvalidProvider extends BaseModule {
+    public static class TestModule_InvalidProvider extends BaseBQModule {
 
         @Provides
         public void invalidProvides() {
         }
     }
 
-    public static class TestModule_InvalidQualifier extends BaseModule {
+    public static class TestModule_InvalidQualifier extends BaseBQModule {
 
         @TestQualifier
         @Named("s1")
@@ -192,7 +192,7 @@ public class ProvidesIT {
         }
     }
 
-    public static class TestModule_NamedService extends BaseModule {
+    public static class TestModule_NamedService extends BaseBQModule {
 
         @Named("s1")
         @Provides
@@ -201,7 +201,7 @@ public class ProvidesIT {
         }
     }
 
-    public static class TestModule_NamedParameter extends BaseModule {
+    public static class TestModule_NamedParameter extends BaseBQModule {
 
         @Provides
         public static Service1 provideUnnamedService1() {
@@ -220,7 +220,7 @@ public class ProvidesIT {
         }
     }
 
-    public static class TestModule_QualifiedProviderParameter extends BaseModule {
+    public static class TestModule_QualifiedProviderParameter extends BaseBQModule {
 
         @Provides
         public static Service1 provideUnnamedService1() {
@@ -239,7 +239,7 @@ public class ProvidesIT {
         }
     }
 
-    private static class TestModule_CircularDependency extends BaseModule {
+    private static class TestModule_CircularDependency extends BaseBQModule {
         @Provides
         Service1 createService1(Service2 service2) {
             return () -> "service1" + service2.doIt();

@@ -88,7 +88,7 @@ public class QualifiersIT {
         assertThat(consumer2.getService(), instanceOf(Service_Impl2.class));
     }
 
-    public static class ServiceModule2 extends BaseModule {
+    public static class ServiceModule2 extends BaseBQModule {
         @Provides
         @CustomQualifier
         public Service createService() {

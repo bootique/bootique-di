@@ -160,7 +160,7 @@ public class MapTypesIT {
         }
     }
 
-    public static class MapProviderModule extends BaseModule {
+    public static class MapProviderModule extends BaseBQModule {
 
         @Provides
         public Map<Integer, String> createIntegerMap() {

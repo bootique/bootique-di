@@ -202,7 +202,7 @@ public class SetTypesIT {
         }
     }
 
-    public static class SetProviderModule extends BaseModule {
+    public static class SetProviderModule extends BaseBQModule {
 
         @Provides
         public Set<Integer> createIntegerSet() {

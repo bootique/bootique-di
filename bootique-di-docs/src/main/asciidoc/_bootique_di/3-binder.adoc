@@ -1,10 +1,10 @@
 
-==== Binder
+== Binder
 
 Binder provides the API for the module to bind its services to the DI container.
 Every binding is defined by its key. In a simple case, binding key based on just a java class.
 
-===== Service binding
+=== Service binding
 
 [source,java]
 ----
@@ -64,7 +64,7 @@ The final option of how you can bind service is via a concrete `Provider` implem
 binder.bind(Service.class).toProviderInstance(new MyServiceProvider());
 ----
 
-===== Qualifiers
+=== Qualifiers
 
 Sometimes, it's required to provide several variants of the same service.
 In that case, you need to distinguish them at the injection point.
@@ -113,7 +113,7 @@ class MyWorker {
 }
 ----
 
-===== Generics
+=== Generics
 
 Due to generics implementation in Java, you can't directly use something like `Service<String>.class` to bind generic classes.
 For these cases, Bootique DI provides helper class `TypeLiteral`.
@@ -126,7 +126,7 @@ binder.bind(Key.get(new TypeLiteral<Service<Integer>>{})).to(MyIntegerService.cl
 
 NOTE: you don't need additional qualifiers to inject different versions of the generic class.
 
-===== Collections
+=== Collections
 
 Collections can be injected like any other generic class mentioned above. However, there is advanced support for `Set`
 and `Map` injection offered by Binder API.
@@ -158,7 +158,7 @@ class MyModule implements BQModule {
 }
 ----
 
-===== Optional binding
+=== Optional binding
 
 In normal cases, Bootique DI will throw an exception if injected service is missing.
 If you want to make some service optional you can create an optional binding for it.

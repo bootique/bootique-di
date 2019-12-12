@@ -1,12 +1,12 @@
 
-=== Migrating from Guice framework
+== Migrating from Guice framework
 
-==== Modules and binder
+=== Modules and binder
 
-==== Annotations
+=== Annotations
 
-==== Binding sets and maps
+=== Binding sets and maps
 
-==== Injector creation
+=== Injector creation
 
-==== Limitations
+=== Limitations

@@ -1,5 +1,5 @@
 
-==== Injector
+== Injector
 
 `Injector` is an entry point for all DI-managed objects.
 Injector allows getting configured services directly or via a lazy provider.

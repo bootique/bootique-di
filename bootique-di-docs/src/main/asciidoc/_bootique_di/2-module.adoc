@@ -1,16 +1,16 @@
 
-==== BQModule
+== BQModule
 
 `BQModule` is a single unit of configuration. It provides two ways of configuring services.
 
-===== Configure method
+=== Configure method
 
 `BQModule` interface contains single `void configure(Binder binder)` method.
 It can be used to configure simple bindings as mentioned above.
 Also, it's useful for extending other Bootique modules.
 More options discussed in a separate <<Binder>> section.
 
-===== Custom factory methods
+=== Custom factory methods
 
 For greater control, you can use custom factory methods to create and configure services.
 Any module method annotated with `@io.bootique.di.Provides` annotation and returning single object

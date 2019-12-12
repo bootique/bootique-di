@@ -1,5 +1,5 @@
 
-=== Core concepts
+== Core concepts
 
 The central source of all configuration in Bootique DI is an instance of <<Injector>>.
 It represents a registry that provides access to configured services.

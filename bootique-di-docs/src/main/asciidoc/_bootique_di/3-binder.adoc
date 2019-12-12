@@ -2,7 +2,7 @@
 ==== Binder
 
 Binder provides the API for the module to bind its services to the DI container.
-Every binding is defined by its key. In a simple case key based on just a java class.
+Every binding is defined by its key. In a simple case, binding key based on just a java class.
 
 ===== Service binding
 
@@ -11,7 +11,9 @@ Every binding is defined by its key. In a simple case key based on just a java c
 binder.bind(Service.class).to(MyService.class);
 ----
 
-In this case `MyService` will be created by the container. As an alternative
+NOTE: using interface is optional, you can directly bind implementation: `binder.bind(MyService.class);`
+
+In this case, `MyService` will be created by the container. As an alternative,
 you can provide a manually initialized instance of the `MyService`.
 
 [source,java]
@@ -26,10 +28,9 @@ Or you can use a custom factory for that:
 binder.bind(Service.class).toProvider(MyServiceProvider.class);
 ----
 
-Note that `MyServiceProvider` can use injection as any other service managed
+Note that `MyServiceProvider` can use injection like any other service managed
 by the DI container:
 
-.MyServiceProvider
 [source,java]
 ----
 class MyServiceProvider implements Provider<Service> {
@@ -56,7 +57,7 @@ binder.bind(Service.class).toProvider(MyServiceProvider.class);
 binder.bind(MyServiceProvider.class).to(MyServiceProviderImpl.class);
 ----
 
-Final option of how you can bind service is via a concrete `Provider` implementation:
+The final option of how you can bind service is via a concrete `Provider` implementation:
 
 [source,java]
 ----
@@ -65,9 +66,9 @@ binder.bind(Service.class).toProviderInstance(new MyServiceProvider());
 
 ===== Qualifiers
 
-Sometimes it's required to provide several variants of same service, in that case
-you need to distinguish them at the injection point. For that you can use qualifiers.
-A simple qualifier is a service name:
+Sometimes, it's required to provide several variants of the same service.
+In that case, you need to distinguish them at the injection point.
+For that you can use qualifiers. A simple qualifier is a service name:
 
 [source,java]
 ----
@@ -75,7 +76,7 @@ binder.bind(Service.class, "internal").to(MyInternalService.class);
 binder.bind(Service.class, "public").to(MyPublicService.class);
 ----
 
-To use this service you need to use `javax.inject.Named` annotation at the injection point:
+To inject this service you need to use `javax.inject.Named` annotation at the injection point:
 
 [source,java]
 ----
@@ -99,6 +100,7 @@ public @interface Marker {
 
 [source,java]
 ----
+//...
 binder.bind(String.class, Marker.class).toInstance("My string");
 ----
 
@@ -113,8 +115,8 @@ class MyWorker {
 
 ===== Generics
 
-Due to generics implementation in Java you can't directly use something like `Service<String>.class` to bind generic classes.
-For these cases Bootique DI provides helper class `TypeLiteral`.
+Due to generics implementation in Java, you can't directly use something like `Service<String>.class` to bind generic classes.
+For these cases, Bootique DI provides helper class `TypeLiteral`.
 
 [source,java]
 ----
@@ -122,11 +124,11 @@ binder.bind(Key.get(new TypeLiteral<Service<String>>{})).to(MyStringService.clas
 binder.bind(Key.get(new TypeLiteral<Service<Integer>>{})).to(MyIntegerService.class);
 ----
 
-NOTE: you don't need additional qualifiers to inject different versions of generic class.
+NOTE: you don't need additional qualifiers to inject different versions of the generic class.
 
 ===== Collections
 
-Collections can be injected as any other generic class mentioned above. However, there is special support for `Set`
+Collections can be injected like any other generic class mentioned above. However, there is advanced support for `Set`
 and `Map` injection offered by Binder API.
 
 [source,java]
@@ -158,8 +160,8 @@ class MyModule implements BQModule {
 
 ===== Optional binding
 
-In normal case Bootique DI will throw exception if injected service is missing. If you want make some service
-optional you can create optional binding for it.
+In normal cases, Bootique DI will throw an exception if injected service is missing.
+If you want to make some service optional you can create an optional binding for it.
 
 [source,java]
 ----

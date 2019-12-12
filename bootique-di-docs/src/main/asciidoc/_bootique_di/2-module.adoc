@@ -6,13 +6,13 @@
 ===== Configure method
 
 `BQModule` interface contains single `void configure(Binder binder)` method.
-It can be used to configure simple bindings, like mentioned above.
-Also it's useful for extending other Bootique modules.
+It can be used to configure simple bindings as mentioned above.
+Also, it's useful for extending other Bootique modules.
 More options discussed in a separate <<Binder>> section.
 
 ===== Custom factory methods
 
-For greater control you can use custom factory methods to create and configure services.
+For greater control, you can use custom factory methods to create and configure services.
 Any module method annotated with `@io.bootique.di.Provides` annotation and returning single object
 will be treated as a factory method. All arguments of such method will be automatically injected,
 no `@Inject` annotation is required.
@@ -37,5 +37,5 @@ class MyModule implements BQModule {
 }
 ----
 
-If you don't need to provide anything in a `configure()` method you can use
+TIP: If you don't need to provide anything in a `configure()` method, you can use
 `io.bootique.di.BaseBQModule` as a base class and omit it completely.

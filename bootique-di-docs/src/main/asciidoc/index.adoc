@@ -19,13 +19,13 @@
 
 == Bootique DI framework
 
-*Bootique DI* is a *JSR330* (Dependency Injection for Java) compatible implementation.
-It is a lightweight DI engine used to power *Bootique* application framework.
+*Bootique DI* is a lightweight DI engine used to power *Bootique* application framework.
+It is a *JSR330* (Dependency Injection for Java) compatible implementation.
 
 include::_bootique_di/1-core.adoc[]
 include::_bootique_di/2-module.adoc[]
 include::_bootique_di/3-binder.adoc[]
-//include::_bootique_di/4-injector.adoc[]
+include::_bootique_di/4-injector.adoc[]
 //include::_bootique_di/5-scopes.adoc[]
 //include::_bootique_di/6-qualifiers.adoc[]
 //include::_bootique_di/7-migration.adoc[]

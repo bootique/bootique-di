@@ -37,5 +37,5 @@ class MyModule implements BQModule {
 }
 ----
 
-TIP: If you don't need to provide anything in a `configure()` method, you can use
+NOTE: If you don't need to provide anything in a `configure()` method, you can use
 `io.bootique.di.BaseBQModule` as a base class and omit it completely.

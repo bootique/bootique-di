@@ -1,0 +1,334 @@
+// Licensed to ObjectStyle LLC under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ObjectStyle LLC licenses
+// this file to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+:bq-header: _migrate/header.html
+
+== Migrating from Guice framework
+
+Migration from Guice to Bootique DI is a straightforward process as they both share similar concepts.
+Essentially it all comes to changing packages and minor code rewrites.
+
+== Interfaces and Annotations
+
+Here is a table that shows a correspondence of interfaces and annotations between Guice and Bootique DI.
+
+|===
+|Guice|Bootique
+
+|@com.google.inject.Inject
+|@javax.inject.Inject
+
+|@com.google.inject.BindingAnnotation
+|@javax.inject.Qualifier
+
+|@com.google.inject.Singleton
+|@javax.inject.Singleton
+
+|@com.google.inject.Named
+|@javax.inject.Named
+
+|@com.google.inject.Provides
+|@io.bootique.di.Provides
+
+|com.google.inject.Module
+|io.bootique.di.BQModule
+
+|com.google.inject.Binder
+|io.bootique.di.Binder
+
+|com.google.inject.Injector
+|io.bootique.di.Injector
+
+|com.google.inject.Provider
+|io.bootique.di.Provider
+
+|com.google.inject.Key
+|io.bootique.di.Key
+
+|com.google.inject.TypeLiteral
+|io.bootique.di.TypeLiteral
+
+|com.google.inject.multibindings.Multibinder
+|io.bootique.di.SetBuilder
+
+|com.google.inject.multibindings.MapBinder
+|io.bootique.di.MapBuilder
+|===
+
+== API changes
+
+=== Binder API
+
+|===
+^|Guice ^|Bootique
+
+a|
+[source,java]
+----
+binder.bind(String[].class)
+    .annotatedWith(Args.class)
+----
+a|
+[source,java]
+----
+binder.bind(String[].class, Args.class)
+----
+
+a|
+[source,java]
+----
+binder.bind(String[].class)
+    .annotatedWith(Names.named("args"))
+----
+a|
+[source,java]
+----
+binder.bind(String[].class, "args")
+----
+
+a|
+[source,java]
+----
+binder.bind(Service.class)
+    .to(MyService.class)
+    .in(Singleton.class)
+----
+a|
+[source,java]
+----
+binder.bind(Service.class)
+    .to(MyService.class)
+    .inSingletonScope()
+----
+
+a|
+[source,java]
+----
+binder.bind(Service.class)
+    .to(MyService.class)
+    .in(Singleton.class)
+----
+a|
+[source,java]
+----
+binder.bind(Service.class)
+    .to(MyService.class)
+    .inSingletonScope()
+----
+
+
+a|
+[source,java]
+----
+OptionalBinder
+    .newOptionalBinder(binder, Command.class)
+----
+a|
+[source,java]
+----
+binder
+    .bindOptional(Service.class)
+----
+
+|===
+
+=== Multibinder
+
+|===
+^|Guice ^|Bootique
+
+a|
+[source,java]
+----
+Multibinder
+    .newSetBinder(binder, Service.class)
+----
+a|
+[source,java]
+----
+binder.bindSet(Service.class)
+----
+
+a|
+[source,java]
+----
+Multibinder.newSetBinder(
+        binder,
+        Service.class,
+        Marker.class
+)
+----
+a|
+[source,java]
+----
+binder.bindSet(Service.class, Marker.class)
+----
+
+a|
+[source,java]
+----
+multibinder.addBinding()
+    .to(MyService.class)
+----
+a|
+[source,java]
+----
+setbinder.add(MyService.class)
+----
+
+a|
+[source,java]
+----
+multibinder.addBinding()
+    .toInstance(new MyService())
+----
+a|
+[source,java]
+----
+setbinder.add(new MyService())
+----
+
+a|
+[source,java]
+----
+multibinder.addBinding()
+    .toProvider(MyServiceProvider.class)
+----
+a|
+[source,java]
+----
+setbinder
+    .addProvider(MyServiceProvider.class)
+----
+
+|===
+
+=== MapBinder
+
+|===
+^|Guice ^|Bootique
+
+a|
+[source,java]
+----
+MapBinder.newMapBinder(
+        binder,
+        String.class,
+        Service.class
+)
+----
+a|
+[source,java]
+----
+binder.bindMap(
+        String.class,
+        Service.class
+)
+----
+
+a|
+[source,java]
+----
+MapBinder.newMapBinder(
+        binder,
+        String.class,
+        Service.class,
+        Marker.class
+)
+----
+a|
+[source,java]
+----
+binder.bindMap(
+        String.class,
+        Service.class,
+        Marker.class
+)
+----
+
+a|
+[source,java]
+----
+mapbinder.addBinding("internal")
+    .to(MyService.class)
+----
+a|
+[source,java]
+----
+mapbinder.put("internal",
+    MyService.class)
+----
+
+|===
+
+=== Injector API
+
+|===
+^|Guice ^|Bootique
+
+a|
+[source,java]
+----
+Guice.createInjector(modules)
+----
+a|
+[source,java]
+----
+DIBootstrap.injectorBuilder(modules)
+    .enableDynamicBindings()
+    .defaultNoScope()
+    .build()
+----
+
+a|
+[source,java]
+----
+Binding<Service> binding = injector
+        .getExistingBinding(Service.class);
+return binding != null
+        ? Optional.of(binding.getProvider())
+        : Optional.empty();
+----
+
+a|
+[source,java]
+----
+if(injector.hasProvider(Service.class)) {
+    Provider<Service> provider = injector
+        .getProvider(Service.class);
+    return Optional.of(provider);
+}
+return Optional.empty();
+----
+
+a|
+[source,java]
+----
+List<Binding<T>> bindings
+    = injector.findBindingsByType(type);
+----
+a|
+[source,java]
+----
+Collection<Key<T>> keys
+    = injector.getKeysByType(type);
+----
+
+|===
+
+== Limitations
+

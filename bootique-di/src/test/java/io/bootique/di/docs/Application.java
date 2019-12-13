@@ -34,6 +34,8 @@ import io.bootique.di.Provides;
 
 public class Application {
     public static void main(String[] args) {
+        DIBootstrap.createInjector();
+
         Injector injector = DIBootstrap
                 .injectorBuilder(
                         binder -> binder.bind(Service.class)

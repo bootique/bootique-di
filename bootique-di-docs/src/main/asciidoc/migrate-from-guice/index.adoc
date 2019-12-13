@@ -344,6 +344,3 @@ Collection<Key<T>> keys
 ----
 
 |===
-
-== Limitations
-

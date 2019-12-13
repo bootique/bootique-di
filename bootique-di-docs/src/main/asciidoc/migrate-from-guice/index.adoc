@@ -130,12 +130,27 @@ binder.bind(Service.class)
     .inSingletonScope()
 ----
 
+a|
+[source,java]
+----
+binder.bind(Service.class)
+    .to(MyService.class)
+    .asEagerSingleton()
+----
+a|
+[source,java]
+----
+binder.bind(Service.class)
+    .to(MyService.class)
+    .initOnStartup()
+----
 
 a|
 [source,java]
 ----
 OptionalBinder
-    .newOptionalBinder(binder, Command.class)
+    .newOptionalBinder(binder,
+        Command.class)
 ----
 a|
 [source,java]

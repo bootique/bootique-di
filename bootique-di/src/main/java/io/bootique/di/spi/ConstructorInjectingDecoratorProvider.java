@@ -38,7 +38,7 @@ class ConstructorInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
 
         return new ConstructorInjectingProvider<T>(implementation, injector) {
             @Override
-            protected Object value(Class<?> parameter, Type genericType, Annotation bindingAnnotation, InjectionStack stack) {
+            protected Object value(Class<?> parameter, Type genericType, Annotation bindingAnnotation) {
 
                 // delegate (possibly) injected as Provider
                 if (injector.getPredicates().isProviderType(parameter)) {
@@ -59,7 +59,7 @@ class ConstructorInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
                     return undecorated.get();
                 }
 
-                return super.value(parameter, genericType, bindingAnnotation, stack);
+                return super.value(parameter, genericType, bindingAnnotation);
             }
         };
     }

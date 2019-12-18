@@ -95,12 +95,11 @@ class ConstructorInjectingProvider<T> implements NamedProvider<T> {
         Class<?>[] constructorParameters = constructor.getParameterTypes();
         Type[] genericTypes = constructor.getGenericParameterTypes();
         Object[] args = new Object[constructorParameters.length];
-        InjectionStack stack = injector.getInjectionStack();
 
         for (int i = 0; i < constructorParameters.length; i++) {
             final int idx = i;
             injector.trace(() -> "Get argument " + idx + " for %s" + getName());
-            args[i] = value(constructorParameters[i], genericTypes[i], bindingAnnotations[i], stack);
+            args[i] = value(constructorParameters[i], genericTypes[i], bindingAnnotations[i]);
         }
 
         try {
@@ -111,7 +110,7 @@ class ConstructorInjectingProvider<T> implements NamedProvider<T> {
         }
     }
 
-    protected Object value(Class<?> parameter, Type genericType, Annotation bindingAnnotation, InjectionStack stack) {
+    protected Object value(Class<?> parameter, Type genericType, Annotation bindingAnnotation) {
 
         if (injector.getPredicates().isProviderType(parameter)) {
             Type parameterType = DIUtil.getGenericParameterType(genericType);
@@ -122,12 +121,7 @@ class ConstructorInjectingProvider<T> implements NamedProvider<T> {
             return injector.getProvider(Key.get(TypeLiteral.of(parameterType), bindingAnnotation));
         } else {
             Key<?> key = Key.get(TypeLiteral.of(genericType), bindingAnnotation);
-            stack.push(key);
-            try {
-                return injector.getInstance(key);
-            } finally {
-                stack.pop();
-            }
+            return injector.getInstanceWithCycleProtection(key);
         }
     }
 

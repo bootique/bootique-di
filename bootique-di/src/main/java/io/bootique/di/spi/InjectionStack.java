@@ -29,11 +29,9 @@ import java.util.List;
  */
 class InjectionStack {
 
-    private final DefaultInjector injector;
     private final ThreadLocal<LinkedList<Key<?>>> stack;
 
-    InjectionStack(DefaultInjector injector) {
-        this.injector = injector;
+    InjectionStack() {
         this.stack = new ThreadLocal<>();
     }
 
@@ -44,7 +42,7 @@ class InjectionStack {
         }
     }
 
-    void push(Key<?> bindingKey) {
+    boolean push(Key<?> bindingKey) {
         LinkedList<Key<?>> localStack = stack.get();
         if (localStack == null) {
             localStack = new LinkedList<>();
@@ -52,14 +50,11 @@ class InjectionStack {
         }
 
         if (localStack.contains(bindingKey)) {
-            injector.throwException(
-                    "Circular dependency detected when binding a key %s. Nested keys: %s"
-                            + ". To resolve it, you should inject a Provider instead of an object.",
-                    bindingKey,
-                    localStack);
+            return false;
         }
 
         localStack.add(bindingKey);
+        return true;
     }
 
     void pop() {

@@ -95,7 +95,7 @@ public class DefaultInjector implements Injector {
 
         this.bindings = new ConcurrentHashMap<>();
         this.decorations = new ConcurrentHashMap<>();
-        this.injectionStack = new InjectionStack(this);
+        this.injectionStack = new InjectionStack();
         this.injectionTrace = injectionTraceEnabled ? new InjectionTrace() : null;
         this.providesHandler = new ProvidesHandler(this);
         this.binder = new DefaultBinder(this);
@@ -229,12 +229,29 @@ public class DefaultInjector implements Injector {
 
     @Override
     public <T> T getInstance(Class<T> type) {
-        return getInstance(Key.get(type));
+        return getInstanceWithCycleProtection(Key.get(type));
     }
 
     @Override
     public <T> T getInstance(Key<T> key) {
-        return getProvider(key).get();
+        return getInstanceWithCycleProtection(key);
+    }
+
+    <T> T getInstanceWithCycleProtection(Key<T> key) {
+        if(!injectionStack.push(key)) {
+            // cycle detected...
+            throwException(
+                    "Circular dependency detected when binding a key %s. Nested keys: %s"
+                            + ". To resolve it, you should inject a Provider instead of an object.",
+                    key,
+                    injectionStack);
+        }
+
+        try {
+            return getProvider(key).get();
+        } finally {
+            injectionStack.pop();
+        }
     }
 
     @Override

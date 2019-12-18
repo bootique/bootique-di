@@ -205,12 +205,7 @@ class MethodInjectingProvider<T> extends MemberInjectingProvider<T> {
                 result[i] = injector.getProvider(Key.get(TypeLiteral.of(parameterType), bindingAnnotation));
             } else {
                 Key<?> key = Key.get(TypeLiteral.of(parameterType), bindingAnnotation);
-                stack.push(key);
-                try {
-                    result[i] = injector.getInstance(key);
-                } finally {
-                    stack.pop();
-                }
+                result[i] = injector.getInstanceWithCycleProtection(key);
             }
         }
 

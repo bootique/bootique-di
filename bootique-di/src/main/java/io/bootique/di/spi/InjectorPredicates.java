@@ -31,6 +31,7 @@ import javax.inject.Provider;
 import javax.inject.Qualifier;
 import javax.inject.Singleton;
 
+import io.bootique.di.BQInject;
 import io.bootique.di.DIBootstrap;
 import io.bootique.di.DIRuntimeException;
 import io.bootique.di.Provides;
@@ -43,7 +44,8 @@ import io.bootique.di.Provides;
 public class InjectorPredicates {
 
     // Default predicates, based on javax.inject
-    private Predicate<AccessibleObject> injectPredicate = o -> o.isAnnotationPresent(Inject.class);
+    private Predicate<AccessibleObject> injectPredicate = o ->
+            o.isAnnotationPresent(Inject.class) || o.isAnnotationPresent(BQInject.class);
     private Predicate<Method> providesMethodPredicate = m -> m.isAnnotationPresent(Provides.class);
     private Predicate<AnnotatedElement> singletonPredicate = o -> o.isAnnotationPresent(Singleton.class);
     private Predicate<Class<? extends Annotation>> qualifierPredicate = c -> c.isAnnotationPresent(Qualifier.class);

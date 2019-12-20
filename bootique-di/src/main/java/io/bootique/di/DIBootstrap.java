@@ -150,6 +150,11 @@ public class DIBootstrap {
             return this;
         }
 
+        public InjectorBuilder allowProxyCreation() {
+            options.add(DefaultInjector.Options.ENABLE_PROXY);
+            return this;
+        }
+
         /**
          * Set custom predicate for methods in modules that should be used as providers.
          * Default predicate test methods for {@link io.bootique.di.Provides} annotation.

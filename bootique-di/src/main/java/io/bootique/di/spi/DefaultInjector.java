@@ -27,7 +27,9 @@ import io.bootique.di.BQModule;
 import io.bootique.di.Scope;
 
 import javax.inject.Provider;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -49,7 +51,8 @@ public class DefaultInjector implements Injector {
         DECLARED_OVERRIDE_ONLY,
         ENABLE_DYNAMIC_BINDINGS,
         ENABLE_METHOD_INJECTION,
-        DISABLE_TRACE
+        DISABLE_TRACE,
+        ENABLE_PROXY
     }
 
     private final DefaultScope singletonScope;
@@ -70,6 +73,7 @@ public class DefaultInjector implements Injector {
     private final boolean allowOverride;
     private final boolean allowMethodInjection;
     private final boolean injectionTraceEnabled;
+    private final boolean allowProxyCreation;
 
     private volatile boolean isShutdown;
 
@@ -92,6 +96,7 @@ public class DefaultInjector implements Injector {
         this.allowDynamicBinding = options.contains(Options.ENABLE_DYNAMIC_BINDINGS);
         this.allowMethodInjection = options.contains(Options.ENABLE_METHOD_INJECTION);
         this.injectionTraceEnabled = !options.contains(Options.DISABLE_TRACE);
+        this.allowProxyCreation = options.contains(Options.ENABLE_PROXY);
 
         this.bindings = new ConcurrentHashMap<>();
         this.decorations = new ConcurrentHashMap<>();
@@ -239,7 +244,15 @@ public class DefaultInjector implements Injector {
 
     <T> T getInstanceWithCycleProtection(Key<T> key) {
         if(!injectionStack.push(key)) {
-            // cycle detected...
+            // cycle detected in dependency
+            // 1. try to create proxy
+            if(allowProxyCreation) {
+                T proxy = getProxyInstance(key);
+                if (proxy != null) {
+                    return proxy;
+                }
+            }
+            // 2. throw if failed
             throwException(
                     "Circular dependency detected when binding a key %s. Nested keys: %s"
                             + ". To resolve it, you should inject a Provider instead of an object.",
@@ -257,6 +270,18 @@ public class DefaultInjector implements Injector {
     @Override
     public <T> Provider<T> getProvider(Class<T> type) {
         return getProvider(Key.get(type));
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private <T> T getProxyInstance(Key<T> key) {
+        Class<T> bindingClass = (Class)key.getType().getRawType();
+        if(!bindingClass.isInterface()) {
+            return null;
+        }
+        InvocationHandler handler = new ProxyInvocationHandler<>(getProvider(key));
+        T proxyInstance = (T) Proxy.newProxyInstance(bindingClass.getClassLoader(), new Class<?>[]{bindingClass}, handler);
+        trace(() -> "Create proxy for binding " + key);
+        return proxyInstance;
     }
 
     @Override
@@ -331,6 +356,7 @@ public class DefaultInjector implements Injector {
         bindings.clear();
         decorations.clear();
         injectionStack.reset();
+        keysByRawType.clear();
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -387,6 +413,7 @@ public class DefaultInjector implements Injector {
      */
     private void earlySetup() {
         earlySetupSet.forEach(this::getInstance);
+        earlySetupSet.clear();
     }
 
     /**

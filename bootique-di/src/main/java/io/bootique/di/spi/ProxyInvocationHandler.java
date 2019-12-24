@@ -21,15 +21,19 @@ package io.bootique.di.spi;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import javax.inject.Provider;
+
+import io.bootique.di.Key;
 
 class ProxyInvocationHandler<T> implements InvocationHandler {
 
-    private final Provider<T> instanceProvider;
+    private final DefaultInjector injector;
+    private final Key<T> key;
+
     private volatile T instance;
 
-    ProxyInvocationHandler(Provider<T> instanceProvider) {
-        this.instanceProvider = instanceProvider;
+    ProxyInvocationHandler(DefaultInjector injector, Key<T> key) {
+        this.injector = injector;
+        this.key = key;
     }
 
     @Override
@@ -41,10 +45,10 @@ class ProxyInvocationHandler<T> implements InvocationHandler {
     T getInstance() {
         T local = instance;
         if(local == null) {
-            synchronized (instanceProvider) {
+            synchronized (key) {
                 local = instance;
                 if(local == null) {
-                    local = instance = instanceProvider.get();
+                    local = instance = injector.getInstanceWithCycleProtection(key, true);
                 }
             }
         }

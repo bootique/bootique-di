@@ -243,10 +243,14 @@ public class DefaultInjector implements Injector {
     }
 
     <T> T getInstanceWithCycleProtection(Key<T> key) {
+        return getInstanceWithCycleProtection(key, false);
+    }
+
+    <T> T getInstanceWithCycleProtection(Key<T> key, boolean fromProxy) {
         if(!injectionStack.push(key)) {
             // cycle detected in dependency
             // 1. try to create proxy
-            if(allowProxyCreation) {
+            if(allowProxyCreation && !fromProxy) {
                 T proxy = getProxyInstance(key);
                 if (proxy != null) {
                     return proxy;
@@ -278,7 +282,7 @@ public class DefaultInjector implements Injector {
         if(!bindingClass.isInterface()) {
             return null;
         }
-        InvocationHandler handler = new ProxyInvocationHandler<>(getProvider(key));
+        InvocationHandler handler = new ProxyInvocationHandler<>(this, key);
         T proxyInstance = (T) Proxy.newProxyInstance(bindingClass.getClassLoader(), new Class<?>[]{bindingClass}, handler);
         trace(() -> "Create proxy for binding " + key);
         return proxyInstance;

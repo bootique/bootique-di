@@ -48,6 +48,29 @@ public class CircularDependencyIT {
         injector.getInstance(Service3.class);
     }
 
+    @Test(expected = DIRuntimeException.class)
+    public void testProxyCreationProviderMethodFailure() throws Exception {
+        Injector injector = DIBootstrap.injectorBuilder(new CircularModule())
+                .allowProxyCreation().build();
+
+        injector.getInstance(Service1.class);
+    }
+
+    static class CircularModule extends BaseBQModule {
+
+        @Provides
+        Service1 createService1(Service2 service2) {
+            service2.exec();
+            return new Service1Impl1();
+        }
+
+        @Provides
+        Service2 createService2(Service1 service1) {
+            service1.info();
+            return new Service2Impl1();
+        }
+    }
+
     interface Service1 {
         String info();
         String wrap(String arg);

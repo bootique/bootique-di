@@ -36,8 +36,7 @@ class DefaultSetBuilder<T> extends DICollectionBuilder<Set<T>, T> implements Set
 
     @Override
     public SetBuilder<T> add(Class<? extends T> interfaceType) {
-        Provider<? extends T> provider = createTypeProvider(interfaceType);
-        findOrCreateSetProvider().add(provider);
+        findOrCreateSetProvider().add(createTypeProvider(interfaceType));
         return this;
     }
 

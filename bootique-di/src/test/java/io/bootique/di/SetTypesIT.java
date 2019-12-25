@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Provider;
 
 import org.junit.Test;
 
@@ -162,6 +164,30 @@ public class SetTypesIT {
         assertThat(set, hasItems(1,2));
     }
 
+    @Test(expected = DIRuntimeException.class)
+    public void testDuplicatedValue() {
+        Injector injector = DIBootstrap.createInjector(
+            b -> b.bindSet(Integer.class).add(1).add(2).add(1)
+        );
+
+        injector.getInstance(Key.getSetOf(Integer.class));
+    }
+
+    @Test(expected = DIRuntimeException.class)
+    public void testDuplicateProviderMethod() {
+        Injector injector = DIBootstrap.createInjector(new DuplicateValueModule());
+        injector.getInstance(Key.getSetOf(Integer.class));
+    }
+
+    @Test
+    public void testProviderBinding() {
+        Injector injector = DIBootstrap.createInjector(new ProviderTypeModule());
+        Set<Integer> integers = injector.getInstance(Key.getSetOf(Integer.class));
+
+        assertEquals(3, integers.size());
+        assertThat(integers, hasItems(1, 2, 3));
+    }
+
     private void assertSetContent(Injector injector) {
         Service service = injector.getInstance(Service.class);
 
@@ -225,6 +251,61 @@ public class SetTypesIT {
             Set<List<? extends Number>> listSet = new HashSet<>();
             listSet.add(Arrays.asList(1, 2, 3));
             return listSet;
+        }
+    }
+
+    static class DuplicateValueModule implements BQModule  {
+
+        @Override
+        public void configure(Binder binder) {
+            binder.bindSet(Integer.class)
+                    .add(Key.get(Integer.class, "1"))
+                    .add(Key.get(Integer.class, "2"))
+                    .add(Key.get(Integer.class, "3"));
+        }
+
+        @Provides
+        @Named("1")
+        Integer getInt1() {
+            return 1;
+        }
+
+        @Provides
+        @Named("2")
+        Integer getInt2() {
+            return 2;
+        }
+
+        @Provides
+        @Named("3")
+        Integer getInt3() {
+            return 1;
+        }
+
+    }
+
+    static class MyIntegerProvider implements Provider<Integer> {
+        @Override
+        public Integer get() {
+            return 3;
+        }
+    }
+
+    interface IntegerProvider extends Provider<Integer> {
+    }
+
+    static class ProviderTypeModule implements BQModule {
+        @Override
+        public void configure(Binder binder) {
+            binder.bindSet(Integer.class)
+                    .addProvider(() -> 1)
+                    .addProvider(IntegerProvider.class)
+                    .addProvider(MyIntegerProvider.class);
+        }
+
+        @Provides
+        IntegerProvider createProvider() {
+            return () -> 2;
         }
     }
 

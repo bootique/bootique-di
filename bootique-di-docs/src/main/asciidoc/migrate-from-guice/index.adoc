@@ -54,7 +54,7 @@ Here is a table that shows a correspondence of interfaces and annotations betwee
 |io.bootique.di.Injector
 
 |com.google.inject.Provider
-|io.bootique.di.Provider
+|javax.inject.Provider
 
 |com.google.inject.Key
 |io.bootique.di.Key
@@ -344,3 +344,33 @@ Collection<Key<T>> keys
 ----
 
 |===
+
+=== Module API
+
+|===
+^|BQModuleProvider 1.x ^|BQModuleProvider 2.x
+
+a|
+[source,java]
+----
+Module module()
+----
+a|
+[source,java]
+----
+BQModule module()
+----
+
+a|
+[source,java]
+----
+BQModule.Builder moduleBuilder()
+----
+a|
+[source,java]
+----
+BQModuleMetadata.Builder moduleBuilder()
+----
+
+|===
+

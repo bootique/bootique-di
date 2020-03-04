@@ -6,9 +6,9 @@ Every binding is defined by its key. In a simple case, binding key based on just
 
 === Service binding
 
-[source,java]
+[source,java,indent=0]
 ----
-binder.bind(Service.class).to(MyService.class);
+include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=Bind1]
 ----
 
 NOTE: using interface is optional, you can directly bind implementation: `binder.bind(MyService.class);`
@@ -16,52 +16,39 @@ NOTE: using interface is optional, you can directly bind implementation: `binder
 In this case, `MyService` will be created by the container. As an alternative,
 you can provide a manually initialized instance of the `MyService`.
 
-[source,java]
+[source,java,indent=0]
 ----
-binder.bind(Service.class).toInstance(new MyService());
+include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=Bind2]
 ----
 
 Or you can use a custom factory for that:
 
-[source,java]
+[source,java,indent=0]
 ----
-binder.bind(Service.class).toProvider(MyServiceProvider.class);
+include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=Bind3]
 ----
 
 Note that `MyServiceProvider` can use injection like any other service managed
 by the DI container:
 
-[source,java]
+[source,java,indent=0]
 ----
-class MyServiceProvider implements Provider<Service> {
-
-    private SomeOtherService otherService;
-
-    @Inject
-    public MyServiceProvider(SomeOtherService otherService) {
-        this.otherService = otherService;
-    }
-
-    @Override
-    public Service get() {
-        return new MyService(otherService.getSomething());
-    }
-}
+include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=ServiceProvider]
 ----
 
 Moreover, `MyServiceProvider` can be configured as a binding itself:
 
-[source,java]
+[source,java,indent=0]
 ----
-binder.bind(Service.class).toProvider(MyServiceProvider.class);
-binder.bind(MyServiceProvider.class).to(MyServiceProviderImpl.class);
+include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=Bind4]
+include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=Bind5]
 ----
 
 The final option of how you can bind service is via a concrete `Provider` implementation:
 
-[source,java]
+[source,java,indent=0]
 ----
-binder.bind(Service.class).toProviderInstance(new MyServiceProvider());
+include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=Bind6]
 ----
 
 === Qualifiers
@@ -70,47 +57,34 @@ Sometimes, it's required to provide several variants of the same service.
 In that case, you need to distinguish them at the injection point.
 For that you can use qualifiers. A simple qualifier is a service name:
 
-[source,java]
+[source,java,indent=0]
 ----
-binder.bind(Service.class, "internal").to(MyInternalService.class);
-binder.bind(Service.class, "public").to(MyPublicService.class);
+include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=Bind7]
+include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=Bind8]
 ----
 
 To inject this service you need to use `javax.inject.Named` annotation at the injection point:
 
-[source,java]
+[source,java,indent=0]
 ----
-class MyWorker {
-    @Inject
-    public MyWorker(@Named("public") Service service) {
-    }
-}
+include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyWorker.java[tags=MyWorker]
 ----
 
 Additionally, you can use custom annotation to achieve this:
 
-[source,java]
+[source,java,indent=0]
 ----
-@Target({ ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD })
-@Retention(RetentionPolicy.RUNTIME)
-@Qualifier
-public @interface Marker {
-}
+include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/Marker.java[tags=Marker]
 ----
 
-[source,java]
+[source,java,indent=0]
 ----
-//...
-binder.bind(String.class, Marker.class).toInstance("My string");
+include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=Bind9]
 ----
 
-[source,java]
+[source,java,indent=0]
 ----
-class MyWorker {
-    @Inject
-    public MyWorker(@Marker String arg) {
-    }
-}
+include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyWorker.java[tags=MyWorker2]
 ----
 
 === Generics
@@ -118,10 +92,9 @@ class MyWorker {
 Due to generics implementation in Java, you can't directly use something like `Service<String>.class` to bind generic classes.
 For these cases, Bootique DI provides helper class `TypeLiteral`.
 
-[source,java]
+[source,java,indent=0]
 ----
-binder.bind(Key.get(new TypeLiteral<Service<String>>{})).to(MyStringService.class);
-binder.bind(Key.get(new TypeLiteral<Service<Integer>>{})).to(MyIntegerService.class);
+include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/generics/Generics.java[tags=Bind]
 ----
 
 NOTE: you don't need additional qualifiers to inject different versions of the generic class.
@@ -131,31 +104,9 @@ NOTE: you don't need additional qualifiers to inject different versions of the g
 Collections can be injected like any other generic class mentioned above. However, there is advanced support for `Set`
 and `Map` injection offered by Binder API.
 
-[source,java]
+[source,java,indent=0]
 ----
-class MyModule implements BQModule {
-
-    @Override
-    public void configure(Binder binder) {
-        binder.bindSet(Service.class)
-            .add(DefaultService.class)
-            .add(Key.get(Service.class, "internal"))
-            .addProvider(ServiceProvider.class);
-    }
-
-    @Provides
-    @Singleton
-    @Named("internal")
-    Service createInternalService() {
-        return new InternalService();
-    }
-
-    @Provides
-    @Singleton
-    Worker createWorker(Set<Service> services) {
-        return new MyWorker(services);
-    }
-}
+include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/collections/MyModule.java[tags=MyModule]
 ----
 
 === Optional binding
@@ -163,18 +114,7 @@ class MyModule implements BQModule {
 In normal cases, Bootique DI will throw an exception if injected service is missing.
 If you want to make some service optional you can create an optional binding for it.
 
-[source,java]
+[source,java,indent=0]
 ----
-class MyModule implements BQModule {
-
-    @Override
-    public void configure(Binder binder) {
-        binder.bindOptional(Service.class);
-    }
-
-    @Provides
-    Worker createWorker(Optional<Service> service) {
-        return new MyWorker(service.orElse(new DefaultService()));
-    }
-}
+include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/optional/MyModule.java[tags=MyModule]
 ----

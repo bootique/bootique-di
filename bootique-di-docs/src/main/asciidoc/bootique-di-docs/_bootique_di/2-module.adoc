@@ -19,22 +19,9 @@ no `@Inject` annotation is required.
 
 Here is an example of such methods.
 
-[source,java]
+[source,java,indent=0]
 ----
-class MyModule implements BQModule {
-    public void configure(Binder binder) {
-    }
-
-    @Provides
-    Service createService() {
-        return new MyService("service");
-    }
-
-    @Provides
-    Worker createWorker(Service service) {
-        return new MyWorker(service);
-    }
-}
+include::../../../../test/java/io/bootique/di/docs/bootiqueDI/module/MyModule.java[tags=Module]
 ----
 
 NOTE: If you don't need to provide anything in a `configure()` method, you can use

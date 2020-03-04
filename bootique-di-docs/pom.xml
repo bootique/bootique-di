@@ -31,6 +31,14 @@
     <artifactId>bootique-di-docs</artifactId>
 
     <packaging>jar</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>io.bootique.di</groupId>
+            <artifactId>bootique-di</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <properties>
         <asciidoctorj.version>2.1.0</asciidoctorj.version>

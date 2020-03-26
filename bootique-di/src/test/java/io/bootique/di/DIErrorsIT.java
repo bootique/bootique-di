@@ -101,6 +101,17 @@ public class DIErrorsIT {
         }
     }
 
+    @Test(expected = DIRuntimeException.class)
+    public void testChainedInjection() {
+        Injector injector = DIBootstrap.createInjector(binder -> {
+            binder.bind(Foo.class).to(ExtendedFoo.class);
+            binder.bind(ExtendedFoo.class).to(FooImplementation.class);
+        });
+
+        injector.getInstance(Foo.class).doIt();
+        fail("Should throw, chained bindings not supported for now.");
+    }
+
     private static class TestModule extends BaseBQModule {
         @Override
         public void configure(Binder binder) {
@@ -196,4 +207,14 @@ public class DIErrorsIT {
     interface Baz  {}
     interface Qux  {}
     interface Quux {}
+
+    interface ExtendedFoo extends Foo {
+    }
+
+    static class FooImplementation implements ExtendedFoo {
+        @Override
+        public String doIt() {
+            return "FooImplementation";
+        }
+    }
 }

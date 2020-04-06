@@ -12,3 +12,4 @@
 * #15 Remove injection of static fields #15
 * #16 Configurable default injection scope
 * #17 Configurable annotation types and provider implementation
+* #32 Support chained bindings 

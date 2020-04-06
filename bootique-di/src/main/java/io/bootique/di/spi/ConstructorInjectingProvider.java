@@ -98,7 +98,7 @@ class ConstructorInjectingProvider<T> implements NamedProvider<T> {
 
         for (int i = 0; i < constructorParameters.length; i++) {
             final int idx = i;
-            injector.trace(() -> "Get argument " + idx + " for %s" + getName());
+            injector.trace(() -> "Get argument " + idx + " for " + getName());
             args[i] = value(constructorParameters[i], genericTypes[i], bindingAnnotations[i]);
         }
 

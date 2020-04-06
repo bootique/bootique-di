@@ -107,13 +107,28 @@ public class DefaultInjectorBindingTest {
     }
 
     @Test
-    public void testKeyBinding() {
+    public void testKeyBindingChain() {
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(Key.get(MockImplementation1.class));
             binder.bind(MockImplementation1.class).to(MockImplementation1.class);
         };
 
         DefaultInjector injector = new DefaultInjector(module);
+
+        MockInterface1 service = injector.getInstance(MockInterface1.class);
+        assertNotNull(service);
+        assertEquals("MyName", service.getName());
+    }
+
+    @Test
+    public void testKeyBindingSimple() {
+        BQModule module = binder -> {
+            binder.bind(MockInterface1.class).to(Key.get(MockImplementation1.class));
+        };
+
+        Injector injector = DIBootstrap.injectorBuilder(module)
+                .enableDynamicBindings()
+                .build();
 
         MockInterface1 service = injector.getInstance(MockInterface1.class);
         assertNotNull(service);

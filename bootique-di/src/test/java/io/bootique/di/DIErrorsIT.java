@@ -57,10 +57,10 @@ public class DIErrorsIT {
             assertTrue(fullMessage, fullMessage.contains("Injecting field 'bar' of class io.bootique.di.DIErrorsIT$FooImpl"));
 
             InjectionTraceElement[] traceElements = ex.getInjectionTrace();
-            assertEquals(7, traceElements.length);
+            assertEquals(9, traceElements.length);
             assertEquals(Key.get(Qux.class), traceElements[0].getBindingKey());
             assertEquals(Key.getMapOf(String.class, Object.class), traceElements[1].getBindingKey());
-            assertEquals(Key.get(Foo.class), traceElements[6].getBindingKey());
+            assertEquals(Key.get(Foo.class), traceElements[8].getBindingKey());
         }
 
         // check that trace is clean for second exception
@@ -94,22 +94,13 @@ public class DIErrorsIT {
             fail("Should throw DIRuntimeException");
         } catch (DIRuntimeException ex) {
             InjectionTraceElement[] traceElements = ex.getInjectionTrace();
-            assertEquals(3, traceElements.length);
-            assertEquals(Key.get(Bar.class), traceElements[0].getBindingKey());
-            assertEquals(Key.get(Baz.class), traceElements[1].getBindingKey());
-            assertEquals(Key.get(Foo.class), traceElements[2].getBindingKey());
+            assertEquals(5, traceElements.length);
+            assertEquals(Key.get(BarImpl2.class),   traceElements[0].getBindingKey());
+            assertEquals(Key.get(Bar.class),        traceElements[1].getBindingKey());
+            assertEquals(Key.get(BazImpl2.class),   traceElements[2].getBindingKey());
+            assertEquals(Key.get(Baz.class),        traceElements[3].getBindingKey());
+            assertEquals(Key.get(Foo.class),        traceElements[4].getBindingKey());
         }
-    }
-
-    @Test(expected = DIRuntimeException.class)
-    public void testChainedInjection() {
-        Injector injector = DIBootstrap.createInjector(binder -> {
-            binder.bind(Foo.class).to(ExtendedFoo.class);
-            binder.bind(ExtendedFoo.class).to(FooImplementation.class);
-        });
-
-        injector.getInstance(Foo.class).doIt();
-        fail("Should throw, chained bindings not supported for now.");
     }
 
     private static class TestModule extends BaseBQModule {

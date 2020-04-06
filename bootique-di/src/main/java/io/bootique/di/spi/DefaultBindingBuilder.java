@@ -29,10 +29,12 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
 
     protected final DefaultInjector injector;
     protected final Key<T> bindingKey;
+    protected volatile Key<? extends T> implementationKey;
 
     DefaultBindingBuilder(Key<T> bindingKey, DefaultInjector injector) {
         this.injector = injector;
         this.bindingKey = bindingKey;
+        this.implementationKey = null;
         initBinding();
     }
 
@@ -48,23 +50,27 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
 
     @Override
     public BindingBuilder<T> to(Class<? extends T> implementation) {
-        Provider<T> provider0 = new ConstructorInjectingProvider<>(implementation, injector);
-        Provider<T> provider1 = new FieldInjectingProvider<>(provider0, injector);
-        if(injector.isMethodInjectionEnabled()) {
-            provider1 = new MethodInjectingProvider<>(provider1, injector);
-        }
-
-        addBinding(provider1);
+        to(Key.get(implementation));
         if(injector.getPredicates().isSingleton(implementation)) {
             inSingletonScope();
         }
-
         return this;
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public BindingBuilder<T> to(Key<? extends T> key) {
-        return toProviderInstance(() -> injector.getProvider(key).get());
+        // init implementation binding to allow override it with other provider
+        // if not overridden, constructor provider will be created at request time.
+        if(!bindingKey.equals(key)) {
+            implementationKey = key;
+            injector.putBinding(implementationKey, (Provider) null);
+            addBinding(() -> {
+                injector.trace(() -> "Target implementation is " + implementationKey);
+                return injector.getProvider(implementationKey).get();
+            });
+        }
+        return this;
     }
 
     @Override
@@ -82,6 +88,7 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
 
     @Override
     public BindingBuilder<T> toProvider(Class<? extends Provider<? extends T>> providerType) {
+        // Actual provider instance is resolved lazily so it could be bound to other implementation
         Provider<Provider<? extends T>> providerProvider = () -> {
             injector.trace(() -> "Resolving custom provider of type " + providerType);
             Binding<? extends Provider<? extends T>> binding = injector.getBinding(Key.get(providerType));
@@ -132,6 +139,9 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
     @Override
     public void in(Scope scope) {
         injector.changeBindingScope(bindingKey, scope);
+        if(implementationKey != null) {
+            injector.changeBindingScope(implementationKey, scope);
+        }
     }
 
     @Override
@@ -147,6 +157,9 @@ class DefaultBindingBuilder<T> implements BindingBuilder<T> {
     @Override
     public void initOnStartup() {
         injector.markForEarlySetup(bindingKey);
+        if(implementationKey != null) {
+            injector.markForEarlySetup(implementationKey);
+        }
     }
 
 }

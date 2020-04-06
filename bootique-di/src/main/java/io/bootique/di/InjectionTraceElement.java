@@ -19,12 +19,15 @@
 
 package io.bootique.di;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
  * Injection stack trace element.
  */
 public class InjectionTraceElement {
+
+    private static final Supplier<String> EMPTY_MESSAGE_SUPPLIER = () -> "";
 
     /**
      * Binding key of this trace element
@@ -34,14 +37,14 @@ public class InjectionTraceElement {
     /**
      * Last human readable message for binding key.
      */
-    private Supplier<String> message;
+    private Supplier<String> message = EMPTY_MESSAGE_SUPPLIER;
 
     public InjectionTraceElement(Key<?> bindingKey) {
         this.bindingKey = bindingKey;
     }
 
     public void setMessage(Supplier<String> messageSupplier) {
-        this.message = messageSupplier;
+        this.message = Objects.requireNonNull(messageSupplier);
     }
 
     public String getMessage() {

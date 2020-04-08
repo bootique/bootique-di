@@ -40,7 +40,7 @@ class DefaultMapBuilder<K, V> extends DICollectionBuilder<Map<K, V>, V> implemen
 
     @Override
     public MapBuilder<K, V> put(K key, Class<? extends V> interfaceType) {
-        Provider<? extends V> provider = createTypeProvider(interfaceType);
+        Provider<? extends V> provider = getByTypeProvider(interfaceType);
         findOrCreateMapProvider().put(key, provider);
         return this;
     }

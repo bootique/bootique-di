@@ -76,36 +76,17 @@ public abstract class DICollectionBuilder<K, E> implements ScopeBuilder {
         return provider4;
     }
 
-    protected <SubT extends E> Provider<SubT> createTypeProvider(Class<SubT> interfaceType) {
-
-        // Create deferred provider to prevent caching the intermediate provider from the Injector.
-        // The actual provider may get overridden after list builder is created.
-        return () -> findOrCreateBinding(interfaceType).getScoped().get();
+    protected <SubT extends E> Provider<SubT> getByTypeProvider(Class<SubT> interfaceType) {
+        return getByKeyProvider(Key.get(interfaceType));
     }
 
     protected <SubT extends E> Provider<SubT> getByKeyProvider(Key<SubT> key) {
-        // Create deferred provider to prevent caching the intermediate provider from the Injector.
+        // Create a deferred provider to prevent caching the intermediate provider from the Injector.
         // The actual provider may get overridden after list builder is created.
-        return () -> injector.getInstance(key);
-    }
-
-    protected <SubT extends E> Binding<SubT> findOrCreateBinding(Class<SubT> interfaceType) {
-
-        Key<SubT> key = Key.get(interfaceType);
-        Binding<SubT> binding = injector.getBinding(key);
-
-        if (binding == null) {
-            Provider<SubT> provider0 = new ConstructorInjectingProvider<>(interfaceType, injector);
-            Provider<SubT> provider1 = new FieldInjectingProvider<>(provider0, injector);
-            if(injector.isMethodInjectionEnabled()) {
-                provider1 = new MethodInjectingProvider<>(provider1, injector);
-            }
-            injector.putBinding(key, provider1);
-
-            binding = injector.getBinding(key);
+        if(!injector.hasProvider(key)) {
+            injector.putBinding(key, (Provider<SubT>) null);
         }
-
-        return binding;
+        return () -> injector.getInstance(key);
     }
 
     @Override

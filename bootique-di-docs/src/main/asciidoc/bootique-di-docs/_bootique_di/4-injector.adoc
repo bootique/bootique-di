@@ -1,20 +1,13 @@
-
 == Injector
 
 `Injector` is an entry point for all DI-managed objects.
 Injector allows getting configured services directly or via a lazy provider.
 You can get services by their binding keys.
 
-[source,java]
+[source,java,indent=0]
 ----
-Injector injector = ...;
-
-// get directly by the class
-Worker worker = injector.getInstance(Worker.class);
-
-// get by the key
-Key<Service<Integer>> serviceKey = Key.get(new TypeLiteral<Service<Integer>>(){});
-Provider<Service<Integer>> serviceProvider = injector.getProvider(serviceKey);
+    Injector injector = ...;
+include::../../../../test/java/io/bootique/di/docs/injector/MyInjector.java[tags=Injector]
 ----
 
 Also, the `Injector` API contains some useful methods for container retrospection.

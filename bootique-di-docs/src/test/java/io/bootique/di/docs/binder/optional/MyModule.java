@@ -1,4 +1,4 @@
-package io.bootique.di.docs.bootiqueDI.binder.optional;
+package io.bootique.di.docs.binder.optional;
 
 import io.bootique.di.BQModule;
 import io.bootique.di.Binder;

@@ -1,4 +1,4 @@
-package io.bootique.di.docs.bootiqueDI.core;
+package io.bootique.di.docs.core;
 
 // tag::Application[]
 import javax.inject.Inject;
@@ -14,8 +14,8 @@ public class Application {
         Injector injector = DIBootstrap
                 .injectorBuilder(
                         binder -> binder.bind(Service.class)
-                                .to(MyService.class) // <!--1-->
-                                .inSingletonScope(),
+                                    .to(MyService.class) // <!--1-->
+                                    .inSingletonScope(),
                         binder -> binder.bind(Worker.class).to(MyWorker.class)
                 )
                 .build();

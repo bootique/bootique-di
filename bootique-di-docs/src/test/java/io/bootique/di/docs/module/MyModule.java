@@ -1,4 +1,4 @@
-package io.bootique.di.docs.bootiqueDI.module;
+package io.bootique.di.docs.module;
 
 import io.bootique.di.BQModule;
 import io.bootique.di.Binder;

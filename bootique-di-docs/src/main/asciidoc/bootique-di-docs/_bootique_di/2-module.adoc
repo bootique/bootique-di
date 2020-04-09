@@ -21,7 +21,7 @@ Here is an example of such methods.
 
 [source,java,indent=0]
 ----
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/module/MyModule.java[tags=Module]
+include::../../../../test/java/io/bootique/di/docs/module/MyModule.java[tags=Module]
 ----
 
 NOTE: If you don't need to provide anything in a `configure()` method, you can use

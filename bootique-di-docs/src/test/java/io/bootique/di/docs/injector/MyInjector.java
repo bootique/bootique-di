@@ -1,4 +1,4 @@
-package io.bootique.di.docs.bootiqueDI.injector;
+package io.bootique.di.docs.injector;
 
 import io.bootique.di.Injector;
 import io.bootique.di.Key;

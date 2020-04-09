@@ -1,4 +1,4 @@
-package io.bootique.di.docs.bootiqueDI.binder;
+package io.bootique.di.docs.binder;
 
 import javax.inject.Inject;
 import javax.inject.Named;

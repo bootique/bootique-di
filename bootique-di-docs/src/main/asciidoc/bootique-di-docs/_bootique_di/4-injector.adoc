@@ -7,7 +7,7 @@ You can get services by their binding keys.
 [source,java,indent=0]
 ----
     Injector injector = ...;
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/injector/MyInjector.java[tags=Injector]
+include::../../../../test/java/io/bootique/di/docs/injector/MyInjector.java[tags=Injector]
 ----
 
 Also, the `Injector` API contains some useful methods for container retrospection.

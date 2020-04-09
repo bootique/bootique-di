@@ -11,7 +11,7 @@ Here is a simple example of Bootique DI usage:
 
 [source,java,indent=0,subs="verbatim,attributes"]
 ----
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/core/Application.java[tags=Application]
+include::../../../../test/java/io/bootique/di/docs/core/Application.java[tags=Application]
 ----
 <1> here we bind a `Service` interface to concrete implementation.
 
@@ -22,5 +22,5 @@ Here is an example of `Provider` injection:
 
 [source,java,indent=0]
 ----
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/core/Application.java[tags=Provider]
+include::../../../../test/java/io/bootique/di/docs/core/Application.java[tags=Provider]
 ----

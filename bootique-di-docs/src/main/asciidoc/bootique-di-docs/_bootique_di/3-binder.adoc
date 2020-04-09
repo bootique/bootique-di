@@ -8,7 +8,7 @@ Every binding is defined by its key. In a simple case, binding key based on just
 
 [source,java,indent=0]
 ----
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=Bind1]
+include::../../../../test/java/io/bootique/di/docs/binder/MyServiceProvider.java[tags=Bind1]
 ----
 
 NOTE: using interface is optional, you can directly bind implementation: `binder.bind(MyService.class);`
@@ -18,14 +18,14 @@ you can provide a manually initialized instance of the `MyService`.
 
 [source,java,indent=0]
 ----
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=Bind2]
+include::../../../../test/java/io/bootique/di/docs/binder/MyServiceProvider.java[tags=Bind2]
 ----
 
 Or you can use a custom factory for that:
 
 [source,java,indent=0]
 ----
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=Bind3]
+include::../../../../test/java/io/bootique/di/docs/binder/MyServiceProvider.java[tags=Bind3]
 ----
 
 Note that `MyServiceProvider` can use injection like any other service managed
@@ -33,22 +33,22 @@ by the DI container:
 
 [source,java,indent=0]
 ----
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=ServiceProvider]
+include::../../../../test/java/io/bootique/di/docs/binder/MyServiceProvider.java[tags=ServiceProvider]
 ----
 
 Moreover, `MyServiceProvider` can be configured as a binding itself:
 
 [source,java,indent=0]
 ----
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=Bind4]
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=Bind5]
+include::../../../../test/java/io/bootique/di/docs/binder/MyServiceProvider.java[tags=Bind4]
+include::../../../../test/java/io/bootique/di/docs/binder/MyServiceProvider.java[tags=Bind5]
 ----
 
 The final option of how you can bind service is via a concrete `Provider` implementation:
 
 [source,java,indent=0]
 ----
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=Bind6]
+include::../../../../test/java/io/bootique/di/docs/binder/MyServiceProvider.java[tags=Bind6]
 ----
 
 === Qualifiers
@@ -59,32 +59,32 @@ For that you can use qualifiers. A simple qualifier is a service name:
 
 [source,java,indent=0]
 ----
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=Bind7]
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=Bind8]
+include::../../../../test/java/io/bootique/di/docs/binder/MyServiceProvider.java[tags=Bind7]
+include::../../../../test/java/io/bootique/di/docs/binder/MyServiceProvider.java[tags=Bind8]
 ----
 
 To inject this service you need to use `javax.inject.Named` annotation at the injection point:
 
 [source,java,indent=0]
 ----
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyWorker.java[tags=MyWorker]
+include::../../../../test/java/io/bootique/di/docs/binder/MyWorker.java[tags=MyWorker]
 ----
 
 Additionally, you can use custom annotation to achieve this:
 
 [source,java,indent=0]
 ----
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/Marker.java[tags=Marker]
+include::../../../../test/java/io/bootique/di/docs/binder/Marker.java[tags=Marker]
 ----
 
 [source,java,indent=0]
 ----
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyServiceProvider.java[tags=Bind9]
+include::../../../../test/java/io/bootique/di/docs/binder/MyServiceProvider.java[tags=Bind9]
 ----
 
 [source,java,indent=0]
 ----
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/MyWorker.java[tags=MyWorker2]
+include::../../../../test/java/io/bootique/di/docs/binder/MyWorker.java[tags=MyWorker2]
 ----
 
 === Generics
@@ -94,7 +94,7 @@ For these cases, Bootique DI provides helper class `TypeLiteral`.
 
 [source,java,indent=0]
 ----
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/generics/Generics.java[tags=Bind]
+include::../../../../test/java/io/bootique/di/docs/binder/generics/Generics.java[tags=Bind]
 ----
 
 NOTE: you don't need additional qualifiers to inject different versions of the generic class.
@@ -106,7 +106,7 @@ and `Map` injection offered by Binder API.
 
 [source,java,indent=0]
 ----
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/collections/MyModule.java[tags=MyModule]
+include::../../../../test/java/io/bootique/di/docs/binder/collections/MyModule.java[tags=MyModule]
 ----
 
 === Optional binding
@@ -116,5 +116,5 @@ If you want to make some service optional you can create an optional binding for
 
 [source,java,indent=0]
 ----
-include::../../../../test/java/io/bootique/di/docs/bootiqueDI/binder/optional/MyModule.java[tags=MyModule]
+include::../../../../test/java/io/bootique/di/docs/binder/optional/MyModule.java[tags=MyModule]
 ----

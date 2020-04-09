@@ -1,7 +1,6 @@
-package io.bootique.di.docs.bootiqueDI.binder;
+package io.bootique.di.docs.binder;
 
 import io.bootique.di.DIBootstrap;
-import io.bootique.di.Key;
 
 import javax.inject.Inject;
 import javax.inject.Provider;

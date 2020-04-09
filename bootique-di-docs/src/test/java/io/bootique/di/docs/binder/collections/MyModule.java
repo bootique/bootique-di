@@ -1,4 +1,4 @@
-package io.bootique.di.docs.bootiqueDI.binder.collections;
+package io.bootique.di.docs.binder.collections;
 
 import io.bootique.di.BQModule;
 import io.bootique.di.Binder;

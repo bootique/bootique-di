@@ -20,6 +20,7 @@ package io.bootique.di;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 
 public class ScopeTest {
@@ -28,6 +29,12 @@ public class ScopeTest {
     public void testDefaultScopeIsSingleton() {
         Injector injector = DIBootstrap.injectorBuilder(binder -> binder.bind(TI.class).to(TC.class)).build();
         assertSame(injector.getInstance(TI.class), injector.getInstance(TI.class));
+    }
+
+    @Test
+    public void testWithoutScope() {
+        Injector injector = DIBootstrap.injectorBuilder(binder -> binder.bind(TI.class).to(TC.class).withoutScope()).build();
+        assertNotSame(injector.getInstance(TI.class), injector.getInstance(TI.class));
     }
 
     public interface TI {

@@ -20,21 +20,37 @@ package io.bootique.di;
 
 import org.junit.Test;
 
+import javax.inject.Singleton;
+
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 
 public class ScopeTest {
 
     @Test
-    public void testDefaultScopeIsSingleton() {
+    public void testImplicitScope() {
         Injector injector = DIBootstrap.injectorBuilder(binder -> binder.bind(TI.class).to(TC.class)).build();
         assertSame(injector.getInstance(TI.class), injector.getInstance(TI.class));
     }
 
     @Test
-    public void testWithoutScope() {
+    public void testImplicitScope_WithoutScope() {
         Injector injector = DIBootstrap.injectorBuilder(binder -> binder.bind(TI.class).to(TC.class).withoutScope()).build();
         assertNotSame(injector.getInstance(TI.class), injector.getInstance(TI.class));
+    }
+
+    @Test
+    public void testDefaultNoScope() {
+        Injector injector = DIBootstrap.injectorBuilder(binder -> binder.bind(TI.class).to(TC.class))
+                .defaultNoScope().build();
+        assertNotSame(injector.getInstance(TI.class), injector.getInstance(TI.class));
+    }
+
+    @Test
+    public void testDefaultNoScope_SingletonAnnotation() {
+        Injector injector = DIBootstrap.injectorBuilder(binder -> binder.bind(TI.class).to(TCSingleton.class))
+                .defaultNoScope().build();
+        assertSame(injector.getInstance(TI.class), injector.getInstance(TI.class));
     }
 
     public interface TI {
@@ -42,6 +58,11 @@ public class ScopeTest {
     }
 
     public static class TC implements TI {
+
+    }
+
+    @Singleton
+    public static class TCSingleton implements TI {
 
     }
 }

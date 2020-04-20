@@ -29,27 +29,35 @@ public class ScopeTest {
 
     @Test
     public void testImplicitScope() {
-        Injector injector = DIBootstrap.injectorBuilder(binder -> binder.bind(TI.class).to(TC.class)).build();
+        Injector injector = DIBootstrap
+                .injectorBuilder(binder -> binder.bind(TI.class).to(TC.class))
+                .build();
         assertSame(injector.getInstance(TI.class), injector.getInstance(TI.class));
     }
 
     @Test
     public void testImplicitScope_WithoutScope() {
-        Injector injector = DIBootstrap.injectorBuilder(binder -> binder.bind(TI.class).to(TC.class).withoutScope()).build();
+        Injector injector = DIBootstrap
+                .injectorBuilder(binder -> binder.bind(TI.class).to(TC.class).withoutScope())
+                .build();
         assertNotSame(injector.getInstance(TI.class), injector.getInstance(TI.class));
     }
 
     @Test
     public void testDefaultNoScope() {
-        Injector injector = DIBootstrap.injectorBuilder(binder -> binder.bind(TI.class).to(TC.class))
-                .defaultNoScope().build();
+        Injector injector = DIBootstrap
+                .injectorBuilder(binder -> binder.bind(TI.class).to(TC.class))
+                .defaultNoScope()
+                .build();
         assertNotSame(injector.getInstance(TI.class), injector.getInstance(TI.class));
     }
 
     @Test
     public void testDefaultNoScope_SingletonAnnotation() {
-        Injector injector = DIBootstrap.injectorBuilder(binder -> binder.bind(TI.class).to(TCSingleton.class))
-                .defaultNoScope().build();
+        Injector injector = DIBootstrap
+                .injectorBuilder(binder -> binder.bind(TI.class).to(TCSingleton.class))
+                .defaultNoScope()
+                .build();
         assertSame(injector.getInstance(TI.class), injector.getInstance(TI.class));
     }
 

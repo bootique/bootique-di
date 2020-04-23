@@ -54,8 +54,6 @@ public class BootiqueTestSuite {
 
         return DIBootstrap.injectorBuilder(module)
                 .enableMethodInjection() // method injection disabled by default
-                .enableDynamicBindings() // create objects on-demand
-                .defaultNoScope()        // default scope is singleton
                 .build();
     }
 

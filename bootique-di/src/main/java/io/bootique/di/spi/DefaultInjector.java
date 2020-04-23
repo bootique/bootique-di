@@ -47,12 +47,12 @@ import java.util.function.Supplier;
 public class DefaultInjector implements Injector {
 
     public enum Options {
-        NO_SCOPE_BY_DEFAULT,
+        SINGLETON_SCOPE_BY_DEFAULT,
         DECLARED_OVERRIDE_ONLY,
-        ENABLE_DYNAMIC_BINDINGS,
+        DISABLE_DYNAMIC_BINDINGS,
         ENABLE_METHOD_INJECTION,
         DISABLE_TRACE,
-        ENABLE_PROXY
+        DISABLE_PROXY
     }
 
     private final DefaultScope singletonScope;
@@ -86,17 +86,17 @@ public class DefaultInjector implements Injector {
 
         this.singletonScope = new DefaultScope();
         this.noScope = NoScope.INSTANCE;
-        if(options.contains(Options.NO_SCOPE_BY_DEFAULT)) {
-            this.defaultScope = noScope;
-        } else {
+        if(options.contains(Options.SINGLETON_SCOPE_BY_DEFAULT)) {
             this.defaultScope = singletonScope;
+        } else {
+            this.defaultScope = noScope;
         }
 
         this.allowOverride = !options.contains(Options.DECLARED_OVERRIDE_ONLY);
-        this.allowDynamicBinding = options.contains(Options.ENABLE_DYNAMIC_BINDINGS);
+        this.allowDynamicBinding = !options.contains(Options.DISABLE_DYNAMIC_BINDINGS);
         this.allowMethodInjection = options.contains(Options.ENABLE_METHOD_INJECTION);
         this.injectionTraceEnabled = !options.contains(Options.DISABLE_TRACE);
-        this.allowProxyCreation = options.contains(Options.ENABLE_PROXY);
+        this.allowProxyCreation = !options.contains(Options.DISABLE_PROXY);
 
         this.bindings = new ConcurrentHashMap<>();
         this.decorations = new ConcurrentHashMap<>();

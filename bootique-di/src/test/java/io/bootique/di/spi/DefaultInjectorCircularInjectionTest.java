@@ -20,8 +20,10 @@
 
 package io.bootique.di.spi;
 
+import io.bootique.di.DIBootstrap;
 import io.bootique.di.DIRuntimeException;
 import io.bootique.di.BQModule;
+import io.bootique.di.Injector;
 import io.bootique.di.mock.MockImplementation1_DepOn2;
 import io.bootique.di.mock.MockImplementation1_DepOn2Constructor;
 import io.bootique.di.mock.MockImplementation1_DepOn2Provider;
@@ -47,7 +49,7 @@ public class DefaultInjectorCircularInjectionTest {
             binder.bind(MockInterface2.class).to(MockImplementation2.class);
         };
 
-        DefaultInjector injector = new DefaultInjector(module);
+        Injector injector = DIBootstrap.injectorBuilder(module).disableProxyCreation().build();
 
         try {
             injector.getInstance(MockInterface1.class);
@@ -86,7 +88,7 @@ public class DefaultInjectorCircularInjectionTest {
                     MockImplementation2_Constructor.class);
         };
 
-        DefaultInjector injector = new DefaultInjector(module);
+        Injector injector = DIBootstrap.injectorBuilder(module).disableProxyCreation().build();
 
         try {
             injector.getInstance(MockInterface1.class);

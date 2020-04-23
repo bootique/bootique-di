@@ -22,6 +22,8 @@ package io.bootique.di.spi;
 
 import io.bootique.di.BeforeScopeEnd;
 import io.bootique.di.BQModule;
+import io.bootique.di.DIBootstrap;
+import io.bootique.di.Injector;
 import io.bootique.di.mock.MockImplementation1;
 import io.bootique.di.mock.MockImplementation1_EventAnnotations;
 import io.bootique.di.mock.MockImplementation1_Provider;
@@ -37,7 +39,7 @@ public class DefaultInjectorScopeTest {
 
         BQModule module = binder -> binder.bind(MockInterface1.class).to(MockImplementation1.class);
 
-        DefaultInjector injector = new DefaultInjector(module);
+        Injector injector = DIBootstrap.injectorBuilder(module).defaultSingletonScope().build();
 
         MockInterface1 instance1 = injector.getInstance(MockInterface1.class);
         MockInterface1 instance2 = injector.getInstance(MockInterface1.class);

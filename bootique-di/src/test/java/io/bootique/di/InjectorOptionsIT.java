@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.*;
 
 public class InjectorOptionsIT {
@@ -31,6 +32,7 @@ public class InjectorOptionsIT {
     @Test(expected = DIRuntimeException.class)
     public void testDynamicBindingDisabled() {
         Injector injector = DIBootstrap.injectorBuilder(b -> b.bind(Service.class).to(Service_Impl1.class))
+                .disableDynamicBindings()
                 .build();
 
         // no binding of consumer, should throw
@@ -40,7 +42,6 @@ public class InjectorOptionsIT {
     @Test
     public void testDynamicBindingEnabled() {
         Injector injector = DIBootstrap.injectorBuilder(b -> b.bind(Service.class).to(Service_Impl1.class))
-                .enableDynamicBindings()
                 .build();
 
         // no binding of consumer, but dynamic is allowed
@@ -51,6 +52,7 @@ public class InjectorOptionsIT {
     @Test
     public void testSingletonScope() {
         Injector injector = DIBootstrap.injectorBuilder(b -> b.bind(Service.class).to(Service_Impl1.class))
+                .defaultSingletonScope()
                 .build();
 
         // no binding of consumer, but dynamic is allowed
@@ -65,7 +67,6 @@ public class InjectorOptionsIT {
     @Test
     public void testNoScopeScope() {
         Injector injector = DIBootstrap.injectorBuilder(b -> b.bind(Service.class).to(Service_Impl1.class))
-                .defaultNoScope()
                 .build();
 
         // no binding of consumer, but dynamic is allowed

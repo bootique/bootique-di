@@ -57,8 +57,8 @@ public class ConcurrentInjectorIT {
     @Test
     public void testConstructorProvider_SingletonScope() throws Exception {
         Injector injector = DIBootstrap.createInjector(binder -> {
-            binder.bindSet(String.class).add("1").add("2").add("3");
-            binder.bind(Foo.class).to(FooImplSleep.class);
+            binder.bindSet(String.class).add("1").add("2").add("3").inSingletonScope();
+            binder.bind(Foo.class).to(FooImplSleep.class).inSingletonScope();
         });
 
         parallelTest(1000, () ->
@@ -68,8 +68,8 @@ public class ConcurrentInjectorIT {
     @Test
     public void testImplementationBinding() throws Exception {
         Injector injector = DIBootstrap.createInjector(binder -> {
-            binder.bindSet(String.class).add("1").add("2").add("3");
-            binder.bind(FooImplSleep.class);
+            binder.bindSet(String.class).add("1").add("2").add("3").inSingletonScope();
+            binder.bind(FooImplSleep.class).inSingletonScope();
         });
 
         parallelTest(1000, () ->
@@ -78,9 +78,10 @@ public class ConcurrentInjectorIT {
 
     @Test
     public void testDynamicBinding() throws Exception {
-        Injector injector = DIBootstrap.injectorBuilder(binder -> {
-            binder.bindSet(String.class).add("1").add("2").add("3");
-        }).enableDynamicBindings().build();
+        Injector injector = DIBootstrap
+                .injectorBuilder(binder -> binder.bindSet(String.class).add("1").add("2").add("3"))
+                .defaultSingletonScope()
+                .build();
 
         parallelTest(1000, () ->
                 assertEquals(4, injector.getInstance(Key.get(FooImplSleep.class)).getStrings().size()));

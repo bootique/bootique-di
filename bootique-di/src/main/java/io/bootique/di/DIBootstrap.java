@@ -101,8 +101,8 @@ public class DIBootstrap {
          *
          * @return this
          */
-        public InjectorBuilder enableDynamicBindings() {
-            this.options.add(DefaultInjector.Options.ENABLE_DYNAMIC_BINDINGS);
+        public InjectorBuilder disableDynamicBindings() {
+            this.options.add(DefaultInjector.Options.DISABLE_DYNAMIC_BINDINGS);
             return this;
         }
 
@@ -118,12 +118,12 @@ public class DIBootstrap {
         }
 
         /**
-         * Create unscoped bindings by default, otherwise singleton scope will be used.
+         * Use singleton scope for bindings by default, otherwise no scope will be used.
          *
          * @return this
          */
-        public InjectorBuilder defaultNoScope() {
-            this.options.add(DefaultInjector.Options.NO_SCOPE_BY_DEFAULT);
+        public InjectorBuilder defaultSingletonScope() {
+            this.options.add(DefaultInjector.Options.SINGLETON_SCOPE_BY_DEFAULT);
             return this;
         }
 
@@ -150,8 +150,13 @@ public class DIBootstrap {
             return this;
         }
 
-        public InjectorBuilder allowProxyCreation() {
-            options.add(DefaultInjector.Options.ENABLE_PROXY);
+        /**
+         * Disable auto-proxy creation for simple circular dependencies resolution
+         *
+         * @return this
+         */
+        public InjectorBuilder disableProxyCreation() {
+            options.add(DefaultInjector.Options.DISABLE_PROXY);
             return this;
         }
 

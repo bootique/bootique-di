@@ -28,30 +28,29 @@ import static org.junit.Assert.assertEquals;
 public class CircularDependencyIT {
 
     @Test
-    public void testProxyCreation() throws Exception {
+    public void testProxyCreation() {
         Injector injector = DIBootstrap.injectorBuilder(binder -> {
             binder.bind(Service1.class).to(Service1Impl1.class).inSingletonScope();
             binder.bind(Service2.class).to(Service2Impl1.class).inSingletonScope();
-        }).allowProxyCreation().build();
+        }).build();
 
         Service2 service2 = injector.getInstance(Service2.class);
         assertEquals("service1 + service2.2.2", service2.exec());
     }
 
     @Test(expected = DIRuntimeException.class)
-    public void testProxyCreationFailure() throws Exception {
+    public void testProxyCreationFailure() {
         Injector injector = DIBootstrap.injectorBuilder(binder -> {
             binder.bind(Service3.class).inSingletonScope();
             binder.bind(Service4.class).inSingletonScope();
-        }).allowProxyCreation().build();
+        }).build();
 
         injector.getInstance(Service3.class);
     }
 
     @Test(expected = DIRuntimeException.class)
-    public void testProxyCreationProviderMethodFailure() throws Exception {
-        Injector injector = DIBootstrap.injectorBuilder(new CircularModule())
-                .allowProxyCreation().build();
+    public void testProxyCreationProviderMethodFailure() {
+        Injector injector = DIBootstrap.injectorBuilder(new CircularModule()).build();
 
         injector.getInstance(Service1.class);
     }

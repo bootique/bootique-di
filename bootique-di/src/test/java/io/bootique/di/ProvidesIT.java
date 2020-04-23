@@ -103,7 +103,8 @@ public class ProvidesIT {
 
     @Test(expected = DIRuntimeException.class)
     public void testProvidesCycle() {
-        Injector injector = DIBootstrap.createInjector(new TestModule_CircularDependency());
+        Injector injector = DIBootstrap.injectorBuilder(new TestModule_CircularDependency())
+                .disableProxyCreation().build();
         injector.getInstance(Service1.class);
     }
 

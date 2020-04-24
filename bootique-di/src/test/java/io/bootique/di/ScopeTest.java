@@ -28,7 +28,7 @@ import static org.junit.Assert.assertSame;
 public class ScopeTest {
 
     @Test
-    public void testImplicitScope() {
+    public void testDefaultSingletonScope() {
         Injector injector = DIBootstrap
                 .injectorBuilder(binder -> binder.bind(TI.class).to(TC.class))
                 .defaultSingletonScope()
@@ -37,15 +37,34 @@ public class ScopeTest {
     }
 
     @Test
-    public void testImplicitScope_WithoutScope() {
+    public void testDefaultSingletonScope_WithoutScope() {
         Injector injector = DIBootstrap
                 .injectorBuilder(binder -> binder.bind(TI.class).to(TC.class).withoutScope())
+                .defaultSingletonScope()
                 .build();
         assertNotSame(injector.getInstance(TI.class), injector.getInstance(TI.class));
     }
 
     @Test
-    public void testDefaultNoScope() {
+    public void testDefaultSingletonScope_NoScopeMethod() {
+        Injector injector = DIBootstrap
+                .injectorBuilder(new DefaultModule())
+                .defaultSingletonScope()
+                .build();
+        assertSame(injector.getInstance(TI.class), injector.getInstance(TI.class));
+    }
+
+    @Test
+    public void testDefaultSingletonScope_SingletonScopeMethod() {
+        Injector injector = DIBootstrap
+                .injectorBuilder(new SingletonModule())
+                .defaultSingletonScope()
+                .build();
+        assertSame(injector.getInstance(TI.class), injector.getInstance(TI.class));
+    }
+
+    @Test
+    public void testImplicitNoScope() {
         Injector injector = DIBootstrap
                 .injectorBuilder(binder -> binder.bind(TI.class).to(TC.class))
                 .build();
@@ -53,9 +72,25 @@ public class ScopeTest {
     }
 
     @Test
-    public void testDefaultNoScope_SingletonAnnotation() {
+    public void testImplicitNoScope_SingletonAnnotation() {
         Injector injector = DIBootstrap
                 .injectorBuilder(binder -> binder.bind(TI.class).to(TCSingleton.class))
+                .build();
+        assertSame(injector.getInstance(TI.class), injector.getInstance(TI.class));
+    }
+
+    @Test
+    public void testImplicitNoScope_NoScopeMethod() {
+        Injector injector = DIBootstrap
+                .injectorBuilder(new DefaultModule())
+                .build();
+        assertNotSame(injector.getInstance(TI.class), injector.getInstance(TI.class));
+    }
+
+    @Test
+    public void testImplicitNoScope_SingletonMethod() {
+        Injector injector = DIBootstrap
+                .injectorBuilder(new SingletonModule())
                 .build();
         assertSame(injector.getInstance(TI.class), injector.getInstance(TI.class));
     }
@@ -71,5 +106,20 @@ public class ScopeTest {
     @Singleton
     public static class TCSingleton implements TI {
 
+    }
+
+    public static class DefaultModule extends BaseBQModule {
+        @Provides
+        TI create() {
+            return new TC();
+        }
+    }
+
+    public static class SingletonModule extends BaseBQModule {
+        @Provides
+        @Singleton
+        TI create() {
+            return new TC();
+        }
     }
 }

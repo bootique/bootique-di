@@ -80,6 +80,14 @@ public class ScopeTest {
     }
 
     @Test
+    public void testImplicitNoScope_SingletonAnnotationKey() {
+        Injector injector = DIBootstrap
+                .injectorBuilder(binder -> binder.bind(TI.class).to(Key.get(TCSingleton.class)))
+                .build();
+        assertSame(injector.getInstance(TI.class), injector.getInstance(TI.class));
+    }
+
+    @Test
     public void testImplicitNoScope_NoScopeMethod() {
         Injector injector = DIBootstrap
                 .injectorBuilder(new DefaultModule())

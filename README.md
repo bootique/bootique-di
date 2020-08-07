@@ -38,3 +38,8 @@ individual parameters if needed.
 * Turned off module auto-loading. This will be area of responsibility for
 Bootique core.
 * Supporting provider methods annotated with `@Provides`.
+
+## Dev notes
+
+[Customization options](https://github.com/bootique/bootique-di/blob/master/bootique-di-internals.md)
+[Migration from Guice](https://github.com/bootique/bootique-di/blob/master/bootique-di-vs-guice.md)

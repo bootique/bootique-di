@@ -41,5 +41,5 @@ Bootique core.
 
 ## Dev notes
 
-[Customization options](https://github.com/bootique/bootique-di/blob/master/bootique-di-internals.md)
-[Migration from Guice](https://github.com/bootique/bootique-di/blob/master/bootique-di-vs-guice.md)
+- [Customization options](https://github.com/bootique/bootique-di/blob/master/bootique-di-internals.md)
+- [Migration from Guice](https://github.com/bootique/bootique-di/blob/master/bootique-di-vs-guice.md)

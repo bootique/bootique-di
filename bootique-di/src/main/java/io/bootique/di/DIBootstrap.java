@@ -96,8 +96,9 @@ public class DIBootstrap {
         }
 
         /**
-         * Enable dynamic (i.e. not registered directly in binder) binding resolution.
-         * Disabled by default, injector will throw in case of unknown binding.
+         * Disable dynamic (i.e. not registered directly in binder) binding resolution.
+         * If disabled, Injector will throw in case of the unknown binding.
+         * Enabled by default.
          *
          * @return this
          */

@@ -1,4 +1,4 @@
-## 0.1
+## 2.0.M1
 
 * #1 Support for provider methods in modules
 * #2 Support unordered collections (sets)

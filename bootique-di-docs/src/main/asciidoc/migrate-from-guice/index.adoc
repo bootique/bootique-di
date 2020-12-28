@@ -214,7 +214,7 @@ multibinder.addBinding()
 a|
 [source,java]
 ----
-setbinder.add(new MyService())
+setbinder.addInstance(new MyService())
 ----
 
 a|

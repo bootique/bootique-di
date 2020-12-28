@@ -35,8 +35,8 @@ public class MapTypesIT {
     @Test
     public void testByKeyAndValueTypeMapInjection() {
         Injector injector = DIBootstrap.createInjector(serviceModule1, b -> {
-            b.bindMap(Integer.class, String.class).put(1, "1").put(2, "2");
-            b.bindMap(String.class, String.class).put("3", "3").put("4", "4");
+            b.bindMap(Integer.class, String.class).putInstance(1, "1").putInstance(2, "2");
+            b.bindMap(String.class, String.class).putInstance("3", "3").putInstance("4", "4");
         });
 
         assertMapContent(injector);
@@ -45,8 +45,8 @@ public class MapTypesIT {
     @Test
     public void testByGenericTypeMapInjection() {
         Injector injector = DIBootstrap.createInjector(serviceModule1, b -> {
-            b.bindMap(TypeLiteral.of(Integer.class), TypeLiteral.of(String.class)).put(1, "1").put(2, "2");
-            b.bindMap(TypeLiteral.of(String.class), TypeLiteral.of(String.class)).put("3", "3").put("4", "4");
+            b.bindMap(TypeLiteral.of(Integer.class), TypeLiteral.of(String.class)).putInstance(1, "1").putInstance(2, "2");
+            b.bindMap(TypeLiteral.of(String.class), TypeLiteral.of(String.class)).putInstance("3", "3").putInstance("4", "4");
         });
 
         assertMapContent(injector);
@@ -81,7 +81,7 @@ public class MapTypesIT {
         Injector injector = DIBootstrap.createInjector(b -> {
             b.bind(Service.class).to(Service_Impl2.class);
             b.bindMap(new TypeLiteral<String>(){}, new TypeLiteral<List<? extends Number>>(){})
-                    .put("1", Arrays.asList(1, 2, 3));
+                    .putInstance("1", Arrays.asList(1, 2, 3));
         });
 
         Service service = injector.getInstance(Service.class);

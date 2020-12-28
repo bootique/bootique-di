@@ -41,7 +41,7 @@ class DefaultSetBuilder<T> extends DICollectionBuilder<Set<T>, T> implements Set
     }
 
     @Override
-    public SetBuilder<T> add(T value) {
+    public SetBuilder<T> addInstance(T value) {
         findOrCreateSetProvider().add(createInstanceProvider(value));
         return this;
     }
@@ -53,7 +53,7 @@ class DefaultSetBuilder<T> extends DICollectionBuilder<Set<T>, T> implements Set
     }
 
     @Override
-    public SetBuilder<T> addProvider(Provider<? extends T> provider) {
+    public SetBuilder<T> addProviderInstance(Provider<? extends T> provider) {
         findOrCreateSetProvider().add(provider);
         return this;
     }
@@ -65,7 +65,7 @@ class DefaultSetBuilder<T> extends DICollectionBuilder<Set<T>, T> implements Set
     }
 
     @Override
-    public SetBuilder<T> addAll(Collection<T> values) {
+    public SetBuilder<T> addInstances(Collection<T> values) {
         SetProvider<T> provider = findOrCreateSetProvider();
         for (T object : values) {
             provider.add(createInstanceProvider(object));

@@ -184,7 +184,7 @@ public class DefaultInjectorInjectionTest {
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1_MapConfiguration.class);
             binder.bindMap(String.class, Object.class,"xyz")
-                    .put("x", "xvalue").put("y", "yvalue").put("x", "xvalue1");
+                    .putInstance("x", "xvalue").putInstance("y", "yvalue").putInstance("x", "xvalue1");
         };
 
         DefaultInjector injector = new DefaultInjector(module);
@@ -199,7 +199,7 @@ public class DefaultInjectorInjectionTest {
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1_MapWithWildcards.class);
             binder.bindMap(new TypeLiteral<String>(){}, new TypeLiteral<Class<?>>(){})
-                    .put("x", String.class).put("y", Integer.class).put("z", Object.class);
+                    .putInstance("x", String.class).putInstance("y", Integer.class).putInstance("z", Object.class);
         };
         DefaultInjector injector = new DefaultInjector(module);
 
@@ -220,9 +220,9 @@ public class DefaultInjectorInjectionTest {
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1_MapConfiguration.class);
             // bind 1
-            binder.bindMap(String.class, Object.class,"xyz").put("x", "xvalue").put("y", "yvalue");
+            binder.bindMap(String.class, Object.class,"xyz").putInstance("x", "xvalue").putInstance("y", "yvalue");
             // second binding attempt to the same map...
-            binder.bindMap(String.class, Object.class,"xyz").put("z", "zvalue").put("x", "xvalue1");
+            binder.bindMap(String.class, Object.class,"xyz").putInstance("z", "zvalue").putInstance("x", "xvalue1");
         };
 
         DefaultInjector injector = new DefaultInjector(module);

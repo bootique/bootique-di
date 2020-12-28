@@ -1,3 +1,7 @@
+## 2.0.B1
+
+* #35 SetBuilder/MapBuilder do not allow binding values of type Class
+
 ## 2.0.M1
 
 * #1 Support for provider methods in modules

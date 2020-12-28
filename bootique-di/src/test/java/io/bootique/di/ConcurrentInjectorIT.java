@@ -36,7 +36,7 @@ public class ConcurrentInjectorIT {
     @Test
     public void testListProvider_NoScope() throws Exception {
         Injector injector = DIBootstrap.createInjector(binder -> {
-            binder.bindSet(String.class).add("1").add("2").add("3").withoutScope();
+            binder.bindSet(String.class).addInstance("1").addInstance("2").addInstance("3").withoutScope();
         });
 
         parallelTest(10000, () ->
@@ -46,7 +46,7 @@ public class ConcurrentInjectorIT {
     @Test
     public void testConstructorProvider_NoScope() throws Exception {
         Injector injector = DIBootstrap.createInjector(binder -> {
-            binder.bindSet(String.class).add("1").add("2").add("3").withoutScope();
+            binder.bindSet(String.class).addInstance("1").addInstance("2").addInstance("3").withoutScope();
             binder.bind(Foo.class).to(FooImpl.class).withoutScope();
         });
 
@@ -57,7 +57,7 @@ public class ConcurrentInjectorIT {
     @Test
     public void testConstructorProvider_SingletonScope() throws Exception {
         Injector injector = DIBootstrap.createInjector(binder -> {
-            binder.bindSet(String.class).add("1").add("2").add("3").inSingletonScope();
+            binder.bindSet(String.class).addInstance("1").addInstance("2").addInstance("3").inSingletonScope();
             binder.bind(Foo.class).to(FooImplSleep.class).inSingletonScope();
         });
 
@@ -68,7 +68,7 @@ public class ConcurrentInjectorIT {
     @Test
     public void testImplementationBinding() throws Exception {
         Injector injector = DIBootstrap.createInjector(binder -> {
-            binder.bindSet(String.class).add("1").add("2").add("3").inSingletonScope();
+            binder.bindSet(String.class).addInstance("1").addInstance("2").addInstance("3").inSingletonScope();
             binder.bind(FooImplSleep.class).inSingletonScope();
         });
 
@@ -79,7 +79,7 @@ public class ConcurrentInjectorIT {
     @Test
     public void testDynamicBinding() throws Exception {
         Injector injector = DIBootstrap
-                .injectorBuilder(binder -> binder.bindSet(String.class).add("1").add("2").add("3"))
+                .injectorBuilder(binder -> binder.bindSet(String.class).addInstance("1").addInstance("2").addInstance("3"))
                 .defaultSingletonScope()
                 .build();
 

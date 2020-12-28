@@ -46,7 +46,7 @@ class DefaultMapBuilder<K, V> extends DICollectionBuilder<Map<K, V>, V> implemen
     }
 
     @Override
-    public MapBuilder<K, V> put(K key, V value) {
+    public MapBuilder<K, V> putInstance(K key, V value) {
         findOrCreateMapProvider().put(key, createInstanceProvider(value));
         return this;
     }
@@ -58,7 +58,7 @@ class DefaultMapBuilder<K, V> extends DICollectionBuilder<Map<K, V>, V> implemen
     }
 
     @Override
-    public MapBuilder<K, V> putProvider(K key, Provider<? extends V> value) throws DIRuntimeException {
+    public MapBuilder<K, V> putProviderInstance(K key, Provider<? extends V> value) throws DIRuntimeException {
         findOrCreateMapProvider().put(key, value);
         return this;
     }
@@ -70,7 +70,7 @@ class DefaultMapBuilder<K, V> extends DICollectionBuilder<Map<K, V>, V> implemen
     }
 
     @Override
-    public MapBuilder<K, V> putAll(Map<K, V> map) {
+    public MapBuilder<K, V> putInstances(Map<K, V> map) {
 
         MapProvider<K, V> provider = findOrCreateMapProvider();
 

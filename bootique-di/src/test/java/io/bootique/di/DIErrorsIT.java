@@ -109,7 +109,7 @@ public class DIErrorsIT {
             binder.bind(Foo.class).to(FooImpl.class);
             binder.bind(Bar.class).toProvider(BarProvider.class);
             binder.bindMap(String.class, Object.class)
-                    .put("key1", new Object())
+                    .putInstance("key1", new Object())
                     .put("key2", Key.get(Qux.class));
             binder.bind(Quux.class).to(QuuxImpl.class);
             binder.bind(QuuxConsumer.class);

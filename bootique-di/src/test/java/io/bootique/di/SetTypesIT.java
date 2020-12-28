@@ -19,26 +19,27 @@
 
 package io.bootique.di;
 
+import org.junit.Test;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Provider;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Provider;
-
-import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class SetTypesIT {
 
     @Test
     public void testByKeyAndValueTypeMapInjection() {
         Injector injector = DIBootstrap.createInjector(serviceModule1, b -> {
-            b.bindSet(Integer.class).add(1).add(2);
-            b.bindSet(String.class).add("3").add("4");
+            b.bindSet(Integer.class).addInstance(1).addInstance(2);
+            b.bindSet(String.class).addInstance("3").addInstance("4");
         });
 
         assertSetContent(injector);
@@ -47,8 +48,8 @@ public class SetTypesIT {
     @Test
     public void testByGenericTypeMapInjection() {
         Injector injector = DIBootstrap.createInjector(serviceModule1, b -> {
-            b.bindSet(TypeLiteral.of(Integer.class)).add(1).add(2);
-            b.bindSet(TypeLiteral.of(String.class)).add("3").add("4");
+            b.bindSet(TypeLiteral.of(Integer.class)).addInstance(1).addInstance(2);
+            b.bindSet(TypeLiteral.of(String.class)).addInstance("3").addInstance("4");
         });
 
         assertSetContent(injector);
@@ -83,7 +84,7 @@ public class SetTypesIT {
         Injector injector = DIBootstrap.createInjector(b -> {
             b.bind(Service.class).to(Service_Impl2.class);
             b.bindSet(new TypeLiteral<List<? extends Number>>() {})
-                    .add(Arrays.asList(1, 2, 3));
+                    .addInstance(Arrays.asList(1, 2, 3));
         });
 
         Service service = injector.getInstance(Service.class);
@@ -110,7 +111,7 @@ public class SetTypesIT {
     @Test(expected = DIRuntimeException.class)
     public void testDuplicateValue() {
         Injector injector = DIBootstrap.createInjector(b ->
-                b.bindSet(TypeLiteral.of(Integer.class)).add(1).add(2).add(2));
+                b.bindSet(TypeLiteral.of(Integer.class)).addInstance(1).addInstance(2).addInstance(2));
 
         injector.getInstance(Key.get(TypeLiteral.setOf(Integer.class)));
     }
@@ -132,7 +133,7 @@ public class SetTypesIT {
     @Test
     public void testAddAllBinding() {
         Injector injector = DIBootstrap.createInjector(b ->
-                b.bindSet(TypeLiteral.of(Integer.class)).add(1).addAll(Arrays.asList(2,3,4)).add(5));
+                b.bindSet(TypeLiteral.of(Integer.class)).addInstance(1).addInstances(Arrays.asList(2,3,4)).addInstance(5));
 
         Set<Integer> set = injector.getInstance(Key.get(TypeLiteral.setOf(Integer.class)));
         assertThat(set, hasItems(1,2,3,4,5));
@@ -141,8 +142,8 @@ public class SetTypesIT {
     @Test
     public void testContinueBinding() {
         Injector injector = DIBootstrap.createInjector(
-                b -> b.bindSet(TypeLiteral.of(Integer.class)).add(1).add(2),
-                b -> b.bindSet(TypeLiteral.of(Integer.class)).add(3).add(4)
+                b -> b.bindSet(TypeLiteral.of(Integer.class)).addInstance(1).addInstance(2),
+                b -> b.bindSet(TypeLiteral.of(Integer.class)).addInstance(3).addInstance(4)
         );
 
         Set<Integer> set = injector.getInstance(Key.get(TypeLiteral.setOf(Integer.class)));
@@ -167,7 +168,7 @@ public class SetTypesIT {
     @Test(expected = DIRuntimeException.class)
     public void testDuplicatedValue() {
         Injector injector = DIBootstrap.createInjector(
-            b -> b.bindSet(Integer.class).add(1).add(2).add(1)
+            b -> b.bindSet(Integer.class).addInstance(1).addInstance(2).addInstance(1)
         );
 
         injector.getInstance(Key.getSetOf(Integer.class));
@@ -298,7 +299,7 @@ public class SetTypesIT {
         @Override
         public void configure(Binder binder) {
             binder.bindSet(Integer.class)
-                    .addProvider(() -> 1)
+                    .addProviderInstance(() -> 1)
                     .addProvider(IntegerProvider.class)
                     .addProvider(MyIntegerProvider.class);
         }

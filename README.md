@@ -23,8 +23,6 @@
 
 Bootique lightweight DI implementation.
 
-_EXPERIMENTAL..._
-
 ## Changes from `cayenne-di`
 
 Bootique DI is a port and enhancement over  `cayenne-di`. Here are the

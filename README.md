@@ -21,7 +21,7 @@
 
 # bootique-di
 
-A lightweight dependency injection (DI) engine used by Bootique framework. Can be used in the context of Bootique or as a standalone DI engine.
+A [lightweight and fast](https://github.com/andrus/di-comparison#results-java-8) dependency injection (DI) engine used by Bootique framework. Can be used in the context of Bootique or as a standalone DI engine.
 
 ## Docs
 

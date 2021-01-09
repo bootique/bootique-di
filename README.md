@@ -21,8 +21,9 @@
 
 # bootique-di
 
-A lightweight dependency injection engine used by the Bootique framework.
+A lightweight dependency injection (DI) engine used by Bootique framework. Can be used in the context of Bootique or as a standalone DI engine.
 
 ## Docs
 
+- [Docs (in the context of Bootique](https://bootique.io/docs/2.x/bootique-docs/#_bqruntime_and_di)
 - [Migration from Guice](https://github.com/bootique/bootique-di/blob/master/bootique-di-vs-guice.md)

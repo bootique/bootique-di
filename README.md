@@ -27,3 +27,13 @@ A lightweight dependency injection (DI) engine used by Bootique framework. Can b
 
 - [Docs](https://bootique.io/docs/2.x/bootique-docs/#_bqruntime_and_di) (in the context of Bootique)
 - [Migration from Guice](https://bootique.io/docs/2.x/migrate-from-guice/)
+
+## Standalone Example
+
+Starting and using Bootique DI 
+```java
+BQModule m = binder -> binder.bind(MyService.class).to(MySericeImpl.class);
+Injector injector = DIBootstrap.createInjector(m);
+MyService s = injector.getInstance(MyService.class);
+```
+

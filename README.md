@@ -26,4 +26,4 @@ A lightweight dependency injection (DI) engine used by Bootique framework. Can b
 ## Docs
 
 - [Docs](https://bootique.io/docs/2.x/bootique-docs/#_bqruntime_and_di) (in the context of Bootique)
-- [Migration from Guice](https://github.com/bootique/bootique-di/blob/master/bootique-di-vs-guice.md)
+- [Migration from Guice](https://bootique.io/docs/2.x/migrate-from-guice/)

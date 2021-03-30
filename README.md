@@ -17,7 +17,7 @@
   under the License.
   -->
 
-[![Build Status](https://travis-ci.org/bootique/bootique-di.svg)](https://travis-ci.org/bootique/bootique-di)
+[![build test deploy](https://github.com/bootique/bootique-di/actions/workflows/maven.yml/badge.svg)](https://github.com/bootique/bootique-di/actions/workflows/maven.yml)
 
 # bootique-di
 

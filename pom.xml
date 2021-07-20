@@ -29,7 +29,7 @@
 
     <groupId>io.bootique.di</groupId>
     <artifactId>bootique-di-parent</artifactId>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.0.M1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>bootique-di-parent: Parent POM of bootique-di modules</name>
 

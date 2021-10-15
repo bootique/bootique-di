@@ -113,7 +113,7 @@ class ConstructorInjectingProvider<T> implements NamedProvider<T> {
     protected Object value(Class<?> parameter, Type genericType, Annotation bindingAnnotation) {
 
         if (injector.getPredicates().isProviderType(parameter)) {
-            Type parameterType = DIUtil.getGenericParameterType(genericType);
+            Type parameterType = GenericTypesUtils.getGenericParameterType(genericType);
             if (parameterType == null) {
                 return injector.throwException("Constructor provider parameter %s must be "
                         + "parameterized to be usable for injection", parameter.getName());

@@ -28,6 +28,7 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.function.Predicate;
 
 class FieldInjectingProvider<T> extends MemberInjectingProvider<T> {
@@ -63,7 +64,9 @@ class FieldInjectingProvider<T> extends MemberInjectingProvider<T> {
     private void injectMember(Object object, Field field, Annotation bindingAnnotation) {
 
         injector.trace(() -> "Injecting field '" + field.getName() + "' of class " + field.getDeclaringClass().getName());
-        Object value = value(field, bindingAnnotation);
+
+        TypeLiteral<?> fieldType = getFieldType(object, field);
+        Object value = value(field, fieldType, bindingAnnotation);
 
         field.setAccessible(true);
         try {
@@ -74,11 +77,9 @@ class FieldInjectingProvider<T> extends MemberInjectingProvider<T> {
         }
     }
 
-    protected Object value(Field field, Annotation bindingAnnotation) {
-
-        Class<?> fieldType = field.getType();
-        if (injector.getPredicates().isProviderType(fieldType)) {
-            Type parameterType = DIUtil.getGenericParameterType(field.getGenericType());
+    protected Object value(Field field, TypeLiteral<?> fieldType, Annotation bindingAnnotation) {
+        if (injector.getPredicates().isProviderType(fieldType.getRawType())) {
+            Type parameterType = GenericTypesUtils.getGenericParameterType(field.getGenericType());
 
             if (parameterType == null) {
                 injector.throwException("Provider field %s.%s must be parameterized to be usable for injection"
@@ -87,9 +88,25 @@ class FieldInjectingProvider<T> extends MemberInjectingProvider<T> {
 
             return injector.getProvider(Key.get(TypeLiteral.of(parameterType), bindingAnnotation));
         } else {
-            Key<?> key = Key.get(TypeLiteral.of(field.getGenericType()), bindingAnnotation);
+            Key<?> key = Key.get(fieldType, bindingAnnotation);
             return injector.getInstanceWithCycleProtection(key);
         }
+    }
+
+    private TypeLiteral<?> getFieldType(Object object, Field field) {
+        Type genericType = field.getGenericType();
+        // field is defined as some generic type that should be provided by its defining class
+        if(genericType instanceof TypeVariable) {
+            Class<?> objectClass = object.getClass();
+            TypeLiteral<?> typeLiteral = GenericTypesUtils.resolveVariableType(objectClass, field, genericType);
+            if(typeLiteral == null) {
+                return injector.throwException("Unable to resolve type parameter %s for the field %s type %s "
+                        , genericType.getTypeName(), field.getName(), objectClass.getName());
+            }
+            return typeLiteral;
+        }
+
+        return TypeLiteral.of(genericType);
     }
 
     @Override

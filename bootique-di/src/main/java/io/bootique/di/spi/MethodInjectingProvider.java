@@ -194,7 +194,7 @@ class MethodInjectingProvider<T> extends MemberInjectingProvider<T> {
                     " of class '" + method.getDeclaringClass().getName() + "'");
 
             if (injector.getPredicates().isProviderType(parameterClasses[i])) {
-                parameterType = DIUtil.getGenericParameterType(parameterType);
+                parameterType = GenericTypesUtils.getGenericParameterType(parameterType);
                 if (parameterType == null) {
                     injector.throwException("Parameter of method '%s.%s()' of 'Provider' type must be "
                             + "parameterized to be usable for injection"

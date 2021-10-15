@@ -1,6 +1,7 @@
 ## 2.0.B1
 
 * #35 SetBuilder/MapBuilder do not allow binding values of type Class
+* #36 Variable type M can’t be fully resolved
 
 ## 2.0.M1
 

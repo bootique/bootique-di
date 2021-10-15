@@ -43,7 +43,7 @@ class ConstructorInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
                 // delegate (possibly) injected as Provider
                 if (injector.getPredicates().isProviderType(parameter)) {
 
-                    Class<?> objectClass = DIUtil.parameterClass(genericType);
+                    Class<?> objectClass = GenericTypesUtils.parameterClass(genericType);
 
                     if (objectClass == null) {
                         return injector.throwException("Constructor provider parameter %s must be "

@@ -23,6 +23,8 @@ import javax.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
+import io.bootique.di.TypeLiteral;
+
 class FieldInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
 
     private final Class<? extends T> implementation;
@@ -41,28 +43,26 @@ class FieldInjectingDecoratorProvider<T> implements DecoratorProvider<T> {
         return new FieldInjectingProvider<T>(delegate.get(undecorated), injector) {
 
             @Override
-            protected Object value(Field field, Annotation bindingAnnotation) {
-                Class<?> fieldType = field.getType();
-
+            protected Object value(Field field, TypeLiteral<?> fieldType, Annotation bindingAnnotation) {
                 // delegate (possibly) injected as Provider
-                if (injector.getPredicates().isProviderType(fieldType)) {
+                if (injector.getPredicates().isProviderType(fieldType.getRawType())) {
 
-                    Class<?> objectClass = DIUtil.parameterClass(field.getGenericType());
+                    Class<?> objectClass = GenericTypesUtils.parameterClass(field.getGenericType());
 
                     if (objectClass == null) {
                         return injector.throwException("Provider field %s.%s of type %s must be "
                                 + "parameterized to be usable for injection", field.getDeclaringClass().getName(),
-                                field.getName(), fieldType.getName());
+                                field.getName(), fieldType.getRawType().getName());
                     }
 
                     if(objectClass.isAssignableFrom(implementation)) {
                         return undecorated;
                     }
-                } else if (fieldType.isAssignableFrom(implementation)) {
+                } else if (fieldType.getRawType().isAssignableFrom(implementation)) {
                     return undecorated.get();
                 }
 
-                return super.value(field, bindingAnnotation);
+                return super.value(field, fieldType, bindingAnnotation);
             }
         };
     }

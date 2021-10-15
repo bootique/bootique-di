@@ -104,6 +104,18 @@ public class GenericTypesIT {
         assertEquals(Integer.valueOf(42), optionalInteger.orElseThrow(NullPointerException::new));
     }
 
+    @Test
+    public void testGenericFieldInjection() {
+        Injector injector = DIBootstrap.createInjector(new TestModule3());
+
+        Service2_Impl<?> service = injector.getInstance(Service2_Impl.class);
+        assertEquals("test", service.doSomething());
+
+        Service2_Impl2 service2 = injector.getInstance(Service2_Impl2.class);
+        service2.setTestField2(123);
+        assertEquals("test123", service2.doSomething());
+    }
+
     static class TestService1Module implements BQModule {
         @Override
         public void configure(Binder binder) {
@@ -151,6 +163,15 @@ public class GenericTypesIT {
             return Optional.of("test");
         }
 
+    }
+
+    public static class TestModule3 extends BaseBQModule {
+        @Override
+        public void configure(Binder binder) {
+            binder.bind(String.class).toInstance("test");
+            binder.bind(Service2_Impl.class).inSingletonScope();
+            binder.bind(Service2_Impl2.class).inSingletonScope();
+        }
     }
 
     interface Service1 {
@@ -232,6 +253,33 @@ public class GenericTypesIT {
         @Override
         public Optional<Integer> getOptionalInteger() {
             return optionalInteger.get();
+        }
+    }
+
+    static abstract class Service2<T> {
+        @Inject
+        T genericField;
+
+        abstract String doSomething();
+    }
+
+    static class Service2_Impl<K> extends Service2<String> {
+        K testField2;
+
+        public void setTestField2(K testField2) {
+            this.testField2 = testField2;
+        }
+
+        @Override
+        String doSomething() {
+            return genericField;
+        }
+    }
+
+    static class Service2_Impl2 extends Service2_Impl<Integer> {
+        @Override
+        String doSomething() {
+            return genericField + testField2;
         }
     }
 

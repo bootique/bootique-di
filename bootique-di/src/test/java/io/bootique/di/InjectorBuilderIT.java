@@ -19,17 +19,15 @@
 
 package io.bootique.di;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class InjectorBuilderIT {
 
@@ -44,7 +42,7 @@ public class InjectorBuilderIT {
                 .build();
 
         Service service = injector.getInstance(Service.class);
-        assertThat(service, instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, service);
         assertTrue(providerWrapped[0]);
     }
 
@@ -59,7 +57,7 @@ public class InjectorBuilderIT {
                 .build();
 
         Consumer2 consumer = injector.getInstance(Consumer2.class);
-        assertThat(consumer.service, instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, consumer.service);
     }
 
     @Test
@@ -74,7 +72,7 @@ public class InjectorBuilderIT {
                 .build();
 
         Consumer1 consumer = injector.getInstance(Consumer1.class);
-        assertThat(consumer.service, instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, consumer.service);
     }
 
     @Test
@@ -91,7 +89,7 @@ public class InjectorBuilderIT {
                 .build();
 
         Service service = injector.getInstance(Service.class);
-        assertThat(service, instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, service);
     }
 
     @Test
@@ -105,7 +103,7 @@ public class InjectorBuilderIT {
                 .build();
 
         Consumer3 consumer = injector.getInstance(Consumer3.class);
-        assertThat(consumer.service, instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, consumer.service);
     }
 
     static class MyProvider<T> implements Provider<T> {

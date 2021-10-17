@@ -1,4 +1,3 @@
-
 /*
  * Licensed to ObjectStyle LLC under one
  * or more contributor license agreements.  See the NOTICE file
@@ -23,9 +22,9 @@ package io.bootique.di.spi;
 import io.bootique.di.BQModule;
 import io.bootique.di.mock.MockImplementation1_EventAnnotations;
 import io.bootique.di.mock.MockInterface1;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultInjectorTest {
 

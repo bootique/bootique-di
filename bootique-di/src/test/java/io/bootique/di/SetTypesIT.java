@@ -19,7 +19,7 @@
 
 package io.bootique.di;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -28,10 +28,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SetTypesIT {
 
@@ -89,10 +89,10 @@ public class SetTypesIT {
 
         Service service = injector.getInstance(Service.class);
 
-        assertThat(service, instanceOf(Service_Impl2.class));
+        assertInstanceOf(Service_Impl2.class, service);
 
         Service_Impl2 impl = (Service_Impl2) service;
-        assertThat(impl.getSet(), hasItem(Arrays.asList(1, 2, 3)));
+        assertTrue(impl.getSet().contains(asList(1, 2, 3)));
     }
 
     @Test
@@ -102,18 +102,18 @@ public class SetTypesIT {
 
         Service service = injector.getInstance(Service.class);
 
-        assertThat(service, instanceOf(Service_Impl2.class));
+        assertInstanceOf(Service_Impl2.class, service);
 
         Service_Impl2 impl = (Service_Impl2) service;
-        assertThat(impl.getSet(), hasItem(Arrays.asList(1, 2, 3)));
+        assertTrue(impl.getSet().contains(asList(1, 2, 3)));
     }
 
-    @Test(expected = DIRuntimeException.class)
+    @Test
     public void testDuplicateValue() {
         Injector injector = DIBootstrap.createInjector(b ->
                 b.bindSet(TypeLiteral.of(Integer.class)).addInstance(1).addInstance(2).addInstance(2));
 
-        injector.getInstance(Key.get(TypeLiteral.setOf(Integer.class)));
+        assertThrows(DIRuntimeException.class, () -> injector.getInstance(Key.get(TypeLiteral.setOf(Integer.class))));
     }
 
     @Test
@@ -123,11 +123,8 @@ public class SetTypesIT {
                 b -> b.bindSet(Service.class).add(Service_Impl1.class).add(Service_Impl2.class)
         );
         Set<Service> services = injector.getInstance(Key.getSetOf(Service.class));
-
-        assertEquals(2, services.size());
-        for(Service service : services) {
-            assertThat(service, anyOf(instanceOf(Service_Impl1.class), instanceOf(Service_Impl2.class)));
-        }
+        Set<Class<?>> serviceTypes = services.stream().map(Object::getClass).collect(Collectors.toSet());
+        assertEquals(new HashSet<>(asList(Service_Impl1.class, Service_Impl2.class)), serviceTypes);
     }
 
     @Test
@@ -136,7 +133,7 @@ public class SetTypesIT {
                 b.bindSet(TypeLiteral.of(Integer.class)).addInstance(1).addInstances(Arrays.asList(2,3,4)).addInstance(5));
 
         Set<Integer> set = injector.getInstance(Key.get(TypeLiteral.setOf(Integer.class)));
-        assertThat(set, hasItems(1,2,3,4,5));
+        assertEquals(new HashSet<>(asList(1, 2, 3, 4, 5)), set);
     }
 
     @Test
@@ -147,7 +144,7 @@ public class SetTypesIT {
         );
 
         Set<Integer> set = injector.getInstance(Key.get(TypeLiteral.setOf(Integer.class)));
-        assertThat(set, hasItems(1,2,3,4));
+        assertEquals(new HashSet<>(asList(1, 2, 3, 4)), set);
     }
 
     @Test
@@ -161,23 +158,22 @@ public class SetTypesIT {
         });
 
         Set<Integer> set = injector.getInstance(Key.getSetOf(Integer.class));
-        assertEquals(2, set.size());
-        assertThat(set, hasItems(1,2));
+        assertEquals(new HashSet<>(asList(1, 2)), set);
     }
 
-    @Test(expected = DIRuntimeException.class)
+    @Test
     public void testDuplicatedValue() {
         Injector injector = DIBootstrap.createInjector(
             b -> b.bindSet(Integer.class).addInstance(1).addInstance(2).addInstance(1)
         );
 
-        injector.getInstance(Key.getSetOf(Integer.class));
+        assertThrows(DIRuntimeException.class, () -> injector.getInstance(Key.getSetOf(Integer.class)));
     }
 
-    @Test(expected = DIRuntimeException.class)
+    @Test
     public void testDuplicateProviderMethod() {
         Injector injector = DIBootstrap.createInjector(new DuplicateValueModule());
-        injector.getInstance(Key.getSetOf(Integer.class));
+        assertThrows(DIRuntimeException.class, () -> injector.getInstance(Key.getSetOf(Integer.class)));
     }
 
     @Test
@@ -185,19 +181,20 @@ public class SetTypesIT {
         Injector injector = DIBootstrap.createInjector(new ProviderTypeModule());
         Set<Integer> integers = injector.getInstance(Key.getSetOf(Integer.class));
 
-        assertEquals(3, integers.size());
-        assertThat(integers, hasItems(1, 2, 3));
+        assertEquals(new HashSet<>(asList(1, 2, 3)), integers);
     }
 
     private void assertSetContent(Injector injector) {
         Service service = injector.getInstance(Service.class);
 
-        assertThat(service, instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, service);
 
         Service_Impl1 impl = (Service_Impl1) service;
+        assertTrue(impl.getIntegerSet().contains(1));
+        assertTrue(impl.getIntegerSet().contains(2));
 
-        assertThat(impl.getIntegerSet(), hasItems(1, 2));
-        assertThat(impl.getStringSet(), hasItems("3", "4"));
+        assertTrue(impl.getStringSet().contains("3"));
+        assertTrue(impl.getStringSet().contains("4"));
     }
 
     private static final BQModule serviceModule1 = b -> b.bind(Service.class).to(Service_Impl1.class);

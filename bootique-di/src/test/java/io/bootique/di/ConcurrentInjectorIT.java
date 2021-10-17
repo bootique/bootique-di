@@ -19,17 +19,16 @@
 
 package io.bootique.di;
 
+import org.junit.jupiter.api.Test;
+
+import javax.inject.Inject;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import javax.inject.Inject;
-
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConcurrentInjectorIT {
 

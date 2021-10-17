@@ -19,24 +19,23 @@
 
 package io.bootique.di;
 
-import java.util.Optional;
+import org.junit.jupiter.api.Test;
+
 import javax.inject.Inject;
+import java.util.Optional;
 
-import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OptionalBindingIT {
 
-    @Test(expected = DIRuntimeException.class)
+    @Test
     public void testMandatoryBinding() {
         Injector injector = DIBootstrap.createInjector(b -> {
             b.bind(Consumer1.class);
         });
 
         // should throw, no Service bound
-        injector.getInstance(Consumer1.class);
+        assertThrows(DIRuntimeException.class, () -> injector.getInstance(Consumer1.class));
     }
 
     @Test
@@ -59,10 +58,10 @@ public class OptionalBindingIT {
         });
 
         Consumer1 consumer1 = injector.getInstance(Consumer1.class);
-        assertThat(consumer1.service, instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, consumer1.service);
         assertNotNull(consumer1.optionalService);
         assertTrue(consumer1.optionalService.isPresent());
-        assertThat(consumer1.optionalService.get(), instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, consumer1.optionalService.get());
     }
 
     @Test
@@ -76,10 +75,10 @@ public class OptionalBindingIT {
         );
 
         Consumer1 consumer1 = injector.getInstance(Consumer1.class);
-        assertThat(consumer1.service, instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, consumer1.service);
         assertNotNull(consumer1.optionalService);
         assertTrue(consumer1.optionalService.isPresent());
-        assertThat(consumer1.optionalService.get(), instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, consumer1.optionalService.get());
     }
 
     @Test
@@ -93,10 +92,10 @@ public class OptionalBindingIT {
         ).declaredOverridesOnly().build();
 
         Consumer1 consumer1 = injector.getInstance(Consumer1.class);
-        assertThat(consumer1.service, instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, consumer1.service);
         assertNotNull(consumer1.optionalService);
         assertTrue(consumer1.optionalService.isPresent());
-        assertThat(consumer1.optionalService.get(), instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, consumer1.optionalService.get());
     }
 
     @Test
@@ -110,10 +109,10 @@ public class OptionalBindingIT {
         );
 
         Consumer1 consumer1 = injector.getInstance(Consumer1.class);
-        assertThat(consumer1.service, instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, consumer1.service);
         assertNotNull(consumer1.optionalService);
         assertTrue(consumer1.optionalService.isPresent());
-        assertThat(consumer1.optionalService.get(), instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, consumer1.optionalService.get());
     }
 
     interface Service {

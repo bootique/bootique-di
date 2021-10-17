@@ -18,12 +18,12 @@
  */
 package io.bootique.di;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.inject.Singleton;
 
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 public class ScopeTest {
 

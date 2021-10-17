@@ -19,11 +19,12 @@
 
 package io.bootique.di;
 
+import org.junit.jupiter.api.Test;
+
 import javax.inject.Inject;
 
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CircularDependencyIT {
 
@@ -38,21 +39,21 @@ public class CircularDependencyIT {
         assertEquals("service1 + service2.2.2", service2.exec());
     }
 
-    @Test(expected = DIRuntimeException.class)
+    @Test
     public void testProxyCreationFailure() {
         Injector injector = DIBootstrap.injectorBuilder(binder -> {
             binder.bind(Service3.class).inSingletonScope();
             binder.bind(Service4.class).inSingletonScope();
         }).build();
 
-        injector.getInstance(Service3.class);
+        assertThrows(DIRuntimeException.class, () -> injector.getInstance(Service3.class));
     }
 
-    @Test(expected = DIRuntimeException.class)
+    @Test
     public void testProxyCreationProviderMethodFailure() {
         Injector injector = DIBootstrap.injectorBuilder(new CircularModule()).build();
 
-        injector.getInstance(Service1.class);
+        assertThrows(DIRuntimeException.class, () -> injector.getInstance(Service1.class));
     }
 
     static class CircularModule extends BaseBQModule {
@@ -72,6 +73,7 @@ public class CircularDependencyIT {
 
     interface Service1 {
         String info();
+
         String wrap(String arg);
     }
 
@@ -117,10 +119,12 @@ public class CircularDependencyIT {
     }
 
     static class Service3 {
-        @Inject Service4 service4;
+        @Inject
+        Service4 service4;
     }
 
     static class Service4 {
-        @Inject Service3 service3;
+        @Inject
+        Service3 service3;
     }
 }

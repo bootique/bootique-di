@@ -20,34 +20,16 @@
 
 package io.bootique.di.spi;
 
-import io.bootique.di.Key;
 import io.bootique.di.BQModule;
+import io.bootique.di.Key;
 import io.bootique.di.TypeLiteral;
-import io.bootique.di.mock.MockImplementation1;
-import io.bootique.di.mock.MockImplementation1Alt;
-import io.bootique.di.mock.MockImplementation1Alt2;
-import io.bootique.di.mock.MockImplementation1_MapConfiguration;
-import io.bootique.di.mock.MockImplementation1_MapWithWildcards;
-import io.bootique.di.mock.MockImplementation1_WithInjector;
-import io.bootique.di.mock.MockImplementation2;
-import io.bootique.di.mock.MockImplementation2Sub1;
-import io.bootique.di.mock.MockImplementation2_ConstructorProvider;
-import io.bootique.di.mock.MockImplementation2_Named;
-import io.bootique.di.mock.MockImplementation3;
-import io.bootique.di.mock.MockImplementation4;
-import io.bootique.di.mock.MockImplementation4Alt;
-import io.bootique.di.mock.MockImplementation4Alt2;
-import io.bootique.di.mock.MockImplementation5;
-import io.bootique.di.mock.MockInterface1;
-import io.bootique.di.mock.MockInterface2;
-import io.bootique.di.mock.MockInterface3;
-import io.bootique.di.mock.MockInterface4;
-import io.bootique.di.mock.MockInterface5;
-import org.junit.Test;
+import io.bootique.di.mock.*;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DefaultInjectorInjectionTest {
 
@@ -250,7 +232,7 @@ public class DefaultInjectorInjectionTest {
         });
 
         MockInterface1 service = new DefaultInjector(m1, m2).getInstance(MockInterface1.class);
-        assertEquals("Map element was not overridden in submodule", ";a=abc", service.getName());
+        assertEquals(";a=abc", service.getName(), "Map element was not overridden in submodule");
     }
 
     @Test
@@ -269,7 +251,7 @@ public class DefaultInjectorInjectionTest {
         });
 
         MockInterface1 service = new DefaultInjector(m1, m2).getInstance(MockInterface1.class);
-        assertEquals("Map element was not overridden in submodule", ";a=abc", service.getName());
+        assertEquals(";a=abc", service.getName(), "Map element was not overridden in submodule");
     }
 
 

@@ -19,15 +19,16 @@
 
 package io.bootique.di;
 
+import org.junit.jupiter.api.Test;
+
+import javax.inject.Inject;
+import javax.inject.Qualifier;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Objects;
-import javax.inject.Inject;
-import javax.inject.Qualifier;
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MethodInjectIT {
 
@@ -62,7 +63,7 @@ public class MethodInjectIT {
 
         Consumer_Impl consumer = new Consumer_Impl();
         injector.injectMembers(consumer);
-        assertTrue("Method not injected", consumer.serviceSet);
+        assertTrue(consumer.serviceSet, "Method not injected");
     }
 
     @Test

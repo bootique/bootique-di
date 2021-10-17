@@ -20,24 +20,15 @@
 
 package io.bootique.di.spi;
 
+import io.bootique.di.BQModule;
 import io.bootique.di.DIBootstrap;
 import io.bootique.di.DIRuntimeException;
-import io.bootique.di.BQModule;
 import io.bootique.di.Injector;
-import io.bootique.di.mock.MockImplementation1_DepOn2;
-import io.bootique.di.mock.MockImplementation1_DepOn2Constructor;
-import io.bootique.di.mock.MockImplementation1_DepOn2Provider;
-import io.bootique.di.mock.MockImplementation2;
-import io.bootique.di.mock.MockImplementation2_Constructor;
-import io.bootique.di.mock.MockImplementation2_I3Dependency;
-import io.bootique.di.mock.MockImplementation3;
-import io.bootique.di.mock.MockInterface1;
-import io.bootique.di.mock.MockInterface2;
-import io.bootique.di.mock.MockInterface3;
-import org.junit.Test;
+import io.bootique.di.mock.*;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class DefaultInjectorCircularInjectionTest {
 

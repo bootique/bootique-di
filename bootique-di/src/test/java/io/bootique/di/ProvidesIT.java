@@ -19,16 +19,16 @@
 
 package io.bootique.di;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Qualifier;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ProvidesIT {
 
@@ -101,21 +101,21 @@ public class ProvidesIT {
         assertEquals("provideService2_provideService1", s2.doIt());
     }
 
-    @Test(expected = DIRuntimeException.class)
+    @Test
     public void testProvidesCycle() {
         Injector injector = DIBootstrap.injectorBuilder(new TestModule_CircularDependency())
                 .disableProxyCreation().build();
-        injector.getInstance(Service1.class);
+        assertThrows(DIRuntimeException.class, () -> injector.getInstance(Service1.class));
     }
 
-    @Test(expected = DIRuntimeException.class)
+    @Test
     public void testProvides_Invalid() {
-        DIBootstrap.createInjector(new TestModule_InvalidProvider());
+        assertThrows(DIRuntimeException.class, () -> DIBootstrap.createInjector(new TestModule_InvalidProvider()));
     }
 
-    @Test(expected = DIRuntimeException.class)
+    @Test
     public void testProvides_InvalidQualifier() {
-        DIBootstrap.createInjector(new TestModule_InvalidQualifier());
+        assertThrows(DIRuntimeException.class, () -> DIBootstrap.createInjector(new TestModule_InvalidQualifier()));
     }
 
     @Test

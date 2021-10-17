@@ -19,17 +19,16 @@
 
 package io.bootique.di;
 
+import org.junit.jupiter.api.Test;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import javax.inject.Inject;
-import javax.inject.Provider;
 
-import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 public class GenericTypesIT {
 
@@ -52,7 +51,7 @@ public class GenericTypesIT {
         Injector injector = DIBootstrap.createInjector(new TestModule1(), new TestService1Module());
 
         Service1 service1 = injector.getInstance(Service1.class);
-        assertThat(service1, instanceOf(Service1_Impl1.class));
+        assertInstanceOf(Service1_Impl1.class, service1);
 
         assertEquals(Arrays.asList(1,2,3), service1.getIntegers());
         assertEquals(Arrays.asList(3,4,5), service1.getObjects());
@@ -82,7 +81,7 @@ public class GenericTypesIT {
         Injector injector = DIBootstrap.createInjector(new TestModule1(), new TestService2Module());
 
         Service1 service1 = injector.getInstance(Service1.class);
-        assertThat(service1, instanceOf(Service1_Impl2.class));
+        assertInstanceOf(Service1_Impl2.class, service1);
 
         assertEquals(Arrays.asList(1,2,3), service1.getIntegers());
         assertEquals(Arrays.asList(3,4,5), service1.getObjects());

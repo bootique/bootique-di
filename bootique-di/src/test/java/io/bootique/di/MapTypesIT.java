@@ -19,16 +19,15 @@
 
 package io.bootique.di;
 
+import org.junit.jupiter.api.Test;
+
+import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Inject;
 
-import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MapTypesIT {
 
@@ -86,7 +85,7 @@ public class MapTypesIT {
 
         Service service = injector.getInstance(Service.class);
 
-        assertThat(service, instanceOf(Service_Impl2.class));
+        assertInstanceOf(Service_Impl2.class, service);
 
         Service_Impl2 impl = (Service_Impl2)service;
         assertArrayEquals(new Object[]{1,2,3}, impl.getMap().get("1").toArray());
@@ -100,7 +99,7 @@ public class MapTypesIT {
 
         Service service = injector.getInstance(Service.class);
 
-        assertThat(service, instanceOf(Service_Impl2.class));
+        assertInstanceOf(Service_Impl2.class, service);
 
         Service_Impl2 impl = (Service_Impl2)service;
         assertArrayEquals(new Object[]{1,2,3}, impl.getMap().get("1").toArray());
@@ -118,13 +117,14 @@ public class MapTypesIT {
 
         Map<Integer,String> map = injector.getInstance(Key.getMapOf(Integer.class, String.class));
         assertEquals(2, map.size());
-        assertThat(map.values(), hasItems("str1","str2"));
+        assertTrue(map.values().contains("str1"));
+        assertTrue(map.values().contains("str2"));
     }
 
     private void assertMapContent(Injector injector) {
         Service service = injector.getInstance(Service.class);
 
-        assertThat(service, instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, service);
 
         Service_Impl1 impl = (Service_Impl1)service;
 

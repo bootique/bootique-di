@@ -19,18 +19,12 @@
 
 package io.bootique.di.docs;
 
-import java.util.Optional;
-import java.util.Set;
+import io.bootique.di.*;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
-
-import io.bootique.di.BQModule;
-import io.bootique.di.Binder;
-import io.bootique.di.DIBootstrap;
-import io.bootique.di.Injector;
-import io.bootique.di.Key;
-import io.bootique.di.Provides;
+import java.util.Set;
 
 public class Application {
     public static void main(String[] args) {

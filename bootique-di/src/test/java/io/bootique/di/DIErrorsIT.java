@@ -19,14 +19,14 @@
 
 package io.bootique.di;
 
-import java.util.List;
-import java.util.Map;
+import org.junit.jupiter.api.Test;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
+import java.util.List;
+import java.util.Map;
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DIErrorsIT {
 
@@ -51,10 +51,10 @@ public class DIErrorsIT {
         } catch (DIRuntimeException ex) {
             String message = ex.getOriginalMessage();
             String fullMessage = ex.getMessage();
-            assertTrue(message, message.contains("returned NULL instance"));
-            assertTrue(fullMessage, fullMessage.contains("returned NULL instance"));
-            assertTrue(fullMessage, fullMessage.contains("Invoking provider method 'createQux()' of module 'io.bootique.di.DIErrorsIT$TestModule'"));
-            assertTrue(fullMessage, fullMessage.contains("Injecting field 'bar' of class io.bootique.di.DIErrorsIT$FooImpl"));
+            assertTrue(message.contains("returned NULL instance"), message);
+            assertTrue(fullMessage.contains("returned NULL instance"), fullMessage);
+            assertTrue(fullMessage.contains("Invoking provider method 'createQux()' of module 'io.bootique.di.DIErrorsIT$TestModule'"), fullMessage);
+            assertTrue(fullMessage.contains("Injecting field 'bar' of class io.bootique.di.DIErrorsIT$FooImpl"), fullMessage);
 
             InjectionTraceElement[] traceElements = ex.getInjectionTrace();
             assertEquals(9, traceElements.length);
@@ -70,9 +70,9 @@ public class DIErrorsIT {
         } catch (DIRuntimeException ex) {
             String message = ex.getOriginalMessage();
             String fullMessage = ex.getMessage();
-            assertTrue(message, message.contains("returned NULL instance"));
-            assertTrue(fullMessage, fullMessage.contains("returned NULL instance"));
-            assertTrue(fullMessage, fullMessage.contains("Invoking provider method 'createQux()' of module 'io.bootique.di.DIErrorsIT$TestModule'"));
+            assertTrue(message.contains("returned NULL instance"), message);
+            assertTrue(fullMessage.contains("returned NULL instance"), fullMessage);
+            assertTrue(fullMessage.contains("Invoking provider method 'createQux()' of module 'io.bootique.di.DIErrorsIT$TestModule'"), fullMessage);
 
             InjectionTraceElement[] traceElements = ex.getInjectionTrace();
             assertEquals(1, traceElements.length);

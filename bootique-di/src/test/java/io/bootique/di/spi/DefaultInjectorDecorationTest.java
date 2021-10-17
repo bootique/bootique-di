@@ -1,4 +1,3 @@
-
 /*
  * Licensed to ObjectStyle LLC under one
  * or more contributor license agreements.  See the NOTICE file
@@ -21,17 +20,10 @@
 package io.bootique.di.spi;
 
 import io.bootique.di.BQModule;
-import io.bootique.di.mock.MockImplementation1;
-import io.bootique.di.mock.MockInterface1;
-import io.bootique.di.mock.MockInterface1_Decorator1;
-import io.bootique.di.mock.MockInterface1_Decorator2;
-import io.bootique.di.mock.MockInterface1_Decorator3;
-import io.bootique.di.mock.MockInterface1_Decorator4;
-import io.bootique.di.mock.MockInterface1_Decorator5;
-import org.junit.Test;
+import io.bootique.di.mock.*;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultInjectorDecorationTest {
 

@@ -1,12 +1,12 @@
 package io.bootique.di.spi;
 
+import io.bootique.di.TypeLiteral;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.lang.reflect.Field;
 
-import io.bootique.di.TypeLiteral;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GenericTypesUtilsTest {
 
@@ -18,7 +18,7 @@ public class GenericTypesUtilsTest {
     Field field8;
     Field field9;
 
-    @Before
+    @BeforeEach
     public void initFields() throws NoSuchFieldException {
         field1 = Service1.class.getDeclaredField("field1");
         field2 = Service2.class.getDeclaredField("field2");

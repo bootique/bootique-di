@@ -19,15 +19,15 @@
 
 package io.bootique.di;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.junit.jupiter.api.Test;
+
 import javax.inject.Inject;
 import javax.inject.Qualifier;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class QualifiersIT {
 
@@ -67,7 +67,7 @@ public class QualifiersIT {
         checkInjectionResult(injector);
     }
 
-    @Test(expected = DIRuntimeException.class)
+    @Test
     public void testMultipleQualifiers() {
         Injector injector = DIBootstrap.createInjector(b -> {
             b.bind(Key.get(Service.class, CustomQualifier.class)).to(Service_Impl1.class);
@@ -77,15 +77,15 @@ public class QualifiersIT {
             b.bind(Consumer.class).to(Consumer_Impl5.class);
         });
 
-        injector.getInstance(Consumer.class);
+        assertThrows(DIRuntimeException.class, () -> injector.getInstance(Consumer.class));
     }
 
     private void checkInjectionResult(Injector injector) {
         Consumer consumer1 = injector.getInstance(Consumer.class);
-        assertThat(consumer1.getService(), instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, consumer1.getService());
 
         Consumer consumer2 = injector.getInstance(Key.get(Consumer.class, CustomQualifier.class));
-        assertThat(consumer2.getService(), instanceOf(Service_Impl2.class));
+        assertInstanceOf(Service_Impl2.class, consumer2.getService());
     }
 
     public static class ServiceModule2 extends BaseBQModule {

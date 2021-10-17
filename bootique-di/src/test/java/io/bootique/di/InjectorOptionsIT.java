@@ -19,24 +19,22 @@
 
 package io.bootique.di;
 
+import org.junit.jupiter.api.Test;
+
 import javax.inject.Inject;
 
-import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class InjectorOptionsIT {
 
-    @Test(expected = DIRuntimeException.class)
+    @Test
     public void testDynamicBindingDisabled() {
         Injector injector = DIBootstrap.injectorBuilder(b -> b.bind(Service.class).to(Service_Impl1.class))
                 .disableDynamicBindings()
                 .build();
 
         // no binding of consumer, should throw
-        injector.getInstance(Consumer1.class);
+        assertThrows(DIRuntimeException.class, () -> injector.getInstance(Consumer1.class));
     }
 
     @Test
@@ -46,7 +44,7 @@ public class InjectorOptionsIT {
 
         // no binding of consumer, but dynamic is allowed
         Consumer1 consumer = injector.getInstance(Consumer1.class);
-        assertThat(consumer.service, instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, consumer.service);
     }
 
     @Test
@@ -57,10 +55,10 @@ public class InjectorOptionsIT {
 
         // no binding of consumer, but dynamic is allowed
         Service service1 = injector.getInstance(Service.class);
-        assertThat(service1, instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, service1);
 
         Service service2 = injector.getInstance(Service.class);
-        assertThat(service2, instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, service2);
         assertSame(service1, service2);
     }
 
@@ -71,10 +69,10 @@ public class InjectorOptionsIT {
 
         // no binding of consumer, but dynamic is allowed
         Service service1 = injector.getInstance(Service.class);
-        assertThat(service1, instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, service1);
 
         Service service2 = injector.getInstance(Service.class);
-        assertThat(service2, instanceOf(Service_Impl1.class));
+        assertInstanceOf(Service_Impl1.class, service2);
         assertNotSame(service1, service2);
     }
 

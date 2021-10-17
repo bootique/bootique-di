@@ -19,14 +19,14 @@
 
 package io.bootique.di.spi;
 
+import org.junit.jupiter.api.Test;
+
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MethodInjectingProviderTest {
 
@@ -39,7 +39,7 @@ public class MethodInjectingProviderTest {
 
         String[] methodSig = {"int methodInt()", "void methodArgs(int,java.lang.Object,)", "void method1()"};
         for(String sig : methodSig) {
-            assertTrue("No method " + sig, methods.containsKey(sig));
+            assertTrue(methods.containsKey(sig), () -> "No method " + sig);
         }
 
         List<Method> methodList = methods.get(methodSig[0]);

@@ -17,10 +17,10 @@
  * under the License.
  */
 
-package org.atinject.tck.auto.accessories;
+package io.bootique.di.tck.accessories;
 
-import org.atinject.tck.auto.FuelTank;
-import org.atinject.tck.auto.Tire;
+import io.bootique.di.tck.FuelTank;
+import io.bootique.di.tck.Tire;
 
 import javax.inject.Inject;
 

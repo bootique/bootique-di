@@ -17,24 +17,12 @@
  * under the License.
  */
 
-package org.atinject.tck.auto;
+package io.bootique.di.tck;
 
-import org.atinject.tck.auto.accessories.Cupholder;
+import javax.inject.Qualifier;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-@Singleton
-public class Seat {
-
-    private final Cupholder cupholder;
-
-    @Inject
-    Seat(Cupholder cupholder) {
-        this.cupholder = cupholder;
-    }
-
-    public Cupholder getCupholder() {
-        return cupholder;
-    }
+@Retention(RetentionPolicy.RUNTIME) @Qualifier
+public @interface Drivers {
 }

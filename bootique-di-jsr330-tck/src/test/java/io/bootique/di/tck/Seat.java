@@ -17,16 +17,24 @@
  * under the License.
  */
 
-package org.atinject.tck.auto;
+package io.bootique.di.tck;
 
-import org.atinject.tck.auto.accessories.Cupholder;
+import io.bootique.di.tck.accessories.Cupholder;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
-public class DriversSeat extends Seat {
+@Singleton
+public class Seat {
+
+    private final Cupholder cupholder;
 
     @Inject
-    public DriversSeat(Cupholder cupholder) {
-        super(cupholder);
+    Seat(Cupholder cupholder) {
+        this.cupholder = cupholder;
+    }
+
+    public Cupholder getCupholder() {
+        return cupholder;
     }
 }

@@ -17,9 +17,9 @@
  * under the License.
  */
 
-package org.atinject.tck.auto;
+package io.bootique.di.tck;
 
-import org.atinject.tck.auto.accessories.SpareTire;
+import io.bootique.di.tck.accessories.SpareTire;
 
 import javax.inject.Inject;
 import javax.inject.Named;

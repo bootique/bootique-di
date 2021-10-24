@@ -17,8 +17,7 @@
  * under the License.
  */
 
-package org.atinject.tck.auto;
+package io.bootique.di.tck;
 
-public interface Car {
-
+public class Seatbelt {
 }

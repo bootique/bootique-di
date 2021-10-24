@@ -17,17 +17,27 @@
  * under the License.
  */
 
-package org.atinject.tck.auto;
+package io.bootique.di.tck.accessories;
 
 import javax.inject.Inject;
 
-public abstract class GasEngine extends Engine {
+public class RoundThing {
 
-    public void injectTwiceOverriddenWithOmissionInMiddle() {
-        overriddenTwiceWithOmissionInMiddleInjected = true;
+    public boolean packagePrivateMethod2Injected;
+
+    @Inject void injectPackagePrivateMethod2() {
+        packagePrivateMethod2Injected = true;
     }
 
-    @Inject public void injectTwiceOverriddenWithOmissionInSubclass() {
-        overriddenTwiceWithOmissionInSubclassInjected = true;
+    public boolean packagePrivateMethod3Injected;
+
+    @Inject void injectPackagePrivateMethod3() {
+        packagePrivateMethod3Injected = true;
+    }
+
+    public boolean packagePrivateMethod4Injected;
+
+    @Inject void injectPackagePrivateMethod4() {
+        packagePrivateMethod4Injected = true;
     }
 }

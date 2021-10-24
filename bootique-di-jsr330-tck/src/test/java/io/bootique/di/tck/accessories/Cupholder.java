@@ -17,27 +17,21 @@
  * under the License.
  */
 
-package org.atinject.tck.auto.accessories;
+package io.bootique.di.tck.accessories;
+
+import io.bootique.di.tck.Seat;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 
-public class RoundThing {
+@Singleton
+public class Cupholder {
 
-    public boolean packagePrivateMethod2Injected;
+    public final Provider<Seat> seatProvider;
 
-    @Inject void injectPackagePrivateMethod2() {
-        packagePrivateMethod2Injected = true;
-    }
-
-    public boolean packagePrivateMethod3Injected;
-
-    @Inject void injectPackagePrivateMethod3() {
-        packagePrivateMethod3Injected = true;
-    }
-
-    public boolean packagePrivateMethod4Injected;
-
-    @Inject void injectPackagePrivateMethod4() {
-        packagePrivateMethod4Injected = true;
+    @Inject
+    public Cupholder(Provider<Seat> seatProvider) {
+        this.seatProvider = seatProvider;
     }
 }

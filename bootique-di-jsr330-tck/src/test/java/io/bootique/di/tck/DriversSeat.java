@@ -17,8 +17,16 @@
  * under the License.
  */
 
-package org.atinject.tck.auto;
+package io.bootique.di.tck;
 
-public class FuelTank {
+import io.bootique.di.tck.accessories.Cupholder;
 
+import javax.inject.Inject;
+
+public class DriversSeat extends Seat {
+
+    @Inject
+    public DriversSeat(Cupholder cupholder) {
+        super(cupholder);
+    }
 }

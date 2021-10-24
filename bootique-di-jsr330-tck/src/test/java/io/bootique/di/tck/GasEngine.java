@@ -17,7 +17,17 @@
  * under the License.
  */
 
-package org.atinject.tck.auto;
+package io.bootique.di.tck;
 
-public class Seatbelt {
+import javax.inject.Inject;
+
+public abstract class GasEngine extends Engine {
+
+    public void injectTwiceOverriddenWithOmissionInMiddle() {
+        overriddenTwiceWithOmissionInMiddleInjected = true;
+    }
+
+    @Inject public void injectTwiceOverriddenWithOmissionInSubclass() {
+        overriddenTwiceWithOmissionInSubclassInjected = true;
+    }
 }

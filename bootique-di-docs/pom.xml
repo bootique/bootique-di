@@ -117,7 +117,6 @@
                                 <icons>font</icons>
                                 <toc>auto</toc>
                                 <bootique_version>${bootique.version}</bootique_version>
-                                <bootique_parent_version>${bootique.parent.version}</bootique_parent_version>
                             </attributes>
                         </configuration>
                     </execution>

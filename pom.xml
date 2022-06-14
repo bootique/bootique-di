@@ -29,7 +29,7 @@
 
     <groupId>io.bootique.di</groupId>
     <artifactId>bootique-di-parent</artifactId>
-    <version>2.0.RC2-SNAPSHOT</version>
+    <version>2.0</version>
     <packaging>pom</packaging>
     <name>bootique-di-parent: Parent POM of bootique-di modules</name>
 
@@ -42,7 +42,7 @@
     <scm>
         <developerConnection>scm:git:ssh://git@github.com/bootique/bootique-di</developerConnection>
         <url>https://github.com/bootique/bootique-di</url>
-        <tag>HEAD</tag>
+        <tag>2.0</tag>
     </scm>
 
     <dependencyManagement>

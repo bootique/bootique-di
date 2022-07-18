@@ -19,8 +19,8 @@
 
 package io.bootique.di;
 
-import java.util.Collection;
 import javax.inject.Provider;
+import java.util.Collection;
 
 /**
  * A facade to the Bootique DI container. To create an injector use {@link DIBootstrap} static methods.
@@ -28,9 +28,9 @@ import javax.inject.Provider;
 public interface Injector {
 
     /**
-     * Returns a service instance bound in the container for a specific type. Throws
-     * {@link DIRuntimeException} if the type is not bound, or an instance can not be
-     * created.
+     * Returns a service instance bound in the container for a specific type. If the type is not explicitly bound to
+     * an implementation, a provider, or a provider method, tries to create an object of this type on the fly. In that
+     * case, if an object can not be created by the Injector (e.g. if it is an interface), throws {@link DIRuntimeException}.
      */
     <T> T getInstance(Class<T> type) throws DIRuntimeException;
 
@@ -59,13 +59,13 @@ public interface Injector {
     boolean hasProvider(Key<?> key) throws DIRuntimeException;
 
     /**
-     * Performs field injection on a given object, ignoring constructor injection. Since
-     * Injector returns fully injected objects, this method is rarely used directly.
+     * Performs field injection on a given object, ignoring constructor injection. This method is rarely used directly,
+     * as objects that require dependency injection are usually themselves obtained from the injector, and have all
+     * their fields already initialized.
      * <p>
-     * Note that using this method inside a custom DI {@link Provider} will most likely
-     * result in double injection, as custom provider is wrapped in a field-injecting
-     * provider by the DI container. Instead custom providers must initialize object
-     * properties manually, obtaining dependencies from Injector.
+     * Using this method inside a custom {@link Provider} will most likely result in double injection, as each custom
+     * provider is wrapped in a field-injecting provider by the DI container. Instead, custom providers must initialize
+     * object properties manually, obtaining dependencies from Injector.
      */
     void injectMembers(Object object);
 
@@ -81,7 +81,7 @@ public interface Injector {
      * (annotations and/or names).
      *
      * @param type interested class object
-     * @param <T> type
+     * @param <T>  type
      * @return collection of keys bound to given type
      */
     <T> Collection<Key<T>> getKeysByType(Class<T> type);

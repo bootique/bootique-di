@@ -35,4 +35,7 @@ public class MockImplementation2 implements MockInterface2 {
         return "MockImplementation2Name";
     }
 
+    public MockInterface1 getService() {
+        return service;
+    }
 }

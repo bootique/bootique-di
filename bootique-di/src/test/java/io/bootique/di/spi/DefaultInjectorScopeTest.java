@@ -23,15 +23,39 @@ import io.bootique.di.BQModule;
 import io.bootique.di.BeforeScopeEnd;
 import io.bootique.di.DIBootstrap;
 import io.bootique.di.Injector;
-import io.bootique.di.mock.MockImplementation1;
-import io.bootique.di.mock.MockImplementation1_EventAnnotations;
-import io.bootique.di.mock.MockImplementation1_Provider;
-import io.bootique.di.mock.MockInterface1;
+import io.bootique.di.mock.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultInjectorScopeTest {
+
+    @Test
+    public void testNoScope_ImplicitService() {
+        Injector injector = DIBootstrap
+                .injectorBuilder(b -> b.bind(MockInterface1.class).to(MockImplementation1.class).inSingletonScope())
+                .build();
+
+        MockImplementation2 undeclared1 = injector.getInstance(MockImplementation2.class);
+        MockImplementation2 undeclared2 = injector.getInstance(MockImplementation2.class);
+
+        assertNotSame(undeclared1, undeclared2, "Implicit service creation must follow Injector default scope rules");
+        assertSame(undeclared1.getService(), undeclared2.getService(), "Injection in the implicit service must follow the scope rules");
+    }
+
+    @Test
+    public void testDefaultSingletonScope_ImplicitService() {
+        Injector injector = DIBootstrap
+                .injectorBuilder(b -> b.bind(MockInterface1.class).to(MockImplementation1.class).inSingletonScope())
+                .defaultSingletonScope()
+                .build();
+
+        MockImplementation2 undeclared1 = injector.getInstance(MockImplementation2.class);
+        MockImplementation2 undeclared2 = injector.getInstance(MockImplementation2.class);
+
+        assertSame(undeclared1, undeclared2, "Implicit service creation must follow Injector default scope rules");
+        assertSame(undeclared1.getService(), undeclared2.getService(), "Injection in the implicit service must follow the scope rules");
+    }
 
     @Test
     public void testDefaultScope_IsSingleton() {

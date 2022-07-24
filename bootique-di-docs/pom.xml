@@ -115,7 +115,6 @@
                                 <sectnums />
                                 <icons>font</icons>
                                 <toc>auto</toc>
-                                <bootique_version>${bootique.version}</bootique_version>
                             </attributes>
                         </configuration>
                     </execution>

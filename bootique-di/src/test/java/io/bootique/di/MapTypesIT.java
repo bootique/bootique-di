@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MapTypesIT {
 
     @Test
-    public void testByKeyAndValueTypeMapInjection() {
+    public void byKeyAndValueTypeMapInjection() {
         Injector injector = DIBootstrap.createInjector(serviceModule1, b -> {
             b.bindMap(Integer.class, String.class).putInstance(1, "1").putInstance(2, "2");
             b.bindMap(String.class, String.class).putInstance("3", "3").putInstance("4", "4");
@@ -42,7 +42,7 @@ public class MapTypesIT {
     }
 
     @Test
-    public void testByGenericTypeMapInjection() {
+    public void byGenericTypeMapInjection() {
         Injector injector = DIBootstrap.createInjector(serviceModule1, b -> {
             b.bindMap(TypeLiteral.of(Integer.class), TypeLiteral.of(String.class)).putInstance(1, "1").putInstance(2, "2");
             b.bindMap(TypeLiteral.of(String.class), TypeLiteral.of(String.class)).putInstance("3", "3").putInstance("4", "4");
@@ -52,7 +52,7 @@ public class MapTypesIT {
     }
 
     @Test
-    public void testDirectMapInjection() {
+    public void directMapInjection() {
         final Map<Integer, String> integerMap = new HashMap<>();
         integerMap.put(1, "1");
         integerMap.put(2, "2");
@@ -70,13 +70,13 @@ public class MapTypesIT {
     }
 
     @Test
-    public void testProviderMapInjection() {
+    public void providerMapInjection() {
         Injector injector = DIBootstrap.createInjector(serviceModule1, new MapProviderModule());
         assertMapContent(injector);
     }
 
     @Test
-    public void testWildcardMapDirectInjection() {
+    public void wildcardMapDirectInjection() {
         Injector injector = DIBootstrap.createInjector(b -> {
             b.bind(Service.class).to(Service_Impl2.class);
             b.bindMap(new TypeLiteral<String>(){}, new TypeLiteral<List<? extends Number>>(){})
@@ -92,7 +92,7 @@ public class MapTypesIT {
     }
 
     @Test
-    public void testWildcardMapProvider() {
+    public void wildcardMapProvider() {
         Injector injector = DIBootstrap.createInjector(new MapProviderModule(), b -> {
             b.bind(Service.class).to(Service_Impl2.class);
         });
@@ -106,7 +106,7 @@ public class MapTypesIT {
     }
 
     @Test
-    public void testPutKey() {
+    public void putKey() {
         Injector injector = DIBootstrap.createInjector(b -> {
             b.bind(Key.get(String.class, "1")).toInstance("str1");
             b.bind(Key.get(String.class, "2")).toInstance("str2");

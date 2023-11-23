@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class InjectorBuilderIT {
 
     @Test
-    public void testCustomProviderWrapper() {
+    public void customProviderWrapper() {
         boolean[] providerWrapped = {false};
         Injector injector = DIBootstrap.injectorBuilder(b -> b.bind(Service.class).to(Service_Impl1.class))
                 .withProviderWrapper(p -> {
@@ -47,7 +47,7 @@ public class InjectorBuilderIT {
     }
 
     @Test
-    public void testCustomInjectAnnotation() {
+    public void customInjectAnnotation() {
         Injector injector = DIBootstrap.injectorBuilder(
                 b -> {
                     b.bind(Service.class).to(Service_Impl1.class);
@@ -61,7 +61,7 @@ public class InjectorBuilderIT {
     }
 
     @Test
-    public void testCustomProviderType() {
+    public void customProviderType() {
         Injector injector = DIBootstrap.injectorBuilder(
                 b -> {
                     b.bind(Service.class).to(Service_Impl1.class);
@@ -76,7 +76,7 @@ public class InjectorBuilderIT {
     }
 
     @Test
-    public void testCustomProvidesMethodPredicate() {
+    public void customProvidesMethodPredicate() {
         BQModule module = new BaseBQModule() {
             // should be found by name prefix
             Service providesService() {
@@ -93,7 +93,7 @@ public class InjectorBuilderIT {
     }
 
     @Test
-    public void testCustomQualifierPredicate() {
+    public void customQualifierPredicate() {
         Injector injector = DIBootstrap.injectorBuilder(
                 b -> {
                     b.bind(Key.get(Service.class, MyQualifier.class)).to(Service_Impl1.class);

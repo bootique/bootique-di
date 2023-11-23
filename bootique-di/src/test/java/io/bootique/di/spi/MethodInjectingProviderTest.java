@@ -57,7 +57,7 @@ public class MethodInjectingProviderTest {
     }
 
     @Test
-    public void testGetMethodSignature() throws Exception {
+    public void getMethodSignature() throws Exception {
         Method methodInt = Class1.class.getDeclaredMethod("methodInt");
         Method methodArgs = Class1.class.getDeclaredMethod("methodArgs", int.class, Object.class);
 

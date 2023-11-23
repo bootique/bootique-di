@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TypeLiteralTest {
 
     @Test
-    public void testBaseEqualsInvariants() {
+    public void baseEqualsInvariants() {
         TypeLiteral<Integer> typeLiteral1 = TypeLiteral.of(Integer.TYPE);
         TypeLiteral<Integer> typeLiteral2 = typeLiteral1;
         Object object = new Object();
@@ -41,7 +41,7 @@ public class TypeLiteralTest {
     }
 
     @Test
-    public void testInstantiationEquivalence_List() {
+    public void instantiationEquivalence_List() {
         TypeLiteral<List<Integer>> typeLiteral1 = TypeLiteral.listOf(Integer.class);
         TypeLiteral<List<Integer>> typeLiteral2 = new TypeLiteral<List<Integer>>() {
         };
@@ -57,7 +57,7 @@ public class TypeLiteralTest {
     }
 
     @Test
-    public void testInstantiationEquivalence_Set() {
+    public void instantiationEquivalence_Set() {
         TypeLiteral<Set<Integer>> typeLiteral1 = TypeLiteral.setOf(Integer.class);
         TypeLiteral<Set<Integer>> typeLiteral2 = new TypeLiteral<Set<Integer>>() {
         };
@@ -73,7 +73,7 @@ public class TypeLiteralTest {
     }
 
     @Test
-    public void testEqualGenericsWithBounds() {
+    public void equalGenericsWithBounds() {
         TypeLiteral<List<? super Integer>> typeLiteral1 = new TypeLiteral<List<? super Integer>>() {
         };
         TypeLiteral<List<? super Integer>> typeLiteral2 = new TypeLiteral<List<? super Integer>>() {
@@ -90,7 +90,7 @@ public class TypeLiteralTest {
     }
 
     @Test
-    public void testEqualArrays() {
+    public void equalArrays() {
         TypeLiteral<int[]> typeLiteral1 = new TypeLiteral<int[]>() {
         };
         TypeLiteral<int[]> typeLiteral2 = TypeLiteral.of(int[].class);
@@ -105,7 +105,7 @@ public class TypeLiteralTest {
     }
 
     @Test
-    public void testEqualGenericsArrays() {
+    public void equalGenericsArrays() {
         TypeLiteral<List<Integer>[]> typeLiteral1 = new TypeLiteral<List<Integer>[]>() {
         };
         TypeLiteral<List<Integer>[]> typeLiteral2 = new TypeLiteral<List<Integer>[]>() {
@@ -130,7 +130,7 @@ public class TypeLiteralTest {
     }
 
     @Test
-    public void testNonEqualGenericsWithBounds() {
+    public void nonEqualGenericsWithBounds() {
         TypeLiteral<List<Integer>> typeLiteral1 = new TypeLiteral<List<Integer>>() {
         };
         TypeLiteral<List<? super Integer>> typeLiteral2 = new TypeLiteral<List<? super Integer>>() {
@@ -155,7 +155,7 @@ public class TypeLiteralTest {
     }
 
     @Test
-    public void testNestedGenerics() {
+    public void nestedGenerics() {
         TypeLiteral<Map<String, List<? extends Number>>> typeLiteral1 = new TypeLiteral<Map<String, List<? extends Number>>>() {
         };
         TypeLiteral<Map<String, List<? extends Number>>> typeLiteral2 = TypeLiteral.mapOf(new TypeLiteral<String>() {
@@ -177,7 +177,7 @@ public class TypeLiteralTest {
     }
 
     @Test
-    public void testNormalize() {
+    public void normalize() {
         TypeLiteral<List<Integer>> type1 = TypeLiteral.listOf(Integer.class);
         TypeLiteral<List<Integer>> type2 = new TypeLiteral<List<Integer>>() {
         };
@@ -193,20 +193,20 @@ public class TypeLiteralTest {
 
 
     @Test
-    public void testCreationFailure_NoGenericParam() {
+    public void creationFailure_NoGenericParam() {
         // No type parameters
         assertThrows(DIRuntimeException.class, () ->  new TypeLiteral() {
         });
     }
 
     @Test
-    public void testCreationFailure_NoType() {
+    public void creationFailure_NoType() {
         // No type parameters
         assertThrows(NullPointerException.class, () -> TypeLiteral.of(null));
     }
 
     @Test
-    public void testVariableTypeResolveFailure() {
+    public void variableTypeResolveFailure() {
         assertThrows(DIRuntimeException.class, () -> {
             TypeLiteral<List<Integer>> typeLiteral = genericMethodForTest();
         });

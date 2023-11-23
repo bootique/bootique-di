@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class OverrideBindingIT {
 
     @Test
-    public void testRebind_OverridesDisabled() {
+    public void rebind_OverridesDisabled() {
         assertThrows(DIRuntimeException.class, () -> DIBootstrap.injectorBuilder(
                 binder -> binder.bind(Foo.class).to(FooImpl1.class),
                 binder -> binder.bind(Foo.class).to(FooImpl2.class)
@@ -35,7 +35,7 @@ public class OverrideBindingIT {
     }
 
     @Test
-    public void testRebind_OverridesEnabled() {
+    public void rebind_OverridesEnabled() {
         Injector injector = DIBootstrap.injectorBuilder(
                 binder -> binder.bind(Foo.class).to(FooImpl1.class),
                 binder -> binder.bind(Foo.class).to(FooImpl2.class)
@@ -46,7 +46,7 @@ public class OverrideBindingIT {
     }
 
     @Test
-    public void testOverride_OverridesDisabled() {
+    public void override_OverridesDisabled() {
         Injector injector = DIBootstrap.injectorBuilder(
                 binder -> binder.bind(Foo.class).to(FooImpl1.class),
                 binder -> binder.override(Foo.class).to(FooImpl2.class)
@@ -57,7 +57,7 @@ public class OverrideBindingIT {
     }
 
     @Test
-    public void testDoubleOverride_OverridesDisabled() {
+    public void doubleOverride_OverridesDisabled() {
         Injector injector = DIBootstrap.injectorBuilder(
                 binder -> binder.bind(Foo.class).to(FooImpl1.class),
                 binder -> binder.override(Foo.class).to(FooImpl2.class),
@@ -69,7 +69,7 @@ public class OverrideBindingIT {
     }
 
     @Test
-    public void testOverride_OverridesEnabled() {
+    public void override_OverridesEnabled() {
         Injector injector = DIBootstrap.injectorBuilder(
                 binder -> binder.bind(Foo.class).to(FooImpl1.class),
                 binder -> binder.override(Foo.class).to(FooImpl2.class)
@@ -80,7 +80,7 @@ public class OverrideBindingIT {
     }
 
     @Test
-    public void testOverride_NoBinding() {
+    public void override_NoBinding() {
         assertThrows(DIRuntimeException.class, () -> DIBootstrap
                 .injectorBuilder(binder -> binder.override(Foo.class).to(FooImpl2.class))
                 .declaredOverridesOnly().build());

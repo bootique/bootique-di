@@ -31,13 +31,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class DIBootstrapTest {
 
     @Test
-    public void testCreateInjector_Empty() {
+    public void createInjector_Empty() {
         Injector emptyInjector = DIBootstrap.injectorBuilder().build();
         assertNotNull(emptyInjector);
     }
 
     @Test
-    public void testCreateInjector_SingleModule() {
+    public void createInjector_SingleModule() {
         final boolean[] configureCalled = new boolean[1];
 
         BQModule module = binder -> configureCalled[0] = true;
@@ -49,7 +49,7 @@ public class DIBootstrapTest {
     }
 
     @Test
-    public void testCreateInjector_MultiModule() {
+    public void createInjector_MultiModule() {
 
         final boolean[] configureCalled = new boolean[2];
 
@@ -65,7 +65,7 @@ public class DIBootstrapTest {
     }
 
     @Test
-    public void testCreateInjector_MultiModuleCollection() {
+    public void createInjector_MultiModuleCollection() {
 
         final boolean[] configureCalled = new boolean[2];
 

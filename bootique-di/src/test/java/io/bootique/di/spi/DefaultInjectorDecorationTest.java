@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DefaultInjectorDecorationTest {
 
     @Test
-    public void testSingleDecorator_After() {
+    public void singleDecorator_After() {
 
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
@@ -43,7 +43,7 @@ public class DefaultInjectorDecorationTest {
     }
 
     @Test
-    public void testSingleDecorator_Before() {
+    public void singleDecorator_Before() {
 
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
@@ -58,7 +58,7 @@ public class DefaultInjectorDecorationTest {
     }
 
     @Test
-    public void testDecoratorChain() {
+    public void decoratorChain() {
 
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
@@ -76,7 +76,7 @@ public class DefaultInjectorDecorationTest {
     }
 
     @Test
-    public void testSingleDecorator_Provider_ConstructorInjection() {
+    public void singleDecorator_Provider_ConstructorInjection() {
 
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
@@ -91,7 +91,7 @@ public class DefaultInjectorDecorationTest {
     }
 
     @Test
-    public void testSingleDecorator_Provider_FieldInjection() {
+    public void singleDecorator_Provider_FieldInjection() {
 
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);

@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DefaultInjectorScopeTest {
 
     @Test
-    public void testNoScope_ImplicitService() {
+    public void noScope_ImplicitService() {
         Injector injector = DIBootstrap
                 .injectorBuilder(b -> b.bind(MockInterface1.class).to(MockImplementation1.class).inSingletonScope())
                 .build();
@@ -44,7 +44,7 @@ public class DefaultInjectorScopeTest {
     }
 
     @Test
-    public void testDefaultSingletonScope_ImplicitService() {
+    public void defaultSingletonScope_ImplicitService() {
         Injector injector = DIBootstrap
                 .injectorBuilder(b -> b.bind(MockInterface1.class).to(MockImplementation1.class).inSingletonScope())
                 .defaultSingletonScope()
@@ -58,7 +58,7 @@ public class DefaultInjectorScopeTest {
     }
 
     @Test
-    public void testDefaultScope_IsSingleton() {
+    public void defaultScope_IsSingleton() {
 
         BQModule module = binder -> binder.bind(MockInterface1.class).to(MockImplementation1.class);
 
@@ -77,7 +77,7 @@ public class DefaultInjectorScopeTest {
     }
 
     @Test
-    public void testNoScope() {
+    public void noScope() {
 
         BQModule module = binder -> binder
                 .bind(MockInterface1.class)
@@ -100,7 +100,7 @@ public class DefaultInjectorScopeTest {
     }
 
     @Test
-    public void testSingletonScope() {
+    public void singletonScope() {
 
         BQModule module = binder -> binder
                 .bind(MockInterface1.class)
@@ -122,7 +122,7 @@ public class DefaultInjectorScopeTest {
     }
 
     @Test
-    public void testSingletonScope_AnnotatedEvents() {
+    public void singletonScope_AnnotatedEvents() {
 
         MockImplementation1_EventAnnotations.reset();
 
@@ -146,7 +146,7 @@ public class DefaultInjectorScopeTest {
     }
 
     @Test
-    public void testSingletonScope_WithProvider() {
+    public void singletonScope_WithProvider() {
 
         BQModule module = binder -> binder
                 .bind(MockInterface1.class)
@@ -168,7 +168,7 @@ public class DefaultInjectorScopeTest {
     }
 
     @Test
-    public void testNoScope_WithProvider() {
+    public void noScope_WithProvider() {
 
         BQModule module = binder -> binder
                 .bind(MockInterface1.class)

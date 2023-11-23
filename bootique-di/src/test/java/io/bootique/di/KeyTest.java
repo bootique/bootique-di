@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class KeyTest {
 
     @Test
-    public void testBaseEquals() {
+    public void baseEquals() {
         Key<String> key1 = Key.get(String.class);
         Key<String> key2 = key1;
         Object key3 = new Object();
@@ -45,7 +45,7 @@ public class KeyTest {
     }
 
     @Test
-    public void testEquals() {
+    public void equals() {
         Key<String> key1 = Key.get(String.class);
         Key<String> key2 = Key.get(String.class);
         Key<Integer> key3 = Key.get(Integer.class);
@@ -83,7 +83,7 @@ public class KeyTest {
     }
 
     @Test
-    public void testListKeysEquals() {
+    public void listKeysEquals() {
         Key<List<Integer>> key1 = Key.getListOf(Integer.class);
         Key<List<String>> key2 = Key.getListOf(String.class);
         Key<List<Integer>> key3 = Key.getListOf(Integer.class);
@@ -112,7 +112,7 @@ public class KeyTest {
     }
 
     @Test
-    public void testQualifiedKeysEquals() {
+    public void qualifiedKeysEquals() {
         Key<Integer> key1 = Key.get(Integer.class, CustomQualifier.class);
         Key<Integer> key2 = Key.get(Integer.class);
         Key<Integer> key3 = Key.get(Integer.class, CustomQualifier.class);
@@ -134,7 +134,7 @@ public class KeyTest {
     }
 
     @Test
-    public void testHashCode() {
+    public void hashCodeTest() {
         Key<String> key1 = Key.get(String.class);
         Key<String> key2 = Key.get(String.class);
         Key<Integer> key3 = Key.get(Integer.class);
@@ -156,7 +156,7 @@ public class KeyTest {
     }
 
     @Test
-    public void testQualifiedHashCode() {
+    public void qualifiedHashCode() {
         Key<Integer> key1 = Key.get(Integer.class, CustomQualifier.class);
         Key<Integer> key2 = Key.get(Integer.class);
         Key<Integer> key3 = Key.get(Integer.class, CustomQualifier.class);
@@ -178,7 +178,7 @@ public class KeyTest {
     }
 
     @Test
-    public void testToString() {
+    public void toStringTest() {
         assertEquals("<BindingKey: java.lang.String>",
                 Key.get(String.class).toString());
         assertEquals("<BindingKey: java.lang.String, 'xyz'>",
@@ -192,7 +192,7 @@ public class KeyTest {
     }
 
     @Test
-    public void testQualifiedToString() {
+    public void qualifiedToString() {
         Key<Integer> key1 = Key.get(Integer.class, CustomQualifier.class);
         Key<Map<String, List<? extends Number>>> key2 =
                 Key.get(new TypeLiteral<Map<String, List<? extends Number>>>() {

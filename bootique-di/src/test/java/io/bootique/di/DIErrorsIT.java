@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DIErrorsIT {
 
     @Test
-    public void testLongInjectionChainFailure() {
+    public void longInjectionChainFailure() {
 
         // deep injection error:
         // instantiate foo -> inject field bar
@@ -81,7 +81,7 @@ public class DIErrorsIT {
     }
 
     @Test
-    public void testDecorationFailure() {
+    public void decorationFailure() {
         Injector injector = DIBootstrap.createInjector(binder -> {
             binder.bind(Bar.class).to(BarImpl2.class);
             binder.bind(Baz.class).to(BazImpl2.class);

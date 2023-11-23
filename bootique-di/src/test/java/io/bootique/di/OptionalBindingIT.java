@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class OptionalBindingIT {
 
     @Test
-    public void testMandatoryBinding() {
+    public void mandatoryBinding() {
         Injector injector = DIBootstrap.createInjector(b -> {
             b.bind(Consumer1.class);
         });
@@ -39,7 +39,7 @@ public class OptionalBindingIT {
     }
 
     @Test
-    public void testOptionalBinding() {
+    public void optionalBinding() {
         Injector injector = DIBootstrap.createInjector(b -> {
             b.bindOptional(Service.class);
             b.bind(Consumer1.class);
@@ -51,7 +51,7 @@ public class OptionalBindingIT {
     }
 
     @Test
-    public void testBoundOptionalBinding() {
+    public void boundOptionalBinding() {
         Injector injector = DIBootstrap.createInjector(b -> {
             b.bindOptional(Service.class).to(Service_Impl1.class);
             b.bind(Consumer1.class);
@@ -65,7 +65,7 @@ public class OptionalBindingIT {
     }
 
     @Test
-    public void testOptionalBindingOverride() {
+    public void optionalBindingOverride() {
         Injector injector = DIBootstrap.createInjector(
                 b -> {
                     b.bindOptional(Service.class);
@@ -82,7 +82,7 @@ public class OptionalBindingIT {
     }
 
     @Test
-    public void testOptionalBindingOverrideWithOverrideDisabled() {
+    public void optionalBindingOverrideWithOverrideDisabled() {
         Injector injector = DIBootstrap.injectorBuilder(
                 b -> {
                     b.bindOptional(Service.class);
@@ -99,7 +99,7 @@ public class OptionalBindingIT {
     }
 
     @Test
-    public void testOptionalBindingOverrideWithOptional() {
+    public void optionalBindingOverrideWithOptional() {
         Injector injector = DIBootstrap.createInjector(
                 b -> {
                     b.bindOptional(Service.class);

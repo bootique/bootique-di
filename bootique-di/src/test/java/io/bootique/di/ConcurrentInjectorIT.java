@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ConcurrentInjectorIT {
 
     @Test
-    public void testListProvider_NoScope() throws Exception {
+    public void listProvider_NoScope() throws Exception {
         Injector injector = DIBootstrap.createInjector(binder -> {
             binder.bindSet(String.class).addInstance("1").addInstance("2").addInstance("3").withoutScope();
         });
@@ -43,7 +43,7 @@ public class ConcurrentInjectorIT {
     }
 
     @Test
-    public void testConstructorProvider_NoScope() throws Exception {
+    public void constructorProvider_NoScope() throws Exception {
         Injector injector = DIBootstrap.createInjector(binder -> {
             binder.bindSet(String.class).addInstance("1").addInstance("2").addInstance("3").withoutScope();
             binder.bind(Foo.class).to(FooImpl.class).withoutScope();
@@ -54,7 +54,7 @@ public class ConcurrentInjectorIT {
     }
 
     @Test
-    public void testConstructorProvider_SingletonScope() throws Exception {
+    public void constructorProvider_SingletonScope() throws Exception {
         Injector injector = DIBootstrap.createInjector(binder -> {
             binder.bindSet(String.class).addInstance("1").addInstance("2").addInstance("3").inSingletonScope();
             binder.bind(Foo.class).to(FooImplSleep.class).inSingletonScope();
@@ -65,7 +65,7 @@ public class ConcurrentInjectorIT {
     }
 
     @Test
-    public void testImplementationBinding() throws Exception {
+    public void implementationBinding() throws Exception {
         Injector injector = DIBootstrap.createInjector(binder -> {
             binder.bindSet(String.class).addInstance("1").addInstance("2").addInstance("3").inSingletonScope();
             binder.bind(FooImplSleep.class).inSingletonScope();
@@ -76,7 +76,7 @@ public class ConcurrentInjectorIT {
     }
 
     @Test
-    public void testDynamicBinding() throws Exception {
+    public void dynamicBinding() throws Exception {
         Injector injector = DIBootstrap
                 .injectorBuilder(binder -> binder.bindSet(String.class).addInstance("1").addInstance("2").addInstance("3"))
                 .defaultSingletonScope()

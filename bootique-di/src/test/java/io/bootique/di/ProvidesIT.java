@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class ProvidesIT {
 
     @Test
-    public void testProvides_Standalone_Static() {
+    public void provides_Standalone_Static() {
         Injector injector = DIBootstrap.createInjector(new TestModule_StandaloneService_Static());
 
         Service1 s1 = injector.getInstance(Service1.class);
@@ -41,7 +41,7 @@ public class ProvidesIT {
     }
 
     @Test
-    public void testProvides_Standalone_Instance() {
+    public void provides_Standalone_Instance() {
         Injector injector = DIBootstrap.createInjector(new TestModule_StandaloneService_Instance());
 
         Service1 s1 = injector.getInstance(Service1.class);
@@ -49,7 +49,7 @@ public class ProvidesIT {
     }
 
     @Test
-    public void testProvides_Standalone_AnonymousClass() {
+    public void provides_Standalone_AnonymousClass() {
         Injector injector = DIBootstrap.createInjector(new BaseBQModule() {
             @Provides
             Service1 createService() {
@@ -62,7 +62,7 @@ public class ProvidesIT {
     }
 
     @Test
-    public void testProvides_Standalone_Named() {
+    public void provides_Standalone_Named() {
         Injector injector = DIBootstrap.createInjector(new TestModule_NamedService());
 
         Service1 s1 = injector.getInstance(Key.get(Service1.class, "s1"));
@@ -70,7 +70,7 @@ public class ProvidesIT {
     }
 
     @Test
-    public void testProvides_Chain() {
+    public void provides_Chain() {
         Injector injector = DIBootstrap.createInjector(new TestModule_ServiceChain());
 
         Service2 s2 = injector.getInstance(Service2.class);
@@ -78,7 +78,7 @@ public class ProvidesIT {
     }
 
     @Test
-    public void testProvides_Chain_NamedParameter() {
+    public void provides_Chain_NamedParameter() {
         Injector injector = DIBootstrap.createInjector(new TestModule_NamedParameter());
 
         Service2 s2 = injector.getInstance(Service2.class);
@@ -86,7 +86,7 @@ public class ProvidesIT {
     }
 
     @Test
-    public void testProvides_Chain_ProviderParameter() {
+    public void provides_Chain_ProviderParameter() {
         Injector injector = DIBootstrap.createInjector(new TestModule_ServiceChain_ProviderParameter());
 
         Service2 s2 = injector.getInstance(Service2.class);
@@ -94,7 +94,7 @@ public class ProvidesIT {
     }
 
     @Test
-    public void testProvides_Chain_QualifiedProviderParameter() {
+    public void provides_Chain_QualifiedProviderParameter() {
         Injector injector = DIBootstrap.createInjector(new TestModule_QualifiedProviderParameter());
 
         Service2 s2 = injector.getInstance(Service2.class);
@@ -102,24 +102,24 @@ public class ProvidesIT {
     }
 
     @Test
-    public void testProvidesCycle() {
+    public void providesCycle() {
         Injector injector = DIBootstrap.injectorBuilder(new TestModule_CircularDependency())
                 .disableProxyCreation().build();
         assertThrows(DIRuntimeException.class, () -> injector.getInstance(Service1.class));
     }
 
     @Test
-    public void testProvides_Invalid() {
+    public void provides_Invalid() {
         assertThrows(DIRuntimeException.class, () -> DIBootstrap.createInjector(new TestModule_InvalidProvider()));
     }
 
     @Test
-    public void testProvides_InvalidQualifier() {
+    public void provides_InvalidQualifier() {
         assertThrows(DIRuntimeException.class, () -> DIBootstrap.createInjector(new TestModule_InvalidQualifier()));
     }
 
     @Test
-    public void testProvides_CustomProvider() {
+    public void provides_CustomProvider() {
         Injector injector = DIBootstrap.createInjector(new TestModule_ProvidesProvider());
 
         Service2 s2 = injector.getInstance(Service2.class);

@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class ChainedBindingsIT {
 
     @Test
-    public void testChainedBindingDirect() {
+    public void chainedBindingDirect() {
         Injector injector = DIBootstrap.injectorBuilder(binder -> {
             binder.bind(Service.class).to(SubService.class);
             binder.bind(SubService.class).to(ServiceImpl.class);
@@ -24,7 +24,7 @@ public class ChainedBindingsIT {
     }
 
     @Test
-    public void testChainedBindingProvideMethod() {
+    public void chainedBindingProvideMethod() {
         Injector injector = DIBootstrap
                 .injectorBuilder(new MainModule(), new SubModule())
                 .build();

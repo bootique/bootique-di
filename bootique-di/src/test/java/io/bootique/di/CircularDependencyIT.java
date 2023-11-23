@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class CircularDependencyIT {
 
     @Test
-    public void testProxyCreation() {
+    public void proxyCreation() {
         Injector injector = DIBootstrap.injectorBuilder(binder -> {
             binder.bind(Service1.class).to(Service1Impl1.class).inSingletonScope();
             binder.bind(Service2.class).to(Service2Impl1.class).inSingletonScope();
@@ -40,7 +40,7 @@ public class CircularDependencyIT {
     }
 
     @Test
-    public void testProxyCreationFailure() {
+    public void proxyCreationFailure() {
         Injector injector = DIBootstrap.injectorBuilder(binder -> {
             binder.bind(Service3.class).inSingletonScope();
             binder.bind(Service4.class).inSingletonScope();
@@ -50,7 +50,7 @@ public class CircularDependencyIT {
     }
 
     @Test
-    public void testProxyCreationProviderMethodFailure() {
+    public void proxyCreationProviderMethodFailure() {
         Injector injector = DIBootstrap.injectorBuilder(new CircularModule()).build();
 
         assertThrows(DIRuntimeException.class, () -> injector.getInstance(Service1.class));

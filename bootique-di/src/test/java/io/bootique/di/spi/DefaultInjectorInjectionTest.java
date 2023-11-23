@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class DefaultInjectorInjectionTest {
 
     @Test
-    public void testFieldInjection() {
+    public void fieldInjection() {
 
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
@@ -49,7 +49,7 @@ public class DefaultInjectorInjectionTest {
     }
 
     @Test
-    public void testFieldInjection_Named() {
+    public void fieldInjection_Named() {
 
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
@@ -66,7 +66,7 @@ public class DefaultInjectorInjectionTest {
     }
 
     @Test
-    public void testFieldInjectionSuperclass() {
+    public void fieldInjectionSuperclass() {
 
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
@@ -82,7 +82,7 @@ public class DefaultInjectorInjectionTest {
     }
 
     @Test
-    public void testConstructorInjection() {
+    public void constructorInjection() {
 
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
@@ -97,7 +97,7 @@ public class DefaultInjectorInjectionTest {
     }
 
     @Test
-    public void testConstructorInjection_Named() {
+    public void constructorInjection_Named() {
 
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
@@ -114,7 +114,7 @@ public class DefaultInjectorInjectionTest {
     }
 
     @Test
-    public void testConstructorInjection_Named_Mixed() {
+    public void constructorInjection_Named_Mixed() {
 
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
@@ -132,7 +132,7 @@ public class DefaultInjectorInjectionTest {
     }
 
     @Test
-    public void testProviderInjection_Constructor() {
+    public void providerInjection_Constructor() {
 
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
@@ -146,7 +146,7 @@ public class DefaultInjectorInjectionTest {
     }
 
     @Test
-    public void testMapInjection_Empty() {
+    public void mapInjection_Empty() {
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1_MapConfiguration.class);
 
@@ -162,7 +162,7 @@ public class DefaultInjectorInjectionTest {
     }
 
     @Test
-    public void testMapInjection() {
+    public void mapInjection() {
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1_MapConfiguration.class);
             binder.bindMap(String.class, Object.class,"xyz")
@@ -198,7 +198,7 @@ public class DefaultInjectorInjectionTest {
     }
 
     @Test
-    public void testMapInjection_Resumed() {
+    public void mapInjection_Resumed() {
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1_MapConfiguration.class);
             // bind 1
@@ -215,7 +215,7 @@ public class DefaultInjectorInjectionTest {
     }
 
     @Test
-    public void testMapInjection_OverrideExplicitlyBoundType() {
+    public void mapInjection_OverrideExplicitlyBoundType() {
         BQModule m1 = binder -> {
             binder.bind(MockInterface5.class).to(MockImplementation5.class);
             binder.bind(MockInterface1.class).to(MockImplementation1_MapConfiguration.class);
@@ -236,7 +236,7 @@ public class DefaultInjectorInjectionTest {
     }
 
     @Test
-    public void testMapInjection_OverrideImplicitlyBoundType() {
+    public void mapInjection_OverrideImplicitlyBoundType() {
         BQModule m1 = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1_MapConfiguration.class);
             binder.bindMap(String.class, Object.class, "xyz").put("a", MockImplementation5.class);
@@ -256,7 +256,7 @@ public class DefaultInjectorInjectionTest {
 
 
     @Test
-    public void testInjectorInjection() {
+    public void injectorInjection() {
         BQModule module = binder -> binder.bind(MockInterface1.class).to(
                 MockImplementation1_WithInjector.class);
 

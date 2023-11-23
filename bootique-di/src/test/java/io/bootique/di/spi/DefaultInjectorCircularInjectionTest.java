@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class DefaultInjectorCircularInjectionTest {
 
     @Test
-    public void testFieldInjection_CircularDependency() {
+    public void fieldInjection_CircularDependency() {
 
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1_DepOn2.class);
@@ -55,7 +55,7 @@ public class DefaultInjectorCircularInjectionTest {
     }
 
     @Test
-    public void testProviderInjection_CircularDependency() {
+    public void providerInjection_CircularDependency() {
 
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(
@@ -70,7 +70,7 @@ public class DefaultInjectorCircularInjectionTest {
     }
 
     @Test
-    public void testConstructorInjection_CircularDependency() {
+    public void constructorInjection_CircularDependency() {
 
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(
@@ -94,7 +94,7 @@ public class DefaultInjectorCircularInjectionTest {
     }
 
     @Test
-    public void testConstructorInjection_WithFieldInjectionDeps() {
+    public void constructorInjection_WithFieldInjectionDeps() {
 
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(

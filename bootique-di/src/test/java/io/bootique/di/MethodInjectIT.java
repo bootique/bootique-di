@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class MethodInjectIT {
 
     @Test
-    public void testMethodInjectDisabledByDefault() {
+    public void methodInjectDisabledByDefault() {
         Injector injector = DIBootstrap.injectorBuilder(binder -> {
             binder.bind(Service.class).to(Service_Impl1.class);
             binder.bind(Consumer_Impl.class);
@@ -44,7 +44,7 @@ public class MethodInjectIT {
     }
 
     @Test
-    public void testMethodInject() {
+    public void methodInject() {
         Injector injector = DIBootstrap.injectorBuilder(binder -> {
             binder.bind(Service.class).to(Service_Impl1.class);
             binder.bind(Consumer_Impl.class);
@@ -55,7 +55,7 @@ public class MethodInjectIT {
     }
 
     @Test
-    public void testInjectMembers() {
+    public void injectMembers() {
         Injector injector = DIBootstrap.injectorBuilder(binder -> {
             binder.bind(Service.class).to(Service_Impl1.class);
             binder.bind(Consumer_Impl.class);
@@ -67,7 +67,7 @@ public class MethodInjectIT {
     }
 
     @Test
-    public void testInjectMethod_QualifiedParameter() {
+    public void injectMethod_QualifiedParameter() {
         Injector injector = DIBootstrap.injectorBuilder(binder -> {
             binder.bind(Key.get(Service.class, CustomQualifier.class)).to(Service_Impl1.class);
             binder.bind(Consumer_Impl2.class);

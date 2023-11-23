@@ -30,13 +30,13 @@ public class GenericTypesUtilsTest {
     }
 
     @Test
-    public void testService2() {
+    public void service2() {
         TypeLiteral<?> typeLiteral = GenericTypesUtils.resolveVariableType(Service2.class, field1, field1.getGenericType());
         assertEquals(String.class, typeLiteral.getRawType());
     }
 
     @Test
-    public void testService3() {
+    public void service3() {
         TypeLiteral<?> typeLiteral1 = GenericTypesUtils.resolveVariableType(Service3.class, field1, field1.getGenericType());
         assertEquals(String.class, typeLiteral1.getRawType());
 
@@ -48,7 +48,7 @@ public class GenericTypesUtilsTest {
     }
 
     @Test
-    public void testService4() {
+    public void service4() {
         TypeLiteral<?> typeLiteral1 = GenericTypesUtils.resolveVariableType(Service4.class, field1, field1.getGenericType());
         assertEquals(String.class, typeLiteral1.getRawType());
 
@@ -60,7 +60,7 @@ public class GenericTypesUtilsTest {
     }
 
     @Test
-    public void testService6() {
+    public void service6() {
         TypeLiteral<?> typeLiteral1 = GenericTypesUtils.resolveVariableType(Service6.class, field6, field6.getGenericType());
         assertEquals(String.class, typeLiteral1.getRawType());
 

@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 public class ScopeTest {
 
     @Test
-    public void testDefaultSingletonScope() {
+    public void defaultSingletonScope() {
         Injector injector = DIBootstrap
                 .injectorBuilder(binder -> binder.bind(TI.class).to(TC.class))
                 .defaultSingletonScope()
@@ -37,7 +37,7 @@ public class ScopeTest {
     }
 
     @Test
-    public void testDefaultSingletonScope_WithoutScope() {
+    public void defaultSingletonScope_WithoutScope() {
         Injector injector = DIBootstrap
                 .injectorBuilder(binder -> binder.bind(TI.class).to(TC.class).withoutScope())
                 .defaultSingletonScope()
@@ -46,7 +46,7 @@ public class ScopeTest {
     }
 
     @Test
-    public void testDefaultSingletonScope_NoScopeMethod() {
+    public void defaultSingletonScope_NoScopeMethod() {
         Injector injector = DIBootstrap
                 .injectorBuilder(new DefaultModule())
                 .defaultSingletonScope()
@@ -55,7 +55,7 @@ public class ScopeTest {
     }
 
     @Test
-    public void testDefaultSingletonScope_SingletonScopeMethod() {
+    public void defaultSingletonScope_SingletonScopeMethod() {
         Injector injector = DIBootstrap
                 .injectorBuilder(new SingletonModule())
                 .defaultSingletonScope()
@@ -64,7 +64,7 @@ public class ScopeTest {
     }
 
     @Test
-    public void testImplicitNoScope() {
+    public void implicitNoScope() {
         Injector injector = DIBootstrap
                 .injectorBuilder(binder -> binder.bind(TI.class).to(TC.class))
                 .build();
@@ -72,7 +72,7 @@ public class ScopeTest {
     }
 
     @Test
-    public void testImplicitNoScope_SingletonAnnotation() {
+    public void implicitNoScope_SingletonAnnotation() {
         Injector injector = DIBootstrap
                 .injectorBuilder(binder -> binder.bind(TI.class).to(TCSingleton.class))
                 .build();
@@ -80,7 +80,7 @@ public class ScopeTest {
     }
 
     @Test
-    public void testImplicitNoScope_SingletonAnnotationKey() {
+    public void implicitNoScope_SingletonAnnotationKey() {
         Injector injector = DIBootstrap
                 .injectorBuilder(binder -> binder.bind(TI.class).to(Key.get(TCSingleton.class)))
                 .build();
@@ -88,7 +88,7 @@ public class ScopeTest {
     }
 
     @Test
-    public void testImplicitNoScope_NoScopeMethod() {
+    public void implicitNoScope_NoScopeMethod() {
         Injector injector = DIBootstrap
                 .injectorBuilder(new DefaultModule())
                 .build();
@@ -96,7 +96,7 @@ public class ScopeTest {
     }
 
     @Test
-    public void testImplicitNoScope_SingletonMethod() {
+    public void implicitNoScope_SingletonMethod() {
         Injector injector = DIBootstrap
                 .injectorBuilder(new SingletonModule())
                 .build();

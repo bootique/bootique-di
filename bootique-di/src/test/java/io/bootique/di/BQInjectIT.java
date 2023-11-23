@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 public class BQInjectIT {
 
     @Test
-    public void testConstructorInjection() {
+    public void constructorInjection() {
         Injector injector = DIBootstrap.injectorBuilder(
                         b -> {
                             b.bind(Service.class).to(Service_Impl1.class);
@@ -22,7 +22,7 @@ public class BQInjectIT {
     }
 
     @Test
-    public void testFieldInjection() {
+    public void fieldInjection() {
         Injector injector = DIBootstrap.injectorBuilder(
                         b -> {
                             b.bind(Service.class).to(Service_Impl1.class);

@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 public class GenericTypesIT {
 
     @Test
-    public void testDirectAccess() {
+    public void directAccess() {
         Injector injector = DIBootstrap.createInjector(new TestModule1());
 
         assertEquals(Arrays.asList(1,2,3), injector.getInstance(Key.get(new TypeLiteral<List<? extends Integer>>(){})));
@@ -47,7 +47,7 @@ public class GenericTypesIT {
     }
 
     @Test
-    public void testDirectInjection() {
+    public void directInjection() {
         Injector injector = DIBootstrap.createInjector(new TestModule1(), new TestService1Module());
 
         Service1 service1 = injector.getInstance(Service1.class);
@@ -60,7 +60,7 @@ public class GenericTypesIT {
     }
 
     @Test
-    public void testProviderAccess() {
+    public void providerAccess() {
         Injector injector = DIBootstrap.createInjector(new TestModule1());
 
         Provider<List<? extends Integer>> integers = injector.getProvider(Key.get(new TypeLiteral<List<? extends Integer>>(){}));
@@ -77,7 +77,7 @@ public class GenericTypesIT {
     }
 
     @Test
-    public void testProviderInjection() {
+    public void providerInjection() {
         Injector injector = DIBootstrap.createInjector(new TestModule1(), new TestService2Module());
 
         Service1 service1 = injector.getInstance(Service1.class);
@@ -90,7 +90,7 @@ public class GenericTypesIT {
     }
 
     @Test
-    public void testDirectAccessFromProvidesMethods() {
+    public void directAccessFromProvidesMethods() {
         Injector injector = DIBootstrap.createInjector(new TestModule2());
 
         assertEquals(Arrays.asList(1,2,3), injector.getInstance(Key.get(new TypeLiteral<List<? extends Integer>>(){})));
@@ -104,7 +104,7 @@ public class GenericTypesIT {
     }
 
     @Test
-    public void testGenericFieldInjection() {
+    public void genericFieldInjection() {
         Injector injector = DIBootstrap.createInjector(new TestModule3());
 
         Service2_Impl<?> service = injector.getInstance(Service2_Impl.class);

@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DefaultInjectorBindingTest {
 
     @Test
-    public void testClassBinding() {
+    public void classBinding() {
 
         BQModule module = binder -> binder.bind(MockInterface1.class).to(MockImplementation1.class);
 
@@ -45,7 +45,7 @@ public class DefaultInjectorBindingTest {
     }
 
     @Test
-    public void testClassNamedBinding() {
+    public void classNamedBinding() {
 
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
@@ -75,7 +75,7 @@ public class DefaultInjectorBindingTest {
     }
 
     @Test
-    public void testProviderBinding() {
+    public void providerBinding() {
         BQModule module = binder -> binder
                 .bind(MockInterface1.class)
                 .toProvider(MockInterface1Provider.class);
@@ -88,7 +88,7 @@ public class DefaultInjectorBindingTest {
     }
 
     @Test
-    public void testInstanceBinding() {
+    public void instanceBinding() {
 
         final MockImplementation1 instance = new MockImplementation1();
 
@@ -102,7 +102,7 @@ public class DefaultInjectorBindingTest {
     }
 
     @Test
-    public void testKeyBindingChain() {
+    public void keyBindingChain() {
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(Key.get(MockImplementation1.class));
             binder.bind(MockImplementation1.class);
@@ -116,7 +116,7 @@ public class DefaultInjectorBindingTest {
     }
 
     @Test
-    public void testKeyBindingSimple() {
+    public void keyBindingSimple() {
         BQModule module = binder
                 -> binder.bind(MockInterface1.class).to(Key.get(MockImplementation1.class));
 
@@ -128,7 +128,7 @@ public class DefaultInjectorBindingTest {
     }
 
     @Test
-    public void testClassReBinding() {
+    public void classReBinding() {
 
         BQModule module = binder -> {
             binder.bind(MockInterface1.class).to(MockImplementation1.class);
@@ -143,7 +143,7 @@ public class DefaultInjectorBindingTest {
     }
 
     @Test
-    public void testDirectImplementationBinding() {
+    public void directImplementationBinding() {
         BQModule module = binder -> {
             binder.bind(Implementation1.class).withoutScope();
             binder.bind(Implementation2.class).inSingletonScope();

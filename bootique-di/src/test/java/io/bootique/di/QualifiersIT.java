@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class QualifiersIT {
 
     @Test
-    public void testQualifiedInject() {
+    public void qualifiedInject() {
         Injector injector = DIBootstrap.createInjector(b -> {
             b.bind(Key.get(Service.class, CustomQualifier.class)).to(Service_Impl1.class);
             b.bind(Key.get(Service.class)).to(Service_Impl2.class);
@@ -45,7 +45,7 @@ public class QualifiersIT {
     }
 
     @Test
-    public void testQualifiedProvider() {
+    public void qualifiedProvider() {
         Injector injector = DIBootstrap.createInjector(b -> {
             // Direct field injection
             b.bind(Consumer.class).to(Consumer_Impl1.class);
@@ -55,7 +55,7 @@ public class QualifiersIT {
     }
 
     @Test
-    public void testQualifiedConstructorParameter() {
+    public void qualifiedConstructorParameter() {
         Injector injector = DIBootstrap.createInjector(b -> {
             b.bind(Key.get(Service.class, CustomQualifier.class)).to(Service_Impl1.class);
             b.bind(Key.get(Service.class)).to(Service_Impl2.class);
@@ -68,7 +68,7 @@ public class QualifiersIT {
     }
 
     @Test
-    public void testMultipleQualifiers() {
+    public void multipleQualifiers() {
         Injector injector = DIBootstrap.createInjector(b -> {
             b.bind(Key.get(Service.class, CustomQualifier.class)).to(Service_Impl1.class);
             b.bind(Key.get(Service.class)).to(Service_Impl2.class);

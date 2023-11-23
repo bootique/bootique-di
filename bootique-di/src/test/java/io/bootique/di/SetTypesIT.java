@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SetTypesIT {
 
     @Test
-    public void testByKeyAndValueTypeMapInjection() {
+    public void byKeyAndValueTypeMapInjection() {
         Injector injector = DIBootstrap.createInjector(serviceModule1, b -> {
             b.bindSet(Integer.class).addInstance(1).addInstance(2);
             b.bindSet(String.class).addInstance("3").addInstance("4");
@@ -46,7 +46,7 @@ public class SetTypesIT {
     }
 
     @Test
-    public void testByGenericTypeMapInjection() {
+    public void byGenericTypeMapInjection() {
         Injector injector = DIBootstrap.createInjector(serviceModule1, b -> {
             b.bindSet(TypeLiteral.of(Integer.class)).addInstance(1).addInstance(2);
             b.bindSet(TypeLiteral.of(String.class)).addInstance("3").addInstance("4");
@@ -56,7 +56,7 @@ public class SetTypesIT {
     }
 
     @Test
-    public void testDirectMapInjection() {
+    public void directMapInjection() {
         Injector injector = DIBootstrap.createInjector(serviceModule1, b -> {
             Set<Integer> integerMap = new HashSet<>();
             integerMap.add(1);
@@ -74,13 +74,13 @@ public class SetTypesIT {
     }
 
     @Test
-    public void testProviderMapInjection() {
+    public void providerMapInjection() {
         Injector injector = DIBootstrap.createInjector(serviceModule1, new SetProviderModule());
         assertSetContent(injector);
     }
 
     @Test
-    public void testWildcardMapDirectInjection() {
+    public void wildcardMapDirectInjection() {
         Injector injector = DIBootstrap.createInjector(b -> {
             b.bind(Service.class).to(Service_Impl2.class);
             b.bindSet(new TypeLiteral<List<? extends Number>>() {})
@@ -96,7 +96,7 @@ public class SetTypesIT {
     }
 
     @Test
-    public void testWildcardMapProvider() {
+    public void wildcardMapProvider() {
         Injector injector = DIBootstrap.createInjector(new SetProviderModule(),
                 b -> b.bind(Service.class).to(Service_Impl2.class));
 
@@ -109,7 +109,7 @@ public class SetTypesIT {
     }
 
     @Test
-    public void testDuplicateValue() {
+    public void duplicateValue() {
         Injector injector = DIBootstrap.createInjector(b ->
                 b.bindSet(TypeLiteral.of(Integer.class)).addInstance(1).addInstance(2).addInstance(2));
 
@@ -117,7 +117,7 @@ public class SetTypesIT {
     }
 
     @Test
-    public void testAddType() {
+    public void addType() {
         Injector injector = DIBootstrap.createInjector(
                 new SetProviderModule(),
                 b -> b.bindSet(Service.class).add(Service_Impl1.class).add(Service_Impl2.class)
@@ -128,7 +128,7 @@ public class SetTypesIT {
     }
 
     @Test
-    public void testAddAllBinding() {
+    public void addAllBinding() {
         Injector injector = DIBootstrap.createInjector(b ->
                 b.bindSet(TypeLiteral.of(Integer.class)).addInstance(1).addInstances(Arrays.asList(2,3,4)).addInstance(5));
 
@@ -137,7 +137,7 @@ public class SetTypesIT {
     }
 
     @Test
-    public void testContinueBinding() {
+    public void continueBinding() {
         Injector injector = DIBootstrap.createInjector(
                 b -> b.bindSet(TypeLiteral.of(Integer.class)).addInstance(1).addInstance(2),
                 b -> b.bindSet(TypeLiteral.of(Integer.class)).addInstance(3).addInstance(4)
@@ -148,7 +148,7 @@ public class SetTypesIT {
     }
 
     @Test
-    public void testAddKey() {
+    public void addKey() {
         Injector injector = DIBootstrap.createInjector(b -> {
             b.bind(Key.get(Integer.class, "1")).toInstance(1);
             b.bind(Key.get(Integer.class, "2")).toInstance(2);
@@ -162,7 +162,7 @@ public class SetTypesIT {
     }
 
     @Test
-    public void testDuplicatedValue() {
+    public void duplicatedValue() {
         Injector injector = DIBootstrap.createInjector(
             b -> b.bindSet(Integer.class).addInstance(1).addInstance(2).addInstance(1)
         );
@@ -171,13 +171,13 @@ public class SetTypesIT {
     }
 
     @Test
-    public void testDuplicateProviderMethod() {
+    public void duplicateProviderMethod() {
         Injector injector = DIBootstrap.createInjector(new DuplicateValueModule());
         assertThrows(DIRuntimeException.class, () -> injector.getInstance(Key.getSetOf(Integer.class)));
     }
 
     @Test
-    public void testProviderBinding() {
+    public void providerBinding() {
         Injector injector = DIBootstrap.createInjector(new ProviderTypeModule());
         Set<Integer> integers = injector.getInstance(Key.getSetOf(Integer.class));
 

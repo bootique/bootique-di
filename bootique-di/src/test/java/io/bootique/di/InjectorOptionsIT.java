@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class InjectorOptionsIT {
 
     @Test
-    public void testDynamicBindingDisabled() {
+    public void dynamicBindingDisabled() {
         Injector injector = DIBootstrap.injectorBuilder(b -> b.bind(Service.class).to(Service_Impl1.class))
                 .disableDynamicBindings()
                 .build();
@@ -38,7 +38,7 @@ public class InjectorOptionsIT {
     }
 
     @Test
-    public void testDynamicBindingEnabled() {
+    public void dynamicBindingEnabled() {
         Injector injector = DIBootstrap.injectorBuilder(b -> b.bind(Service.class).to(Service_Impl1.class))
                 .build();
 
@@ -48,7 +48,7 @@ public class InjectorOptionsIT {
     }
 
     @Test
-    public void testSingletonScope() {
+    public void singletonScope() {
         Injector injector = DIBootstrap.injectorBuilder(b -> b.bind(Service.class).to(Service_Impl1.class))
                 .defaultSingletonScope()
                 .build();
@@ -63,7 +63,7 @@ public class InjectorOptionsIT {
     }
 
     @Test
-    public void testNoScopeScope() {
+    public void noScopeScope() {
         Injector injector = DIBootstrap.injectorBuilder(b -> b.bind(Service.class).to(Service_Impl1.class))
                 .build();
 

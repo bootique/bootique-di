@@ -160,7 +160,11 @@ public class MapTypesIT {
         }
     }
 
-    public static class MapProviderModule extends BaseBQModule {
+    public static class MapProviderModule implements BQModule {
+
+        @Override
+        public void configure(Binder binder) {
+        }
 
         @Provides
         public Map<Integer, String> createIntegerMap() {

@@ -48,7 +48,12 @@ public class ChainedBindingsIT {
         }
     }
 
-    static class SubModule extends BaseBQModule {
+    static class SubModule implements BQModule {
+
+        @Override
+        public void configure(Binder binder) {
+        }
+
         @Provides
         public SubService createService() {
             return new ServiceImpl();

@@ -77,7 +77,12 @@ public class InjectorBuilderIT {
 
     @Test
     public void customProvidesMethodPredicate() {
-        BQModule module = new BaseBQModule() {
+        BQModule module = new BQModule() {
+
+            @Override
+            public void configure(Binder binder) {
+            }
+
             // should be found by name prefix
             Service providesService() {
                 return new Service_Impl1();

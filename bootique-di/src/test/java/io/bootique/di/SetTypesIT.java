@@ -226,7 +226,11 @@ public class SetTypesIT {
         }
     }
 
-    public static class SetProviderModule extends BaseBQModule {
+    public static class SetProviderModule implements BQModule {
+
+        @Override
+        public void configure(Binder binder) {
+        }
 
         @Provides
         public Set<Integer> createIntegerSet() {

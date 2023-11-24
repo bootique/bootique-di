@@ -116,14 +116,23 @@ public class ScopeTest {
 
     }
 
-    public static class DefaultModule extends BaseBQModule {
+    public static class DefaultModule implements BQModule {
+        @Override
+        public void configure(Binder binder) {
+        }
+
         @Provides
         TI create() {
             return new TC();
         }
     }
 
-    public static class SingletonModule extends BaseBQModule {
+    public static class SingletonModule implements BQModule {
+
+        @Override
+        public void configure(Binder binder) {
+        }
+
         @Provides
         @Singleton
         TI create() {

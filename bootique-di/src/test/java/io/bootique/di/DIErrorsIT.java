@@ -103,7 +103,8 @@ public class DIErrorsIT {
         }
     }
 
-    private static class TestModule extends BaseBQModule {
+    private static class TestModule implements BQModule {
+
         @Override
         public void configure(Binder binder) {
             binder.bind(Foo.class).to(FooImpl.class);

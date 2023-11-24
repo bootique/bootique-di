@@ -88,7 +88,12 @@ public class QualifiersIT {
         assertInstanceOf(Service_Impl2.class, consumer2.getService());
     }
 
-    public static class ServiceModule2 extends BaseBQModule {
+    public static class ServiceModule2 implements BQModule {
+
+        @Override
+        public void configure(Binder binder) {
+        }
+
         @Provides
         @CustomQualifier
         public Service createService() {

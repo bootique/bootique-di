@@ -50,7 +50,12 @@ public class ProvidesIT {
 
     @Test
     public void provides_Standalone_AnonymousClass() {
-        Injector injector = DIBootstrap.createInjector(new BaseBQModule() {
+        Injector injector = DIBootstrap.createInjector(new BQModule() {
+
+            @Override
+            public void configure(Binder binder) {
+            }
+
             @Provides
             Service1 createService() {
                 return () -> "provideService1";
@@ -134,7 +139,11 @@ public class ProvidesIT {
         String doIt();
     }
 
-    public static class TestModule_StandaloneService_Static extends BaseBQModule {
+    public static class TestModule_StandaloneService_Static implements BQModule {
+
+        @Override
+        public void configure(Binder binder) {
+        }
 
         @Provides
         public static Service1 provideService1() {
@@ -142,7 +151,11 @@ public class ProvidesIT {
         }
     }
 
-    public static class TestModule_StandaloneService_Instance extends BaseBQModule {
+    public static class TestModule_StandaloneService_Instance implements BQModule {
+
+        @Override
+        public void configure(Binder binder) {
+        }
 
         @Provides
         public Service1 provideService1() {
@@ -150,7 +163,11 @@ public class ProvidesIT {
         }
     }
 
-    public static class TestModule_ServiceChain extends BaseBQModule {
+    public static class TestModule_ServiceChain implements BQModule {
+
+        @Override
+        public void configure(Binder binder) {
+        }
 
         @Provides
         public static Service1 provideService1() {
@@ -163,7 +180,11 @@ public class ProvidesIT {
         }
     }
 
-    public static class TestModule_ServiceChain_ProviderParameter extends BaseBQModule {
+    public static class TestModule_ServiceChain_ProviderParameter implements BQModule {
+
+        @Override
+        public void configure(Binder binder) {
+        }
 
         @Provides
         public static Service1 provideService1() {
@@ -176,14 +197,21 @@ public class ProvidesIT {
         }
     }
 
-    public static class TestModule_InvalidProvider extends BaseBQModule {
+    public static class TestModule_InvalidProvider implements BQModule {
+
+        @Override
+        public void configure(Binder binder) {
+        }
 
         @Provides
         public void invalidProvides() {
         }
     }
 
-    public static class TestModule_InvalidQualifier extends BaseBQModule {
+    public static class TestModule_InvalidQualifier implements BQModule {
+        @Override
+        public void configure(Binder binder) {
+        }
 
         @TestQualifier
         @Named("s1")
@@ -193,7 +221,11 @@ public class ProvidesIT {
         }
     }
 
-    public static class TestModule_NamedService extends BaseBQModule {
+    public static class TestModule_NamedService implements BQModule {
+
+        @Override
+        public void configure(Binder binder) {
+        }
 
         @Named("s1")
         @Provides
@@ -202,7 +234,11 @@ public class ProvidesIT {
         }
     }
 
-    public static class TestModule_NamedParameter extends BaseBQModule {
+    public static class TestModule_NamedParameter implements BQModule {
+
+        @Override
+        public void configure(Binder binder) {
+        }
 
         @Provides
         public static Service1 provideUnnamedService1() {
@@ -221,7 +257,11 @@ public class ProvidesIT {
         }
     }
 
-    public static class TestModule_QualifiedProviderParameter extends BaseBQModule {
+    public static class TestModule_QualifiedProviderParameter implements BQModule {
+
+        @Override
+        public void configure(Binder binder) {
+        }
 
         @Provides
         public static Service1 provideUnnamedService1() {
@@ -240,7 +280,11 @@ public class ProvidesIT {
         }
     }
 
-    private static class TestModule_CircularDependency extends BaseBQModule {
+    private static class TestModule_CircularDependency implements BQModule {
+        @Override
+        public void configure(Binder binder) {
+        }
+
         @Provides
         Service1 createService1(Service2 service2) {
             return () -> "service1" + service2.doIt();

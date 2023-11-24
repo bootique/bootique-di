@@ -23,9 +23,11 @@ package io.bootique.di;
  * A common superclass of modules with an empty implementation of {@link #configure(Binder)}. It may come handy as modules
  * may bind services declaratively by creating methods annotated by {@link Provides @Provides} and don't need to
  * implement 'configure'.
+ *
+ * @deprecated unused. If you inherited from it, just implement {@link BQModule} directly or subclass one of the
+ * Bootique core modules like BaseModule.
  */
-// TODO: this is a useful superclass for bootique-di, but it is not used in Bootique core. Should we either deprecate
-//   it or start using it in the core?
+@Deprecated(since = "3.0", forRemoval = true)
 public abstract class BaseBQModule implements BQModule {
 
     /**

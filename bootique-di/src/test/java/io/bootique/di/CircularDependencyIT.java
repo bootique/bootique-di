@@ -56,7 +56,11 @@ public class CircularDependencyIT {
         assertThrows(DIRuntimeException.class, () -> injector.getInstance(Service1.class));
     }
 
-    static class CircularModule extends BaseBQModule {
+    static class CircularModule implements BQModule {
+
+        @Override
+        public void configure(Binder binder) {
+        }
 
         @Provides
         Service1 createService1(Service2 service2) {

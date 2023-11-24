@@ -140,7 +140,11 @@ public class GenericTypesIT {
         }
     }
 
-    public static class TestModule2 extends BaseBQModule {
+    public static class TestModule2 implements BQModule {
+
+        @Override
+        public void configure(Binder binder) {
+        }
 
         @Provides
         public List<? extends Integer> createIntegerList() {
@@ -164,7 +168,7 @@ public class GenericTypesIT {
 
     }
 
-    public static class TestModule3 extends BaseBQModule {
+    public static class TestModule3 implements BQModule {
         @Override
         public void configure(Binder binder) {
             binder.bind(String.class).toInstance("test");

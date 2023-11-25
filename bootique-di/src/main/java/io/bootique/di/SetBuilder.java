@@ -26,28 +26,28 @@ import java.util.Collection;
  * A binding builder for set configurations.
  *
  * @param <T> A type of set elements
- * @since 2.0.M1
+ * @since 2.0
  */
 public interface SetBuilder<T> extends ScopeBuilder {
 
     SetBuilder<T> add(Class<? extends T> interfaceType) throws DIRuntimeException;
 
     /**
-     * @since 2.0.B1
+     * @since 2.0
      */
     SetBuilder<T> addInstance(T value) throws DIRuntimeException;
 
     SetBuilder<T> add(Key<? extends T> valueKey) throws DIRuntimeException;
 
     /**
-     * @since 2.0.B1
+     * @since 2.0
      */
     SetBuilder<T> addProviderInstance(Provider<? extends T> value) throws DIRuntimeException;
 
     SetBuilder<T> addProvider(Class<? extends Provider<? extends T>> value) throws DIRuntimeException;
 
     /**
-     * @since 2.0.B1
+     * @since 2.0
      */
     SetBuilder<T> addInstances(Collection<T> values) throws DIRuntimeException;
 

@@ -27,28 +27,28 @@ import java.util.Map;
  *
  * @param <K> A type of the map keys.
  * @param <V> A type of the map values.
- * @since 2.0.M1
+ * @since 2.0
  */
 public interface MapBuilder<K, V> extends ScopeBuilder {
 
     MapBuilder<K, V> put(K key, Class<? extends V> interfaceType) throws DIRuntimeException;
 
     /**
-     * @since 2.0.B1
+     * @since 2.0
      */
     MapBuilder<K, V> putInstance(K key, V value) throws DIRuntimeException;
 
     MapBuilder<K, V> put(K key, Key<? extends V> valueKey) throws DIRuntimeException;
 
     /**
-     * @since 2.0.B1
+     * @since 2.0
      */
     MapBuilder<K, V> putProviderInstance(K key, Provider<? extends V> value) throws DIRuntimeException;
 
     MapBuilder<K, V> putProvider(K key, Class<? extends Provider<? extends V>> value) throws DIRuntimeException;
 
     /**
-     * @since 2.0.B1
+     * @since 2.0
      */
     MapBuilder<K, V> putInstances(Map<K, V> map) throws DIRuntimeException;
 

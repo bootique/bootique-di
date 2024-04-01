@@ -21,6 +21,8 @@
 
 # bootique-di
 
+**Since Bootique 3, `bootique-di` is no longer developed as a standalone module, and is instead included in Bootique core. So this GitHub project is retired, while the DI functionality continues to live and thrive at https://github.com/bootique/bootique .**
+
 A [lightweight and fast](https://github.com/andrus/di-comparison#results-java-8) dependency injection (DI) engine used by Bootique framework. Can be used in the context of Bootique or as a standalone DI engine.
 
 ## Docs

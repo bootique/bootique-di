@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-:bq-header: bootique-di-docs/_bootique_di/header.html
+:hugo-header: bootique-di-docs/_bootique_di/header.html
 
 == Bootique DI framework
 

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-:bq-header: migrate-from-guice/_migrate/header.html
+:hugo-header: migrate-from-guice/_migrate/header.html
 
 == Migrating from Guice framework
 
